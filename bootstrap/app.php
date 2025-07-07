@@ -1,11 +1,15 @@
 <?php
 
-use App\Http\Middleware\HandleAppearance;
-use App\Http\Middleware\HandleInertiaRequests;
-use App\Http\Middleware\RoleCheckMiddleware;
+use App\Http\Middleware\FirstLoginMiddleware;
+use Inertia\Inertia;
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\HandleAppearance;
+use App\Http\Middleware\RoleCheckMiddleware;
+use App\Http\Middleware\HandleInertiaRequests;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -25,20 +29,17 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'role' => RoleCheckMiddleware::class,
+            'firstlogin' => FirstLoginMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
-        if (! app()->environment(environments: ['local', 'testing']) && in_array($response->getStatusCode(), [500, 503, 404, 403])) {
-            return Inertia::render('error/ErrorPage', ['status' => $response->getStatusCode()])
-                ->toResponse($request)
-                ->setStatusCode($response->getStatusCode());
-        } elseif ($response->getStatusCode() === 419) {
-            return back()->with([
-                'message' => 'The page expired, please try again.',
-            ]);
-        }
+        $exceptions->respond(function (Response $response) {
+            if (in_array($response->getStatusCode(), [403, 404, 419, 422, 429, 500, 503])) {
+                return Inertia::render('error/ErrorPage', [
+                    'status' => $response->getStatusCode(),
+                ]);
+            }
 
-        return $response;
-    });
+            return $response;
+        });
     })->create();

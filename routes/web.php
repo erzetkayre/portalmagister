@@ -6,7 +6,7 @@ use App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Koordinator;
 use App\Http\Controllers\Dosen;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -17,13 +17,15 @@ Route::get('/', function () {
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('guest')->group(function () {
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    Route::get('login', [Auth\AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('login', [Auth\AuthenticatedSessionController::class, 'store']);
 });
 
-Route::middleware('auth')->group(function () {
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('logout');
+Route::middleware(['auth', 'firstlogin'])->group(function () {
+    Route::get('change-password', [Auth\FirstLoginController::class, 'index'])->name('index.first.login');
+    Route::post('change-password', [Auth\FirstLoginController::class, 'update'])->name('post.first.login');
+
+    Route::post('logout', [Auth\AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     // Route Admin
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {

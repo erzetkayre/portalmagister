@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Link } from '@inertiajs/vue3'
 import {
+    LogIn,
     Home,
     ShieldX,
     LayoutDashboard,
@@ -21,6 +22,10 @@ const propsStatus = defineProps<{
 }> ()
 
 const { props } = usePage();
+
+const isAuthenticated = computed(() => {
+    return props.auth?.user !== null && props.auth?.user !== undefined
+})
 
 const getDashboardRoute = () => {
     const user = props.auth?.user as any
@@ -105,10 +110,16 @@ const errorConfig = computed(() => {
             </div>
             <div class="space-y-4">
                 <div class="space-x-2">
-                    <Button as-child>
-                        <Link :href="getDashboardRoute()" class="">
+                    <Button as-child v-if="isAuthenticated">
+                        <Link :href="getDashboardRoute()">
                             <LayoutDashboard class="h-4 w-4" />
                             Back to Dashboard
+                        </Link>
+                    </Button>
+                    <Button as-child v-else>
+                        <Link :href="route('login')">
+                            <LogIn class="h-4 w-4" />
+                            Login
                         </Link>
                     </Button>
                     <Button variant="secondary" as-child class="">

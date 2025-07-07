@@ -13,7 +13,9 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Administrasi Tesis'),
+
+    'custom_error_page_enabled' => env('CUSTOM_ERROR_PAGES_ENABLED', false),
 
     /*
     |--------------------------------------------------------------------------

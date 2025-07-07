@@ -2,7 +2,7 @@
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarGroup } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
@@ -10,6 +10,8 @@ import AppLogo from './AppLogo.vue';
 import { computed} from 'vue';
 
 const { props } = usePage();
+
+console.log(props);
 
 const dashboardRoute = computed(() => {
     const user = props.auth?.user as any;
@@ -19,13 +21,36 @@ const dashboardRoute = computed(() => {
     return route(`${role}.dashboard`);
 });
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
+const userRole = computed(() => {
+    const user = props.auth?.user as any;
+    return user?.role?.nama_role || 'guest';
+});
+
+// Menu Admin
+const adminMainNavItems: NavItem[] = [
+    { title: 'Dashboard', href: route('admin.dashboard'), icon: LayoutGrid },
 ];
+
+// Menu Koordinator
+const koordinatorMainNavItems: NavItem[] = [
+    { title: 'Dashboard', href: route('koordinator.dashboard'), icon: LayoutGrid },
+
+];
+
+// Menu Dosen
+const dosenMainNavItems: NavItem[] = [
+    { title: 'Dashboard', href: route('dosen.dashboard'), icon: LayoutGrid },
+];
+
+// Menu Mahasiswa
+const mahasiswaMainNavItems: NavItem[] = [
+    { title: 'Dashboard', href: route('mahasiswa.dashboard'), icon: LayoutGrid },
+
+];
+
+
+
+
 
 const footerNavItems: NavItem[] = [
     {
@@ -51,7 +76,19 @@ const footerNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <SidebarGroup v-if="userRole === 'admin'" class="px-2 py-0">
+                <NavMain :label="'Menu Utama'" :items="adminMainNavItems"/>
+                <NavMain :label="'Manajemen Data'" :items="managementMainNavItems"/>
+            </SidebarGroup>
+            <SidebarGroup v-else-if="userRole === 'koordinator'" class="px-2 py-0">
+                <NavMain :label="'Manajemen'" :items="koordinatorMainNavItems"/>
+            </SidebarGroup>
+            <SidebarGroup v-else-if="userRole === 'dosen'" class="px-2 py-0">
+                <NavMain :label="'Manajemen'" :items="dosenMainNavItems"/>
+            </SidebarGroup>
+            <SidebarGroup v-else class="px-2 py-0">
+                <NavMain :label="'Menu Utama'" :items="mahasiswaMainNavItems"/>
+            </SidebarGroup>
         </SidebarContent>
 
         <SidebarFooter>
