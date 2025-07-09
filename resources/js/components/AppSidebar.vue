@@ -11,8 +11,6 @@ import { computed} from 'vue';
 
 const { props } = usePage();
 
-console.log(props);
-
 const dashboardRoute = computed(() => {
     const user = props.auth?.user as any;
     if (!user) return '/login';

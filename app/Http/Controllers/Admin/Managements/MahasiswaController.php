@@ -3,55 +3,47 @@
 namespace App\Http\Controllers\Admin\Managements;
 
 use Inertia\Inertia;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class MahasiswaController extends Controller
 {
     public function index(Request $request) {
-        $query = User::with('role')
-            ->select('id', 'nama', 'email', 'role_id', 'is_active', 'created_at');
+        $query = Mahasiswa::with('role')->select('id', 'nama', 'email', 'role_id', 'is_active', 'created_at');
+        $query = $this->applyFilters($query, $request);
 
-        // Apply filters
-        if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('nama', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
-            });
-        }
-        if ($request->filled('role')) {
-            $query->whereHas('role', function($q) use ($request) {
-                $q->where('nama_role', $request->role);
-            });
-        }
-        if ($request->filled('status')) {
-            $status = $request->status === 'active' ? 1 : 0;
-            $query->where('is_active', $status);
-        }
-
-        // Paginate
         $users = $query->paginate(10)->through(function ($user) {
             return [
                 'id' => $user->id,
-                'name' => $user->nama,
-                'email' => $user->email,
-                'role' => $user->role->nama_role ?? 'Unknown',
+                'name' => $user->nama_mhs,
+                'nim' => $user->nim,
+                'angkatan' => $user->angkatan,
                 'status' => $user->is_active ? 'active' : 'inactive',
-                'created_at' => $user->created_at->format('Y-m-d'),
+                'gender' => $user->gender,
             ];
         });
 
-        // Roles dropdown
         $roles = Role::select('nama_role')->distinct()->get()->pluck('nama_role');
+        $totalUsers = User::count();
+        $totalAdmin = User::whereIn('role_id', [1, 2])->count();
+        $totalMahasiswa = User::where('role_id', 4)->count();
+        $totalDosen = User::where('role_id', 3)->count();
 
-        return Inertia::render('admin/managements/Users', [
+        return Inertia::render('admin/managements/users/Index', [
             'users' => $users,
             'roles' => $roles,
             'filters' => [
                 'search' => $request->search,
                 'role' => $request->role,
                 'status' => $request->status,
-            ]
+            ],
+            'stats' => [
+                'totalUsers' => $totalUsers,
+                'totalAdmin' => $totalAdmin,
+                'totalMahasiswa' => $totalMahasiswa,
+                'totalDosen' => $totalDosen,
+            ],
         ]);
     }
 
@@ -77,6 +69,34 @@ class MahasiswaController extends Controller
 
     public function destroy($id) {
 
+    }
+
+    private function applyFilters($query, Request $request){
+        return $query
+            ->when($request->filled('search'), fn($q) =>
+                $q->where(fn($qq) =>
+                    $qq->where('nama', 'like', "%{$request->search}%")
+                       ->orWhere('nim', 'like', "%{$request->search}%")
+                )
+            )
+            ->when($request->filled('role'), fn($q) =>
+                $q->whereHas('role', fn($qq) =>
+                    $qq->where('nama_role', $request->role)
+                )
+            )
+            ->when($request->filled('role'), fn($q) =>
+                $q->whereHas('role', fn($qq) =>
+                    $qq->where('nama_role', $request->role)
+                )
+            )
+            ->when($request->filled('role'), fn($q) =>
+                $q->whereHas('role', fn($qq) =>
+                    $qq->where('nama_role', $request->role)
+                )
+            )
+            ->when($request->filled('status'), fn($q) =>
+                $q->where('is_active', $request->status === 'active' ? 1 : 0)
+            );
     }
 
     public function import(Request $request)

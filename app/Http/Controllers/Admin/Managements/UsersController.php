@@ -204,7 +204,6 @@ class UsersController extends Controller
             );
     }
 
-
     public function resetPassword($id)
     {
         $user = User::findOrFail($id);

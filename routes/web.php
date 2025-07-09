@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin;
 use App\Http\Controllers\Koordinator;
 use App\Http\Controllers\Dosen;
 use App\Http\Controllers\Auth;
+use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\Auth\ProfilePhotoController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -89,9 +91,16 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
 
 
     });
+
+    // Profile Routes
+    Route::get('pengaturan/profil', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('pengaturan/profil', [ProfileController::class, 'updateProfile'])->name('profile.update');
+    Route::post('pengaturan/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+    Route::post('pengaturan/appearance', [ProfileController::class, 'updateAppearance'])->name('appearance.update');
+    Route::get('foto-profil/{userId}', [ProfilePhotoController::class, 'show'])->name('profile.photo.show');
+    Route::get('foto-profil', [ProfilePhotoController::class, 'current'])->name('profile.photo.current');
+    Route::delete('foto-profil', [ProfileController::class, 'deletePhoto'])->name('profile.photo.delete');
 });
 
 
-
-require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

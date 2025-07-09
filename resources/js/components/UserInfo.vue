@@ -12,17 +12,19 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     showEmail: false,
 });
-
 const { getInitials } = useInitials();
 
 // Compute whether we should show the avatar image
 const showAvatar = computed(() => props.user.photo && props.user.photo !== '');
 const userName = computed(() => props.user.nama || props.user.email);
+const avatarUrl = computed(() => {
+    return props.user.photo ? route('profile.photo.current') : null;
+});
 </script>
 
 <template>
     <Avatar class="h-8 w-8 overflow-hidden rounded-lg">
-        <AvatarImage v-if="showAvatar" :src="user.photo!" :alt="userName" />
+        <AvatarImage v-if="showAvatar" :src="avatarUrl!" :alt="userName" />
         <AvatarFallback class="rounded-lg text-black dark:text-white">
             {{ getInitials(userName) }}
         </AvatarFallback>

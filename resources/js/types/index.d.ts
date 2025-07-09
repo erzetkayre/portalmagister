@@ -28,10 +28,20 @@ export type AppPageProps<T extends Record<string, unknown> = Record<string, unkn
 
 export interface User {
     id: number;
-    name: string;
+    nama: string;
     email: string;
-    avatar?: string;
+    nomor_induk: string;
+    photo?: string;
+    phone?: string;
     email_verified_at: string | null;
+    first_login: boolean;
+    is_active: boolean;
+    role_id: number;
+    role_data?: {
+        gender?: string;
+        nama_mhs?: string;
+        nama_dosen?: string;
+    };
     created_at: string;
     updated_at: string;
 }

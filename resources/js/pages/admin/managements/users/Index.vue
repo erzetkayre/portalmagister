@@ -14,7 +14,7 @@ import {
 } from '@/components/ui';
 
 import {
-    BookUser, GraduationCap, UsersRound, Plus, Upload, Eye, KeyRound, Edit, Trash2
+    BookUser, GraduationCap, UsersRound, Plus, Eye, KeyRound, Edit, Trash2
  } from 'lucide-vue-next';
 
 // interface

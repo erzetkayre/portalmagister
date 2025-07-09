@@ -81,4 +81,16 @@ class User extends Authenticatable
     {
         return $this->hasOne(Dosen::class);
     }
+
+    /**
+     * Get the URL for the user's profile photo.
+     */
+    public function getPhotoUrlAttribute(): ?string
+    {
+        if (!$this->photo) {
+            return null;
+        }
+
+        return route('profile.photo.current');
+    }
 }
