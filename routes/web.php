@@ -67,8 +67,6 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
             Route::post('/import', [Admin\Managements\MahasiswaController::class, 'import'])->name('import');
         });
 
-        Route::get('roles', [Admin\Managements\RolesController::class, 'index'])->name('roles');
-
     });
 
     // Route Koordinator

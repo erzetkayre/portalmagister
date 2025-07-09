@@ -75,7 +75,7 @@ onMounted(() => {
 
 // States
 const isDialogOpen = ref(false);
-const fileInput = ref<HTMLInputElement | null>(null);
+// const fileInput = ref<HTMLInputElement | null>(null);
 const searchTerm = ref(props.filters.search || '');
 const selectedRole = ref(props.filters.role || '');
 const selectedStatus = ref(props.filters.status || '');
@@ -83,20 +83,20 @@ const form = useForm({ file: null as File | null, });
 
 
 // Handle Import Excel
-const handleFileUpload = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files[0]) {
-        form.file = target.files[0] || null;
-    }
-};
-const submitImport = () => {
-    form.post('/admin/user/import', {
-        onSuccess: () => {
-            isDialogOpen.value = false;
-            form.reset();
-        },
-    });
-};
+// const handleFileUpload = (event: Event) => {
+//     const target = event.target as HTMLInputElement;
+//     if (target.files && target.files[0]) {
+//         form.file = target.files[0] || null;
+//     }
+// };
+// const submitImport = () => {
+//     form.post('/admin/user/import', {
+//         onSuccess: () => {
+//             isDialogOpen.value = false;
+//             form.reset();
+//         },
+//     });
+// };
 
 // Filtering
 const { applyFilters, clearFilters, goToPage } = usePaginationFilters(
