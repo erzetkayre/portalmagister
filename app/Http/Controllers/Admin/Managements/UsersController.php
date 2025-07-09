@@ -13,27 +13,9 @@ use App\Http\Controllers\Controller;
 class UsersController extends Controller
 {
     public function index(Request $request) {
-        $query = User::with('role')
-            ->select('id', 'nama', 'email', 'role_id', 'is_active', 'created_at');
+        $query = User::with('role')->select('id', 'nama', 'email', 'role_id', 'is_active', 'created_at');
+        $query = $this->applyFilters($query, $request);
 
-        // Apply filters
-        if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('nama', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
-            });
-        }
-        if ($request->filled('role')) {
-            $query->whereHas('role', function($q) use ($request) {
-                $q->where('nama_role', $request->role);
-            });
-        }
-        if ($request->filled('status')) {
-            $status = $request->status === 'active' ? 1 : 0;
-            $query->where('is_active', $status);
-        }
-
-        // Paginate
         $users = $query->paginate(10)->through(function ($user) {
             return [
                 'id' => $user->id,
@@ -45,7 +27,6 @@ class UsersController extends Controller
             ];
         });
 
-        // Roles dropdown
         $roles = Role::select('nama_role')->distinct()->get()->pluck('nama_role');
 
         return Inertia::render('admin/managements/users/Index', [
@@ -195,6 +176,25 @@ class UsersController extends Controller
 
         return redirect()->route('admin.users.index');
     }
+
+    private function applyFilters($query, Request $request){
+        return $query
+            ->when($request->filled('search'), fn($q) =>
+                $q->where(fn($qq) =>
+                    $qq->where('nama', 'like', "%{$request->search}%")
+                       ->orWhere('email', 'like', "%{$request->search}%")
+                )
+            )
+            ->when($request->filled('role'), fn($q) =>
+                $q->whereHas('role', fn($qq) =>
+                    $qq->where('nama_role', $request->role)
+                )
+            )
+            ->when($request->filled('status'), fn($q) =>
+                $q->where('is_active', $request->status === 'active' ? 1 : 0)
+            );
+    }
+
 
     public function resetPassword($id)
     {

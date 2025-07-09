@@ -1,21 +1,30 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
-import { BookUser, GraduationCap, UsersRound, Plus, Upload, Search, Filter, Eye, KeyRound, Edit, Trash2 } from 'lucide-vue-next';
-import { Head, useForm, router, usePage} from '@inertiajs/vue3';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious, PaginationEllipsis } from '@/components/ui/pagination';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { CheckCircle, XCircle, X } from 'lucide-vue-next';
 import { ref, watch, onMounted } from 'vue';
+import { Head, useForm, router, usePage} from '@inertiajs/vue3';
 
+import { useAlert } from '@/composables/UseAlert';
+import { useDebounce } from '@/composables/useDebounce';
+import { usePaginationFilters } from '@/composables/usePaginationFilters';
+
+import { type BreadcrumbItem } from '@/types';
+
+import {
+    Card, CardHeader, CardContent, CardTitle,
+    Badge, Button, Input, Alert,
+    Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter,
+    Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious, PaginationEllipsis,
+    DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+    Tooltip, TooltipContent, TooltipProvider, TooltipTrigger
+} from '@/components/ui';
+
+import {
+    BookUser, GraduationCap, UsersRound, Plus, Upload, Search, Filter, Eye, KeyRound, Edit, Trash2,
+    CheckCircle, XCircle, X
+ } from 'lucide-vue-next';
+
+// interface
 interface User {
     id: number;
     name: string;
@@ -47,6 +56,8 @@ interface Props {
     };
 }
 
+// Composables
+const { showAlert, alertType, alertTitle, alertDescription, showSuccessAlert, showErrorAlert, closeAlert } = useAlert();
 const props = defineProps<Props>();
 const page = usePage();
 
@@ -61,26 +72,22 @@ onMounted(() => {
     }
 });
 
+// States
 const isDialogOpen = ref(false);
 const fileInput = ref<HTMLInputElement | null>(null);
-
-// Filter states
 const searchTerm = ref(props.filters.search || '');
 const selectedRole = ref(props.filters.role || '');
 const selectedStatus = ref(props.filters.status || '');
+const form = useForm({ file: null as File | null, });
 
-const form = useForm({
-    file: null as File | null,
-});
 
 // Handle Import Excel
 const handleFileUpload = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files[0]) {
-        form.file = target.files[0];
+        form.file = target.files[0] || null;
     }
 };
-
 const submitImport = () => {
     form.post('/admin/user/import', {
         onSuccess: () => {
@@ -90,103 +97,17 @@ const submitImport = () => {
     });
 };
 
-// Filter functions
-const applyFilters = () => {
-    const filters: any = {};
-    if (searchTerm.value) filters.search = searchTerm.value;
-    if (selectedRole.value) filters.role = selectedRole.value;
-    if (selectedStatus.value) filters.status = selectedStatus.value;
+// Filtering
+const { applyFilters, clearFilters, goToPage } = usePaginationFilters(
+        { search: searchTerm, role: selectedRole, status: selectedStatus },
+        '/admin/user'
+    );
+const debouncedSearchTerm = useDebounce(searchTerm, 300);
+watch(debouncedSearchTerm, () => applyFilters());
 
-    router.get('/admin/user', filters, {
-        preserveState: true,
-        preserveScroll: true,
-    });
-};
-
-const clearFilters = () => {
-    searchTerm.value = '';
-    selectedRole.value = '';
-    selectedStatus.value = '';
-    router.get('/admin/user', {}, {
-        preserveState: true,
-        preserveScroll: true,
-    });
-};
-
-const goToPage = (page: number) => {
-    const filters: any = { page };
-    if (searchTerm.value) filters.search = searchTerm.value;
-    if (selectedRole.value) filters.role = selectedRole.value;
-    if (selectedStatus.value) filters.status = selectedStatus.value;
-
-    router.get('/admin/user', filters, {
-        preserveState: true,
-        preserveScroll: true,
-    });
-};
-
-// Watch for filter changes
-watch([searchTerm], () => {
-    const timeoutId = setTimeout(() => {
-        applyFilters();
-    }, 300);
-    return () => clearTimeout(timeoutId);
-});
-
-// Action functions
-const showUser = (userId: number) => {
-    router.get(`/admin/user/${userId}`);
-};
-
-const editUser = (userId: number) => {
-    router.get(`/admin/user/${userId}/edit`);
-};
-
-// Confirmation dialog states
-const resetPasswordDialog = ref(false);
-const deleteUserDialog = ref(false);
-const selectedUserId = ref<number | null>(null);
-
-// Alert states
-const showAlert = ref(false);
-const alertType = ref<'success' | 'error'>('success');
-const alertTitle = ref('');
-const alertDescription = ref('');
-
-// Alert functions
-const showSuccessAlert = (title: string, description: string) => {
-    alertType.value = 'success';
-    alertTitle.value = title;
-    alertDescription.value = description;
-    showAlert.value = true;
-    setTimeout(() => {
-        showAlert.value = false;
-    }, 5000);
-};
-
-const showErrorAlert = (title: string, description: string) => {
-    alertType.value = 'error';
-    alertTitle.value = title;
-    alertDescription.value = description;
-    showAlert.value = true;
-    setTimeout(() => {
-        showAlert.value = false;
-    }, 5000);
-};
-
-const closeAlert = () => {
-    showAlert.value = false;
-};
-
-const openResetPasswordDialog = (userId: number) => {
-    selectedUserId.value = userId;
-    resetPasswordDialog.value = true;
-};
-
-const openDeleteUserDialog = (userId: number) => {
-    selectedUserId.value = userId;
-    deleteUserDialog.value = true;
-};
+// Action
+const showUser = (userId: number) => { router.get(`/admin/user/${userId}`) };
+const editUser = (userId: number) => { router.get(`/admin/user/${userId}/edit`) };
 
 const confirmResetPassword = () => {
     if (selectedUserId.value) {
@@ -230,17 +151,25 @@ const confirmDeleteUser = () => {
     }
 };
 
+// Confirmation dialog states
+const resetPasswordDialog = ref(false);
+const deleteUserDialog = ref(false);
+const selectedUserId = ref<number | null>(null);
+
+const openResetPasswordDialog = (userId: number) => {
+    selectedUserId.value = userId;
+    resetPasswordDialog.value = true;
+};
+const openDeleteUserDialog = (userId: number) => {
+    selectedUserId.value = userId;
+    deleteUserDialog.value = true;
+};
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Menu',
-        href: '/admin/dashboard',
-    },
-    {
-        title: 'Manajemen Users',
-        href: '/admin/user',
-    },
+    { title: 'Menu', href: '/admin/dashboard' },
+    { title: 'Manajemen Users', href: '/admin/user' },
 ];
+
 </script>
 
 <template>
@@ -338,7 +267,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </CardContent>
                 </Card>
             </div>
-            <div class="relative flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+            <div class="relative flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border shadow-xs">
                 <div class="p-4">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold">Daftar Users</h3>
@@ -349,7 +278,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <Dialog v-model:open="isDialogOpen">
                             <DialogTrigger as-child>
                                 <Button variant="outline">
-                                    <Upload class="h-4 w-4 mr-2" />
+                                    <Upload class="h-4 w-4" />
                                     Import Users
                                 </Button>
                             </DialogTrigger>
@@ -575,10 +504,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <p class="text-sm text-muted-foreground">
                         Apakah Anda yakin ingin mereset password pengguna ini? Hal ini akan:
                     </p>
-                    <ul class="text-sm text-muted-foreground space-y-1 ml-4">
-                        <li>• Set password ke nomor induk pengguna</li>
-                        <li>• Memaksa pengguna untuk mengganti password saat login berikutnya</li>
-                        <li>• Pengguna akan menerima notifikasi tentang reset password</li>
+                    <ul class="text-sm text-muted-foreground space-y-1 ml-2">
+                        <li>Set password ke nomor induk pengguna</li>
+                        <li>Memaksa pengguna untuk mengganti password saat login</li>
+                        <li>Pengguna akan menerima notifikasi tentang reset password</li>
                     </ul>
                 </div>
                 <DialogFooter class="flex-row justify-end space-x-2">
