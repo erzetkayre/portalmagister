@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarGroup } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, BookUser, GraduationCap, LayoutGrid, UsersRound } from 'lucide-vue-next';
+import { BookOpen, BookUser, GraduationCap, LayoutGrid, User2Icon, UserCheck } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { computed} from 'vue';
 
@@ -32,8 +32,8 @@ const adminMainNavItems: NavItem[] = [
 ];
 
 const managementNavItems: NavItem[] = [
-    { title: 'Dosen', href: route('admin.dosen.index'), routeName: 'admin.dosen.*', icon: UsersRound },
-    { title: 'Mahasiswa', href: route('admin.mahasiswa.index'), routeName: 'admin.mahasiswa.*', icon: GraduationCap },
+    { title: 'Dosen', href: route('admin.dosen.index'), routeName: 'admin.dosen.*', icon: GraduationCap },
+    { title: 'Mahasiswa', href: route('admin.mahasiswa.index'), routeName: 'admin.mahasiswa.*', icon: UserCheck },
     { title: 'Users', href: route('admin.users.index'), routeName: 'admin.users.*', icon: BookUser },
 ];
 

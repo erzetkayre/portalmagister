@@ -161,7 +161,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                                     <ChevronDown class="h-4 w-4 text-muted-foreground" />
                                                 </button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent class="w-[var(--radix-dropdown-menu-trigger-width)] max-w-[800px]">
+                                            <DropdownMenuContent class="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[400px]">
                                                 <DropdownMenuItem
                                                     v-for="role in props.roles"
                                                     :key="role.id"
