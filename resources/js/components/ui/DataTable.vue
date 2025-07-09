@@ -4,12 +4,14 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
     Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious, PaginationEllipsis
 } from '@/components/ui';
+import { ChevronUp, ChevronDown } from 'lucide-vue-next';
 
 interface Column {
     key: string;
     label: string;
     class?: string;
     cellClass?: string;
+    sortable?: boolean;
 }
 
 interface PaginationData {
@@ -28,14 +30,17 @@ interface Props {
     data: any[];
     pagination: PaginationData;
     itemKey?: string;
+    sortBy?: string;
+    sortDirection?: string;
 }
 
 interface Emits {
     (e: 'pageChange', page: number): void;
+    (e: 'sort', column: string): void;
 }
 
 const props = defineProps<Props>();
-defineEmits<Emits>();
+const emit = defineEmits<Emits>();
 
 const getItemKey = (item: any, index: number) => {
     return props.itemKey ? item[props.itemKey] : index;
@@ -43,6 +48,20 @@ const getItemKey = (item: any, index: number) => {
 
 const getNestedValue = (obj: any, path: string) => {
     return path.split('.').reduce((current, prop) => current?.[prop], obj);
+};
+
+const getSortIcon = (column: Column) => {
+    if (!column.sortable) return null;
+    if (props.sortBy === column.key) {
+        return props.sortDirection === 'asc' ? ChevronUp : ChevronDown;
+    }
+    return null;
+};
+
+const handleSort = (column: Column) => {
+    if (column.sortable) {
+        emit('sort', column.key);
+    }
 };
 </script>
 
@@ -55,9 +74,17 @@ const getNestedValue = (obj: any, path: string) => {
                         <TableHead
                             v-for="column in columns"
                             :key="column.key"
-                            :class="column.class"
+                            :class="[column.class, { 'cursor-pointer select-none hover:bg-muted/50': column.sortable }]"
+                            @click="handleSort(column)"
                         >
-                            {{ column.label }}
+                            <div class="flex items-center gap-2">
+                                <span>{{ column.label }}</span>
+                                <component
+                                    :is="getSortIcon(column)"
+                                    v-if="getSortIcon(column)"
+                                    class="h-4 w-4"
+                                />
+                            </div>
                         </TableHead>
                     </TableRow>
                 </TableHeader>

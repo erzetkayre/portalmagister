@@ -72,12 +72,11 @@ onMounted(() => {
 });
 
 // States
-const isDialogOpen = ref(false);
-// const fileInput = ref<HTMLInputElement | null>(null);
 const searchTerm = ref(props.filters.search || '');
 const selectedRole = ref(props.filters.role || '');
 const selectedStatus = ref(props.filters.status || '');
-const form = useForm({ file: null as File | null, });
+const sortBy = ref('created_at');
+const sortDirection = ref('desc');
 
 
 // Handle Import Excel
@@ -98,7 +97,7 @@ const form = useForm({ file: null as File | null, });
 
 // Filtering
 const { applyFilters, clearFilters, goToPage } = usePaginationFilters(
-        { search: searchTerm, role: selectedRole, status: selectedStatus },
+        { search: searchTerm, role: selectedRole, status: selectedStatus, sort: sortBy, sortDirection: sortDirection },
         '/admin/user'
     );
 const debouncedSearchTerm = useDebounce(searchTerm, 300);
@@ -128,6 +127,16 @@ const handleFilterChange = (key: string, value: string) => {
         selectedRole.value = value;
     } else if (key === 'status') {
         selectedStatus.value = value;
+    }
+    applyFilters();
+};
+
+const handleSort = (column: string) => {
+    if (sortBy.value === column) {
+        sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortBy.value = column;
+        sortDirection.value = 'asc';
     }
     applyFilters();
 };
@@ -195,13 +204,13 @@ const openDeleteUserDialog = (userId: number) => {
 
 // Table Configuration
 const tableColumns = ref([
-    { key: 'no', label: 'No', class: 'text-center' },
-    { key: 'name', label: 'Nama' },
-    { key: 'email', label: 'Email' },
-    { key: 'role', label: 'Role' },
-    { key: 'status', label: 'Status' },
-    { key: 'created_at', label: 'Dibuat Pada' },
-    { key: 'actions', label: 'Tombol Aksi' }
+    { key: 'no', label: 'No', class: 'text-center', sortable: false },
+    { key: 'name', label: 'Nama', sortable: true },
+    { key: 'email', label: 'Email', sortable: true },
+    { key: 'role', label: 'Role', sortable: true },
+    { key: 'status', label: 'Status', sortable: true },
+    { key: 'created_at', label: 'Dibuat Pada', sortable: true },
+    { key: 'actions', label: 'Tombol Aksi', sortable: false }
 ]);
 
 // User Actions Configuration
@@ -240,7 +249,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <!-- Alert Notification -->
-            <AlertNotification :show="showAlert" :type="alertType" :title="alertTitle" :description="alertDescription"@close="closeAlert"/>
+            <AlertNotification :show="showAlert" :type="alertType" :title="alertTitle" :description="alertDescription" @close="closeAlert"/>
 
             <!-- <div>
                 <h2 class="text-2xl font-bold tracking-tight">Daftar User</h2>
@@ -320,7 +329,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                             nextPageUrl: props.users.next_page_url
                         }"
                         item-key="id"
+                        :sort-by="sortBy"
+                        :sort-direction="sortDirection"
                         @page-change="goToPage"
+                        @sort="handleSort"
                     >
                         <template #no="{ index }">
                             <div class="text-center">

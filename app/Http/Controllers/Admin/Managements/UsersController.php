@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 class UsersController extends Controller
 {
     public function index(Request $request) {
-        $query = User::with('role')->select('id', 'nama', 'email', 'role_id', 'is_active', 'created_at');
+        $query = User::with('role')->select('users.id', 'users.nama', 'users.email', 'users.role_id', 'users.is_active', 'users.created_at');
         $query = $this->applyFilters($query, $request);
 
         $users = $query->paginate(10)->through(function ($user) {
@@ -201,7 +201,33 @@ class UsersController extends Controller
             )
             ->when($request->filled('status'), fn($q) =>
                 $q->where('is_active', $request->status === 'active' ? 1 : 0)
-            );
+            )
+            ->when($request->filled('sort') && $request->filled('sortDirection'), function($q) use ($request) {
+                $sortField = $request->sort;
+                $sortDirection = $request->sortDirection;
+
+                // Map frontend column names to database column names
+                $columnMap = [
+                    'name' => 'nama',
+                    'email' => 'email',
+                    'role' => 'role_id',
+                    'status' => 'is_active',
+                    'created_at' => 'created_at',
+                ];
+
+                if (isset($columnMap[$sortField])) {
+                    $dbColumn = $columnMap[$sortField];
+
+                    if ($sortField === 'role') {
+                        return $q->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+                                 ->orderBy('roles.nama_role', $sortDirection);
+                    }
+
+                    return $q->orderBy($dbColumn, $sortDirection);
+                }
+
+                return $q;
+            }, fn($q) => $q->orderBy('created_at', 'desc'));
     }
 
     public function resetPassword($id)
