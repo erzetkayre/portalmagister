@@ -10,9 +10,7 @@ import { usePaginationFilters } from '@/composables/usePaginationFilters';
 import { type BreadcrumbItem } from '@/types';
 
 import {
-    Badge, Button, Input,
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
-    StatCard, AlertNotification, DataTable, FilterBar, ActionButtons, ConfirmationDialog
+    Badge, Button, StatCard, AlertNotification, DataTable, FilterBar, ActionButtons, ConfirmationDialog
 } from '@/components/ui';
 
 import {
@@ -110,9 +108,9 @@ watch(debouncedSearchTerm, () => applyFilters());
 const filterConfig = ref([
     {
         key: 'role',
-        label: 'Peran',
+        label: 'Role',
         options: props.roles.map(role => ({ value: role, label: role })),
-        clearLabel: 'Semua Peran'
+        clearLabel: 'Semua Role'
     },
     {
         key: 'status',

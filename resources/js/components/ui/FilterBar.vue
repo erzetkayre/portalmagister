@@ -76,7 +76,7 @@ const hasActiveFilters = computed(() => {
             <DropdownMenu>
                 <DropdownMenuTrigger as-child>
                     <Button variant="outline" class="border-dashed">
-                        <Filter class="h-4 w-4 mr-2" />
+                        <Filter class="h-4 w-4" />
                         {{ filter.label }}
                         <span
                             v-if="getFilterValue(filter.key)"

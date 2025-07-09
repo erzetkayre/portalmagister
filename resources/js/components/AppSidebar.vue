@@ -36,7 +36,7 @@ const adminMainNavItems: NavItem[] = [
 const managementNavItems: NavItem[] = [
     { title: 'Dosen', href: route('admin.dosen.index'), routeName: 'admin.dosen.*', icon: UsersRound },
     { title: 'Mahasiswa', href: route('admin.mahasiswa.index'), routeName: 'admin.mahasiswa.*', icon: GraduationCap },
-    { title: 'User', href: route('admin.users.index'), routeName: 'admin.users.*', icon: BookUser },
+    { title: 'Users', href: route('admin.users.index'), routeName: 'admin.users.*', icon: BookUser },
 ];
 
 
