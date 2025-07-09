@@ -15,6 +15,8 @@ export { default as Input } from './input/Input.vue';
 
 // Alert
 export { default as Alert } from './alert/Alert.vue';
+export { default as AlertTitle } from './alert/AlertTitle.vue';
+export { default as AlertDescription } from './alert/AlertDescription.vue';
 
 // Table
 export { default as Table } from './table/Table.vue';
@@ -51,3 +53,11 @@ export { default as Tooltip } from './tooltip/Tooltip.vue';
 export { default as TooltipContent } from './tooltip/TooltipContent.vue';
 export { default as TooltipProvider } from './tooltip/TooltipProvider.vue';
 export { default as TooltipTrigger } from './tooltip/TooltipTrigger.vue';
+
+// Custom Components
+export { default as StatCard } from './StatCard.vue';
+export { default as AlertNotification } from './AlertNotification.vue';
+export { default as DataTable } from './DataTable.vue';
+export { default as FilterBar } from './FilterBar.vue';
+export { default as ActionButtons } from './ActionButtons.vue';
+export { default as ConfirmationDialog } from './ConfirmationDialog.vue';

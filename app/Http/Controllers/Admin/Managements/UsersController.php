@@ -28,6 +28,10 @@ class UsersController extends Controller
         });
 
         $roles = Role::select('nama_role')->distinct()->get()->pluck('nama_role');
+        $totalUsers = User::count();
+        $totalAdmin = User::whereIn('role_id', [1, 2])->count();
+        $totalMahasiswa = User::where('role_id', 4)->count();
+        $totalDosen = User::where('role_id', 3)->count();
 
         return Inertia::render('admin/managements/users/Index', [
             'users' => $users,
@@ -36,7 +40,13 @@ class UsersController extends Controller
                 'search' => $request->search,
                 'role' => $request->role,
                 'status' => $request->status,
-            ]
+            ],
+            'stats' => [
+                'totalUsers' => $totalUsers,
+                'totalAdmin' => $totalAdmin,
+                'totalMahasiswa' => $totalMahasiswa,
+                'totalDosen' => $totalDosen,
+            ],
         ]);
     }
 
@@ -68,13 +78,12 @@ class UsersController extends Controller
             'is_active' => true,
         ]);
 
-        // Tambahkan ke tabel mahasiswa atau dosen berdasarkan role
         if ($role->nama_role === 'mahasiswa') {
             Mahasiswa::create([
                 'user_id' => $user->id,
                 'nim' => (string)$request->nomor_induk,
                 'nama_mhs' => (string)$request->name,
-                'angkatan' => (int)date('Y'), // Default tahun sekarang
+                'angkatan' => (int)date('Y'),
                 'status_mhs' => 'aktif',
             ]);
         } elseif (in_array($role->nama_role, ['koordinator', 'dosen', 'admin'])) {
