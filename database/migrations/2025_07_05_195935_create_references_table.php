@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('nim')->unique();
             $table->string('nama_mhs');
-            $table->integer('angkatan');
+            $table->integer('angkatan')->nullable();
             $table->string('status_mhs')->default('aktif');
             $table->integer('sks')->default(0)->nullable();
             $table->integer('ipk')->default(0)->nullable();

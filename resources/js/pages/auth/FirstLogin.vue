@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppearanceButton from '@/components/AppearanceButtons.vue';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-// import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Lock, User } from 'lucide-vue-next';
 import { ref, computed } from 'vue';
 

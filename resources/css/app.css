@@ -40,6 +40,12 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
 
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
@@ -119,10 +125,16 @@
   --sidebar-accent-foreground: hsl(0 100% 60%);
   --sidebar-border: hsl(0 0% 92.1569%);
   --sidebar-ring: hsl(0 100% 60%);
+  --success: hsl(142.1 76.2% 36.3%);
+  --success-foreground: hsl(0 0% 100%);
+  --warning: hsl(38.3 92.0% 50.2%);
+  --warning-foreground: hsl(0 0% 100%);
+  --info: hsl(221.2 83.2% 53.3%);
+  --info-foreground: hsl(0 0% 100%);
   --font-sans: Plus Jakarta Sans, sans-serif;
   --font-serif: Lora, serif;
   --font-mono: Open Sans, sans-serif;
-  --radius: 0.8rem;
+  --radius: 0.6rem;
   --shadow-2xs: 0px 2px 3px 0px hsl(0 0% 0% / 0.08);
   --shadow-xs: 0px 2px 3px 0px hsl(0 0% 0% / 0.08);
   --shadow-sm: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 1px 2px -1px hsl(0 0% 0% / 0.16);
@@ -168,10 +180,16 @@
   --sidebar-accent-foreground: hsl(0 100% 68.0392%);
   --sidebar-border: hsl(222.8571 6.4220% 21.3725%);
   --sidebar-ring: hsl(0 100% 68.0392%);
+  --success: hsl(142.1 70.6% 70.2%);
+  --success-foreground: hsl(0 0% 100%);
+  --warning: hsl(38.3 92.0% 50.2%);
+  --warning-foreground: hsl(0 0% 100%);
+  --info: hsl(221.2 83.2% 53.3%);
+  --info-foreground: hsl(0 0% 100%);
   --font-sans: Plus Jakarta Sans, sans-serif;
   --font-serif: Lora, serif;
   --font-mono: Open Sans, sans-serif;
-  --radius: 0.8rem;
+  --radius: 0.6rem;
   --shadow-2xs: 0px 2px 3px 0px hsl(0 0% 0% / 0.08);
   --shadow-xs: 0px 2px 3px 0px hsl(0 0% 0% / 0.08);
   --shadow-sm: 0px 2px 3px 0px hsl(0 0% 0% / 0.16), 0px 1px 2px -1px hsl(0 0% 0% / 0.16);

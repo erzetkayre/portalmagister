@@ -19,8 +19,8 @@ defineProps<{
                             <AppLogoIcon class="size-9 fill-current text-black dark:text-white" />
                         </div>
                     </Link>
-                    <CardHeader class="px-10 pb-0 text-center">
-                        <CardTitle class="text-xl">{{ title }}</CardTitle>
+                    <CardHeader class="px-10 text-center">
+                        <CardTitle class="text-xl font-bold">{{ title }}</CardTitle>
                         <CardDescription>
                             {{ description }}
                         </CardDescription>

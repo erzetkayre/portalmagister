@@ -28,6 +28,16 @@ class UserSeeder extends Seeder
                 'role_id' => 2,
                 'phone' => '081234567890'
             ],
+            [
+                'nama' => 'Koordinator 1',
+                'email' => 'koordinator1@example.com',
+                'nomor_induk' => 'KD002',
+                'password' => Hash::make('password'),
+                'first_login' => true,
+                'is_active' => true,
+                'role_id' => 2,
+                'phone' => '081234567890'
+            ],
             // Admin
             [
                 'nama' => 'Administrator',
@@ -39,7 +49,17 @@ class UserSeeder extends Seeder
                 'role_id' => 1,
                 'phone' => '081234567891'
             ],
-            // Dosen 1
+            [
+                'nama' => 'Administrator 1',
+                'email' => 'admin1@example.com',
+                'nomor_induk' => 'AD002',
+                'password' => Hash::make('password'),
+                'first_login' => false,
+                'is_active' => true,
+                'role_id' => 1,
+                'phone' => '081234567891'
+            ],
+            // Dosen
             [
                 'nama' => 'Dr. Ahmad Fauzi, M.Kom',
                 'email' => 'dsn1@example.com',
@@ -50,7 +70,6 @@ class UserSeeder extends Seeder
                 'role_id' => 3,
                 'phone' => '081234567892'
             ],
-            // Dosen 2
             [
                 'nama' => 'Dr. Siti Nurhaliza, M.T',
                 'email' => 'dsn2@example.com',
@@ -61,7 +80,27 @@ class UserSeeder extends Seeder
                 'role_id' => 3,
                 'phone' => '081234567893'
             ],
-            // Mahasiswa 1
+            [
+                'nama' => 'Prof. Bambang Sutrisno, Ph.D',
+                'email' => 'dsn3@example.com',
+                'nomor_induk' => 'DS003',
+                'password' => Hash::make('password'),
+                'first_login' => false,
+                'is_active' => true,
+                'role_id' => 3,
+                'phone' => '081234567896'
+            ],
+            [
+                'nama' => 'Ir. Rina Anggraeni, M.Eng',
+                'email' => 'dsn4@example.com',
+                'nomor_induk' => 'DS004',
+                'password' => Hash::make('password'),
+                'first_login' => false,
+                'is_active' => true,
+                'role_id' => 3,
+                'phone' => '081234567897'
+            ],
+            // Mahasiswa
             [
                 'nama' => 'Budi Santoso',
                 'email' => 'mhs1@example.com',
@@ -72,7 +111,6 @@ class UserSeeder extends Seeder
                 'role_id' => 4,
                 'phone' => '081234567894'
             ],
-            // Mahasiswa 2
             [
                 'nama' => 'Dewi Lestari',
                 'email' => 'mhs2@example.com',
@@ -82,7 +120,27 @@ class UserSeeder extends Seeder
                 'is_active' => true,
                 'role_id' => 4,
                 'phone' => '081234567895'
-            ]
+            ],
+            [
+                'nama' => 'Andi Wijaya',
+                'email' => 'mhs3@example.com',
+                'nomor_induk' => 'MHS003',
+                'password' => Hash::make('password'),
+                'first_login' => false,
+                'is_active' => true,
+                'role_id' => 4,
+                'phone' => '081234567898'
+            ],
+            [
+                'nama' => 'Sari Wulandari',
+                'email' => 'mhs4@example.com',
+                'nomor_induk' => 'MHS004',
+                'password' => Hash::make('password'),
+                'first_login' => false,
+                'is_active' => true,
+                'role_id' => 4,
+                'phone' => '081234567899'
+            ],
         ];
 
         foreach ($users as $userData) {

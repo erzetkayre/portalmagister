@@ -23,6 +23,10 @@ class RoleCheckMiddleware
 
         $user = Auth::user();
 
+        if (!$user->is_active) {
+            return Inertia::render('error/UserInactive')->toResponse($request)->setStatusCode(423);
+        }
+
         if (!$user->hasAnyRole($roles)) {
             return Inertia::render('error/ErrorPage',['status' => 403])->toResponse($request)->setStatusCode(403);
         }

@@ -31,6 +31,43 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::get('dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
 
+        // Management Users
+        Route::prefix('user')->name('users.')->group( function() {
+            Route::get('/', [Admin\Managements\UsersController::class, 'index'])->name('index');
+            Route::get('/create', [Admin\Managements\UsersController::class, 'create'])->name('create');
+            Route::post('/', [Admin\Managements\UsersController::class, 'store'])->name('store');
+            Route::get('/{id}', [Admin\Managements\UsersController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [Admin\Managements\UsersController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [Admin\Managements\UsersController::class, 'update'])->name('update');
+            Route::delete('/{id}', [Admin\Managements\UsersController::class, 'destroy'])->name('destroy');
+            Route::put('/{id}/reset-password', [Admin\Managements\UsersController::class, 'resetPassword'])->name('reset.password');
+        });
+
+        // Management Dosen
+        Route::prefix('dosen')->name('dosen.')->group( function() {
+            Route::get('/', [Admin\Managements\DosenController::class, 'index'])->name('index');
+            Route::get('/create', [Admin\Managements\DosenController::class, 'create'])->name('create');
+            Route::post('/', [Admin\Managements\DosenController::class, 'store'])->name('store');
+            Route::get('/{id}', [Admin\Managements\DosenController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [Admin\Managements\DosenController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [Admin\Managements\DosenController::class, 'update'])->name('update');
+            Route::delete('/{id}', [Admin\Managements\DosenController::class, 'destroy'])->name('destroy');
+            Route::post('/import', [Admin\Managements\DosenController::class, 'import'])->name('import');
+        });
+
+        // Management Mahasiswa
+        Route::prefix('mahasiswa')->name('mahasiswa.')->group( function() {
+            Route::get('/', [Admin\Managements\MahasiswaController::class, 'index'])->name('index');
+            Route::get('/create', [Admin\Managements\MahasiswaController::class, 'create'])->name('create');
+            Route::post('/', [Admin\Managements\MahasiswaController::class, 'store'])->name('store');
+            Route::get('/{id}', [Admin\Managements\MahasiswaController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [Admin\Managements\MahasiswaController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [Admin\Managements\MahasiswaController::class, 'update'])->name('update');
+            Route::delete('/{id}', [Admin\Managements\MahasiswaController::class, 'destroy'])->name('destroy');
+            Route::post('/import', [Admin\Managements\MahasiswaController::class, 'import'])->name('import');
+        });
+
+        Route::get('roles', [Admin\Managements\RolesController::class, 'index'])->name('roles');
 
     });
 

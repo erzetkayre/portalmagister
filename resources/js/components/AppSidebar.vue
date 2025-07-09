@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarGroup } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { BookOpen, BookUser, Fingerprint, GraduationCap, LayoutGrid, UsersRound } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { computed} from 'vue';
 
@@ -18,6 +18,8 @@ const dashboardRoute = computed(() => {
     if (!user) return '/login';
 
     const role = user.role?.nama_role;
+    // console.log(user);
+
     return route(`${role}.dashboard`);
 });
 
@@ -28,23 +30,32 @@ const userRole = computed(() => {
 
 // Menu Admin
 const adminMainNavItems: NavItem[] = [
-    { title: 'Dashboard', href: route('admin.dashboard'), icon: LayoutGrid },
+    { title: 'Dashboard', href: route('admin.dashboard'), routeName: 'admin.dashboard', icon: LayoutGrid },
 ];
+
+const managementNavItems: NavItem[] = [
+    { title: 'Dosen', href: route('admin.dosen.index'), routeName: 'admin.dosen.index', icon: UsersRound },
+    { title: 'Mahasiswa', href: route('admin.mahasiswa.index'), routeName: 'admin.mahasiswa.index', icon: GraduationCap },
+    { title: 'User', href: route('admin.users.index'), routeName: 'admin.users.*', icon: BookUser },
+    { title: 'Roles', href: route('admin.roles'), routeName: 'admin.roles', icon: Fingerprint },
+];
+
+
 
 // Menu Koordinator
 const koordinatorMainNavItems: NavItem[] = [
-    { title: 'Dashboard', href: route('koordinator.dashboard'), icon: LayoutGrid },
+    { title: 'Dashboard', href: route('koordinator.dashboard'), routeName: 'koordinator.dashboard', icon: LayoutGrid },
 
 ];
 
 // Menu Dosen
 const dosenMainNavItems: NavItem[] = [
-    { title: 'Dashboard', href: route('dosen.dashboard'), icon: LayoutGrid },
+    { title: 'Dashboard', href: route('dosen.dashboard'), routeName: 'dosen.dashboard', icon: LayoutGrid },
 ];
 
 // Menu Mahasiswa
 const mahasiswaMainNavItems: NavItem[] = [
-    { title: 'Dashboard', href: route('mahasiswa.dashboard'), icon: LayoutGrid },
+    { title: 'Dashboard', href: route('mahasiswa.dashboard'), routeName: 'mahasiswa.dashboard', icon: LayoutGrid },
 
 ];
 
@@ -78,7 +89,7 @@ const footerNavItems: NavItem[] = [
         <SidebarContent>
             <SidebarGroup v-if="userRole === 'admin'" class="px-2 py-0">
                 <NavMain :label="'Menu Utama'" :items="adminMainNavItems"/>
-                <NavMain :label="'Manajemen Data'" :items="managementMainNavItems"/>
+                <NavMain :label="'Manajemen Data'" :items="managementNavItems"/>
             </SidebarGroup>
             <SidebarGroup v-else-if="userRole === 'koordinator'" class="px-2 py-0">
                 <NavMain :label="'Manajemen'" :items="koordinatorMainNavItems"/>
