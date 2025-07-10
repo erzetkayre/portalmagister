@@ -21,7 +21,8 @@ return new class extends Migration
             $table->text('ket_dospem_satu')->nullable();
             $table->text('ket_dospem_dua')->nullable();
             $table->timestamp('tgl_pengajuan')->nullable();
-            $table->string('khs')->nullable();
+            $table->string('status')->nullable();
+            $table->string('file_khs')->nullable();
             $table->string('file_krs')->nullable();
             $table->string('file_sk_pembimbing')->nullable();
             $table->string('file_tesis')->nullable();

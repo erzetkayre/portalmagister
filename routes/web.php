@@ -62,13 +62,15 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
             Route::post('/', [Admin\Managements\MahasiswaController::class, 'store'])->name('store');
             Route::get('/{id}', [Admin\Managements\MahasiswaController::class, 'show'])->name('show');
             Route::get('/{id}/edit', [Admin\Managements\MahasiswaController::class, 'edit'])->name('edit');
-            Route::put('/{id}', [Admin\Managements\MahasiswaController::class, 'update'])->name('update');
+            Route::put('/{id}', action: [Admin\Managements\MahasiswaController::class, 'update'])->name('update');
             Route::delete('/{id}', [Admin\Managements\MahasiswaController::class, 'destroy'])->name('destroy');
             Route::post('/import', [Admin\Managements\MahasiswaController::class, 'import'])->name('import');
         });
 
         Route::prefix('pratesis')->name('pratesis.')->group(function(){
-
+            Route::get('draft',[Admin\DraftPratesisController::class,'index'])->name('index');
+            Route::get('draft/{id}',[Admin\DraftPratesisController::class,'show'])->name('show');
+            Route::post('draft/{id}',[Admin\DraftPratesisController::class,'update'])->name('update');
         });
     });
 
@@ -83,6 +85,9 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
     Route::prefix('dosen')->name('dosen.')->middleware('role:dosen')->group(function () {
         Route::get('dashboard', [Dosen\DashboardController::class, 'index'])->name('dashboard');
 
+        Route::get('bimbingan',[Dosen\BimbinganController::class, 'index'])->name('bimbingan.index');
+        // Route::get('uji',[Dosen\PengujiController::class, 'index'])->name('uji.index');
+
 
     });
 
@@ -90,15 +95,15 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
     Route::name('mahasiswa.')->middleware('role:mahasiswa')->group(function () {
         Route::get('dashboard', [Mahasiswa\DashboardController::class, 'index'])->name('dashboard');
 
-        Route::prefix('pratesis')->name('pratesis.')->group(function(){
-            Route::get('/draft',[Mahasiswa\DraftPratesisController::class,'index'])->name('index');
-            Route::post('/draft',[Mahasiswa\DraftPratesisController::class,'store'])->name('store');
+        Route::get('draft',[Mahasiswa\DraftPratesisController::class,'index'])->name('draft.index');
+        Route::post('draft',[Mahasiswa\DraftPratesisController::class,'store'])->name('draft.store');
 
+        Route::prefix('pratesis')->name('pratesis.')->group(function(){
             Route::get('/',[Mahasiswa\PratesisController::class,'index'])->name('index');
-            Route::get('/',[Mahasiswa\PratesisController::class,'index'])->name('edit');
-            Route::get('/',[Mahasiswa\PratesisController::class,'index'])->name('update');
-            Route::get('/',[Mahasiswa\PratesisController::class,'index'])->name('index');
+            Route::get('/{id}',[Mahasiswa\PratesisController::class,'edit'])->name('edit');
+            Route::get('/{id}',[Mahasiswa\PratesisController::class,'update'])->name('update');
         });
+
 
     });
 

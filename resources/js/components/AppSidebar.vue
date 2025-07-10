@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
+import NavMainDropdown from '@/components/NavMainDropdown.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarGroup } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, BookUser, GraduationCap, LayoutGrid, User2Icon, UserCheck } from 'lucide-vue-next';
+import { BookOpen, BookOpenCheck, BookUser, GraduationCap, LayoutGrid, User2Icon, UserCheck } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { computed} from 'vue';
 
@@ -32,12 +33,17 @@ const adminMainNavItems: NavItem[] = [
 ];
 
 const managementNavItems: NavItem[] = [
-    { title: 'Dosen', href: route('admin.dosen.index'), routeName: 'admin.dosen.*', icon: GraduationCap },
-    { title: 'Mahasiswa', href: route('admin.mahasiswa.index'), routeName: 'admin.mahasiswa.*', icon: UserCheck },
-    { title: 'Users', href: route('admin.users.index'), routeName: 'admin.users.*', icon: BookUser },
+    {
+        title: 'Manajemen Data',
+        href: '#',
+        icon: User2Icon,
+        items: [
+            { title: 'Dosen', href: route('admin.dosen.index'), routeName: 'admin.dosen.*', icon: GraduationCap },
+            { title: 'Mahasiswa', href: route('admin.mahasiswa.index'), routeName: 'admin.mahasiswa.*', icon: UserCheck },
+            { title: 'Users', href: route('admin.users.index'), routeName: 'admin.users.*', icon: BookUser },
+        ]
+    },
 ];
-
-
 
 // Menu Koordinator
 const koordinatorMainNavItems: NavItem[] = [
@@ -53,12 +59,12 @@ const dosenMainNavItems: NavItem[] = [
 // Menu Mahasiswa
 const mahasiswaMainNavItems: NavItem[] = [
     { title: 'Dashboard', href: route('mahasiswa.dashboard'), routeName: 'mahasiswa.dashboard', icon: LayoutGrid },
-
+    { title: 'Pratesis', href: '#',icon: BookOpenCheck,
+        items: [
+            { title: 'Pengajuan Draft', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
+            { title: 'Pengajuan Pratesis', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
+        ]},
 ];
-
-
-
-
 
 const footerNavItems: NavItem[] = [
     {
@@ -86,7 +92,7 @@ const footerNavItems: NavItem[] = [
         <SidebarContent>
             <SidebarGroup v-if="userRole === 'admin'" class="px-2 py-0">
                 <NavMain :label="'Menu Utama'" :items="adminMainNavItems"/>
-                <NavMain :label="'Manajemen Data'" :items="managementNavItems"/>
+                <NavMainDropdown :label="'Manajemen'" :items="managementNavItems"/>
             </SidebarGroup>
             <SidebarGroup v-else-if="userRole === 'koordinator'" class="px-2 py-0">
                 <NavMain :label="'Manajemen'" :items="koordinatorMainNavItems"/>
@@ -95,7 +101,7 @@ const footerNavItems: NavItem[] = [
                 <NavMain :label="'Manajemen'" :items="dosenMainNavItems"/>
             </SidebarGroup>
             <SidebarGroup v-else class="px-2 py-0">
-                <NavMain :label="'Menu Utama'" :items="mahasiswaMainNavItems"/>
+                <NavMainDropdown :label="'Menu Utama'" :items="mahasiswaMainNavItems"/>
             </SidebarGroup>
         </SidebarContent>
 
