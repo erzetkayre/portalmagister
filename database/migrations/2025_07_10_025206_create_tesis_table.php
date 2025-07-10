@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tesis_draft', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('mhs_id')->constrained('ref_mahasiswa')->cascadeOnDelete();
             $table->text('us_judul');
             $table->text('us_abstrak')->nullable();
             $table->foreignId('us_dospem_satu')->constrained('ref_dosen')->cascadeOnDelete();
@@ -20,16 +21,17 @@ return new class extends Migration
             $table->text('ket_dospem_satu')->nullable();
             $table->text('ket_dospem_dua')->nullable();
             $table->timestamp('tgl_pengajuan')->nullable();
-            $table->string('krs_khs')->nullable();
+            $table->string('khs')->nullable();
             $table->string('file_krs')->nullable();
+            $table->string('file_sk_pembimbing')->nullable();
             $table->string('file_tesis')->nullable();
-            $table->foreignId('mhs_id')->constrained('ref_mahasiswa')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });
 
         Schema::create('tesis', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('mhs_id')->constrained('ref_mahasiswa')->cascadeOnDelete();
             $table->text('judul');
             $table->text('abstrak')->nullable();
             $table->timestamp('tgl_mulai')->nullable();
@@ -38,7 +40,6 @@ return new class extends Migration
             $table->enum('status_tesis_satu', ['pending', 'waiting', 'approved', 'rejected'])->default('waiting');
             $table->enum('status_tesis_dua', ['pending', 'waiting', 'approved', 'rejected'])->default('waiting');
             $table->string('file_tesis')->nullable();
-            $table->foreignId('mhs_id')->constrained('ref_mahasiswa')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

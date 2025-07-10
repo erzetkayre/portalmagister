@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('tesis_dokumen', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tesis_id')->constrained('tesis')->cascadeOnDelete();
-            $table->string('file_sk_pembimbing')->nullable();
             $table->string('file_perm_pratesis')->nullable();
             $table->string('file_perm_tesis')->nullable();
             $table->string('file_perm_tesis_dua')->nullable();
