@@ -67,12 +67,14 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
             Route::post('/import', [Admin\Managements\MahasiswaController::class, 'import'])->name('import');
         });
 
-        Route::prefix('pratesis')->name('pratesis.')->group(function(){
-            Route::get('draft',[Admin\DraftPratesisController::class,'index'])->name('index');
-            Route::get('draft/{id}',[Admin\DraftPratesisController::class,'show'])->name('show');
-            Route::post('draft/{id}',[Admin\DraftPratesisController::class,'update'])->name('update');
+        Route::prefix('draft')->name('draft.')->group(function(){
+            Route::get('',[Admin\DraftPratesisController::class,'index'])->name('index');
+            Route::get('/{id}',[Admin\DraftPratesisController::class,'show'])->name('show');
+            Route::post('/{id}',[Admin\DraftPratesisController::class,'update'])->name('update');
         });
     });
+
+
 
     // Route Koordinator
     Route::prefix('koordinator')->name('koordinator.')->middleware('role:koordinator')->group(function () {
@@ -80,6 +82,8 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
 
 
     });
+
+
 
     // Route Dosen
     Route::prefix('dosen')->name('dosen.')->middleware('role:dosen')->group(function () {
@@ -91,12 +95,18 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
 
     });
 
+
+
     // Route Mahasiswa
     Route::name('mahasiswa.')->middleware('role:mahasiswa')->group(function () {
         Route::get('dashboard', [Mahasiswa\DashboardController::class, 'index'])->name('dashboard');
 
-        Route::get('draft',[Mahasiswa\DraftPratesisController::class,'index'])->name('draft.index');
-        Route::post('draft',[Mahasiswa\DraftPratesisController::class,'store'])->name('draft.store');
+        Route::prefix('draft')->name('draft.')->group(function(){
+            Route::get('/', [Mahasiswa\DraftPratesisController::class, 'index'])->name('index');
+            Route::get('/pengajuan', [Mahasiswa\DraftPratesisController::class, 'create'])->name('create');
+            Route::post('/', [Mahasiswa\DraftPratesisController::class, 'store'])->name('store');
+            Route::get('/{id}', [Mahasiswa\DraftPratesisController::class, 'show'])->name('show');
+        });
 
         Route::prefix('pratesis')->name('pratesis.')->group(function(){
             Route::get('/',[Mahasiswa\PratesisController::class,'index'])->name('index');

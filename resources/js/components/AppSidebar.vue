@@ -6,7 +6,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarGroup } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, BookOpenCheck, BookUser, GraduationCap, LayoutGrid, User2Icon, UserCheck } from 'lucide-vue-next';
+import { BookOpen, BookOpenCheck, BookUser, GraduationCap, LayoutGrid, User2Icon, UserCheck, UsersRound } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { computed} from 'vue';
 
@@ -30,19 +30,17 @@ const userRole = computed(() => {
 // Menu Admin
 const adminMainNavItems: NavItem[] = [
     { title: 'Dashboard', href: route('admin.dashboard'), routeName: 'admin.dashboard', icon: LayoutGrid },
+    { title: 'Pratesis', href: '#',icon: BookOpenCheck,
+        items: [
+            { title: 'Daftar Pengajuan Draft', href: route('admin.draft.index'), routeName: 'admin.pratesis.draft.*'},
+            { title: 'Daftar Pengajuan Pratesis', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
+        ]},
 ];
 
 const managementNavItems: NavItem[] = [
-    {
-        title: 'Manajemen Data',
-        href: '#',
-        icon: User2Icon,
-        items: [
-            { title: 'Dosen', href: route('admin.dosen.index'), routeName: 'admin.dosen.*', icon: GraduationCap },
-            { title: 'Mahasiswa', href: route('admin.mahasiswa.index'), routeName: 'admin.mahasiswa.*', icon: UserCheck },
-            { title: 'Users', href: route('admin.users.index'), routeName: 'admin.users.*', icon: BookUser },
-        ]
-    },
+    { title: 'Dosen', href: route('admin.dosen.index'), routeName: 'admin.dosen.*', icon: UsersRound },
+    { title: 'Mahasiswa', href: route('admin.mahasiswa.index'), routeName: 'admin.mahasiswa.*', icon: GraduationCap },
+    { title: 'Users', href: route('admin.users.index'), routeName: 'admin.users.*', icon: BookUser },
 ];
 
 // Menu Koordinator
@@ -91,8 +89,8 @@ const footerNavItems: NavItem[] = [
 
         <SidebarContent>
             <SidebarGroup v-if="userRole === 'admin'" class="px-2 py-0">
-                <NavMain :label="'Menu Utama'" :items="adminMainNavItems"/>
-                <NavMainDropdown :label="'Manajemen'" :items="managementNavItems"/>
+                <NavMainDropdown :label="'Menu Utama'" :items="adminMainNavItems"/>
+                <NavMain :label="'Manajemen'" :items="managementNavItems"/>
             </SidebarGroup>
             <SidebarGroup v-else-if="userRole === 'koordinator'" class="px-2 py-0">
                 <NavMain :label="'Manajemen'" :items="koordinatorMainNavItems"/>

@@ -93,6 +93,7 @@ export { default as Input } from './input/Input.vue';
 
 // Label
 export { default as Label } from './label/Label.vue';
+export { default as Textarea } from './textarea/TextArea.vue'
 
 // Navigation Menu
 export { default as NavigationMenu } from './navigation-menu/NavigationMenu.vue';
@@ -187,5 +188,6 @@ export { default as DataTable } from './DataTable.vue';
 export { default as FilterBar } from './FilterBar.vue';
 export { default as ActionButtons } from './ActionButtons.vue';
 export { default as ConfirmationDialog } from './ConfirmationDialog.vue';
+
 
 
