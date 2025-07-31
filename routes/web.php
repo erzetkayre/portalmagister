@@ -65,6 +65,7 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
             Route::put('/{id}', action: [Admin\Managements\MahasiswaController::class, 'update'])->name('update');
             Route::delete('/{id}', [Admin\Managements\MahasiswaController::class, 'destroy'])->name('destroy');
             Route::post('/import', [Admin\Managements\MahasiswaController::class, 'import'])->name('import');
+            Route::get('/template/{filename}', [Admin\Managements\MahasiswaController::class, 'template'])->name('template');
         });
 
         Route::prefix('draft')->name('draft.')->group(function(){

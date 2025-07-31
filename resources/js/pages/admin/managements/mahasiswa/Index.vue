@@ -15,7 +15,9 @@ import {
 } from '@/components/ui';
 
 import {
-    Plus, Eye, Edit, Trash2, Upload
+    Plus, Eye, Edit, Trash2, Upload,
+    File,
+    FileSpreadsheet
  } from 'lucide-vue-next';
 
 // interface
@@ -191,6 +193,9 @@ const openDeleteMahasiswaDialog = (mahasiswaId: number) => {
     selectedMahasiswaId.value = mahasiswaId;
     deleteMahasiswaDialog.value = true;
 };
+function downloadTemplate(filename) {
+    window.open(route('admin.mahasiswa.template', filename), '_blank');
+}
 
 // Table Configuration
 const tableColumns = ref([
@@ -254,6 +259,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                                         Import Mahasiswa
                                     </Button>
                                 </DialogTrigger>
+                                <Button @click="downloadTemplate('template_import_mahasiswa.xlsx')">
+                                    <FileSpreadsheet class="h-4 w-4 button" />
+                                    Template Excel
+                                </Button>
                                 <DialogContent>
                                     <DialogHeader>
                                         <DialogTitle>Import Mahasiswa dari Excel</DialogTitle>

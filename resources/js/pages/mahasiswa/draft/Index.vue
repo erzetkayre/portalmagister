@@ -77,7 +77,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const steps = [
     { id: 1, title: 'Form Pengajuan', icon: FileText, description: 'Isi formulir pengajuan draft pratesis' },
-    { id: 2, title: 'Menunggu Persetujuan', icon: Clock, description: 'Menunggu persetujuan dari admin' },
+    { id: 2, title: 'Persetujuan', icon: Clock, description: 'Menunggu persetujuan admin' },
     { id: 3, title: 'Selamat!', icon: CheckCircle, description: 'Draft pratesis telah disetujui' }
 ];
 
@@ -122,61 +122,51 @@ function formatDate(dateString: string) {
                 </Button>
             </div>
 
-            <!-- Stepper -->
-            <Card>
-                <CardHeader>
-                    <CardTitle>Progress Pengajuan</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div class="flex items-center justify-between">
-                        <div
-                            v-for="(step, index) in steps"
-                            :key="step.id"
-                            class="flex items-center"
-                            :class="{ 'flex-1': index < steps.length - 1 }"
-                        >
-                            <!-- Step circle -->
-                            <div class="flex flex-col items-center">
-                                <div
-                                    class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors"
-                                    :class="[
-                                        step.id <= currentStep
-                                            ? 'bg-primary border-primary text-primary-foreground'
-                                            : 'bg-muted border-muted-foreground/25 text-muted-foreground'
-                                    ]"
-                                >
-                                    <component :is="step.icon" class="h-5 w-5" />
-                                </div>
-                                <div class="mt-2 text-center max-w-[120px]">
-                                    <p class="text-sm font-medium">{{ step.title }}</p>
-                                    <p class="text-xs text-muted-foreground mt-1">{{ step.description }}</p>
-                                </div>
-                            </div>
-
-                            <!-- Connector line -->
-                            <div
-                                v-if="index < steps.length - 1"
-                                class="flex-1 h-0.5 mx-4 transition-colors"
-                                :class="[
-                                    step.id < currentStep
-                                        ? 'bg-primary'
-                                        : 'bg-muted-foreground/25'
-                                ]"
-                            />
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-
             <!-- Content based on step -->
             <div v-if="currentStep === 1">
                 <!-- Step 1: Form -->
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Pengajuan Draft Pratesis</CardTitle>
-                    </CardHeader>
                     <CardContent>
-                        <div class="text-center py-8">
+                        <div class="flex items-center justify-between">
+                            <div
+                                v-for="(step, index) in steps"
+                                :key="step.id"
+                                class="flex items-center"
+                                :class="{ 'flex-1': index < steps.length - 1 }"
+                            >
+                                <!-- Step circle -->
+                                <div class="flex flex-col items-center">
+                                    <div
+                                        class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors"
+                                        :class="[
+                                            step.id <= currentStep
+                                                ? 'bg-primary border-primary text-primary-foreground'
+                                                : 'bg-muted border-muted-foreground/25 text-muted-foreground'
+                                        ]"
+                                    >
+                                        <component :is="step.icon" class="h-5 w-5" />
+                                    </div>
+                                    <div class="mt-2 text-center max-w-[120px]">
+                                        <p class="text-sm font-medium">{{ step.title }}</p>
+                                        <p class="text-xs text-muted-foreground mt-1">{{ step.description }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Connector line -->
+                                <div
+                                    v-if="index < steps.length - 1"
+                                    class="flex-1 h-0.5 mx-4 transition-colors"
+                                    :class="[
+                                        step.id < currentStep
+                                            ? 'bg-primary'
+                                            : 'bg-muted-foreground/25'
+                                    ]"
+                                />
+                            </div>
+                        </div>
+                    </CardContent>
+                    <CardContent>
+                        <div class="text-center py-8 border-t-1">
                             <FileText class="h-16 w-16 mx-auto text-muted-foreground mb-4" />
                             <h3 class="text-lg font-semibold mb-2">Belum Ada Draft</h3>
                             <p class="text-muted-foreground mb-4">
@@ -196,9 +186,48 @@ function formatDate(dateString: string) {
             <div v-else-if="currentStep === 2 && draft">
                 <!-- Step 2: Waiting for approval -->
                 <Card>
+                    <CardContent>
+                        <div class="flex items-center justify-between">
+                            <div
+                                v-for="(step, index) in steps"
+                                :key="step.id"
+                                class="flex items-center"
+                                :class="{ 'flex-1': index < steps.length - 1 }"
+                            >
+                                <!-- Step circle -->
+                                <div class="flex flex-col items-center">
+                                    <div
+                                        class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors"
+                                        :class="[
+                                            step.id <= currentStep
+                                                ? 'bg-primary border-primary text-primary-foreground'
+                                                : 'bg-muted border-muted-foreground/25 text-muted-foreground'
+                                        ]"
+                                    >
+                                        <component :is="step.icon" class="h-5 w-5" />
+                                    </div>
+                                    <div class="mt-2 text-center max-w-[120px]">
+                                        <p class="text-sm font-medium">{{ step.title }}</p>
+                                        <p class="text-xs text-muted-foreground mt-1">{{ step.description }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Connector line -->
+                                <div
+                                    v-if="index < steps.length - 1"
+                                    class="flex-1 h-0.5 mx-4 transition-colors"
+                                    :class="[
+                                        step.id < currentStep
+                                            ? 'bg-primary'
+                                            : 'bg-muted-foreground/25'
+                                    ]"
+                                />
+                            </div>
+                        </div>
+                    </CardContent>
                     <CardContent class="space-y-6">
                         <!-- Processing Status - Centered -->
-                        <div class="text-center py-4">
+                        <div class="text-center py-4 border-t-1">
                             <Clock class="h-12 w-12 mx-auto text-amber-500 mb-4 animate-pulse" />
                             <h3 class="text-lg font-semibold mb-2">Sedang Diproses</h3>
                             <p class="text-sm text-muted-foreground">
@@ -279,9 +308,45 @@ function formatDate(dateString: string) {
             <div v-else-if="currentStep === 3 && draft">
                 <!-- Step 3: Approved -->
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Selamat!</CardTitle>
-                    </CardHeader>
+                    <CardContent>
+                        <div class="flex items-center justify-between">
+                            <div
+                                v-for="(step, index) in steps"
+                                :key="step.id"
+                                class="flex items-center"
+                                :class="{ 'flex-1': index < steps.length - 1 }"
+                            >
+                                <!-- Step circle -->
+                                <div class="flex flex-col items-center">
+                                    <div
+                                        class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors"
+                                        :class="[
+                                            step.id <= currentStep
+                                                ? 'bg-primary border-primary text-primary-foreground'
+                                                : 'bg-muted border-muted-foreground/25 text-muted-foreground'
+                                        ]"
+                                    >
+                                        <component :is="step.icon" class="h-5 w-5" />
+                                    </div>
+                                    <div class="mt-2 text-center max-w-[120px]">
+                                        <p class="text-sm font-medium">{{ step.title }}</p>
+                                        <p class="text-xs text-muted-foreground mt-1">{{ step.description }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Connector line -->
+                                <div
+                                    v-if="index < steps.length - 1"
+                                    class="flex-1 h-0.5 mx-4 transition-colors"
+                                    :class="[
+                                        step.id < currentStep
+                                            ? 'bg-primary'
+                                            : 'bg-muted-foreground/25'
+                                    ]"
+                                />
+                            </div>
+                        </div>
+                    </CardContent>
                     <CardContent>
                         <div class="space-y-4">
                             <div class="flex items-center gap-2">

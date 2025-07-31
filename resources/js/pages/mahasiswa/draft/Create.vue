@@ -250,9 +250,9 @@ function onSubmit() {
                         </div>
 
                         <!-- Info Alert -->
-                        <Alert>
+                        <Alert class="text-warning">
                             <AlertCircle class="h-4 w-4" />
-                            <AlertDescription>
+                            <AlertDescription class="text-warning text-sm">
                                 Pastikan semua data yang Anda masukkan sudah benar. Setelah submit,
                                 draft pratesis akan menunggu persetujuan dari admin.
                             </AlertDescription>

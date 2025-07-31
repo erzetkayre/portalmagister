@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Managements;
 
-use Inertia\Inertia;
 use App\Models\Role;
 use App\Models\User;
+use Inertia\Inertia;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 
 class MahasiswaController extends Controller
 {
@@ -185,7 +186,7 @@ class MahasiswaController extends Controller
                 $q->where('status_mhs', $request->status === 'active' ? 'aktif' : 'tidak_aktif')
             )
             ->when($request->filled('angkatan'), fn($q) =>
-                $q->where( (int) 'angkatan', $request->angkatan)
+                $q->where('angkatan', $request->angkatan)
             )
             ->when($request->filled('gender'), fn($q) =>
                 $q->where('gender', $request->gender)
@@ -209,6 +210,12 @@ class MahasiswaController extends Controller
 
                 return $q;
             }, fn($q) => $q->orderBy('created_at', 'desc'));
+    }
+
+    public function template($filename)
+    {
+        $path = "templates/$filename";
+        return Storage::disk('public')->download($path);
     }
 
     public function import(Request $request)

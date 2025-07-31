@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
                 'nama' => 'Administrator',
                 'email' => 'admin@example.com',
                 'nomor_induk' => 'AD001',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('  '),
                 'first_login' => false,
                 'is_active' => true,
                 'role_id' => 1,
@@ -53,40 +53,6 @@ class UserSeeder extends Seeder
 
         foreach ($users as $userData) {
             User::create($userData);
-        }
-
-        $refDosen = [
-            [
-                'user_id' => 1,
-                'kode_dosen' => 'KD001',
-                'nip' => '198501012010121001',
-                'nama_dosen' => 'Koordinator',
-                'status_dosen' => 'aktif',
-                'bidang_keahlian' => 'Sistem Informasi',
-                'gender' => 'L'
-            ],
-            [
-                'user_id' => 2,
-                'kode_dosen' => 'AD001',
-                'nip' => '198502022010122002',
-                'nama_dosen' => 'Administrator',
-                'status_dosen' => 'aktif',
-                'bidang_keahlian' => 'Manajemen Sistem',
-                'gender' => 'L'
-            ],
-            [
-                'user_id' => 3,
-                'kode_dosen' => 'AD002',
-                'nip' => '198503032010123003',
-                'nama_dosen' => 'Dr. Ahmad Fauzi, M.Kom',
-                'status_dosen' => 'aktif',
-                'bidang_keahlian' => 'Pemrograman Web',
-                'gender' => 'L'
-            ],
-        ];
-
-        foreach ($refDosen as $dosen) {
-            Dosen::create($dosen);
         }
     }
 }
