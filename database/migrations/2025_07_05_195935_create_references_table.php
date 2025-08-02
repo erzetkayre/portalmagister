@@ -37,6 +37,14 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Schema::create('ref_jabatan', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('dosen_id')->constrained('ref_dosen')->onDelete('cascade');
+            $table->string('nama_jabatan');
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
