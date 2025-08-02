@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
                 'nama' => 'Administrator',
                 'email' => 'admin@example.com',
                 'nomor_induk' => 'AD001',
-                'password' => Hash::make('  '),
+                'password' => Hash::make('111111'),
                 'first_login' => false,
                 'is_active' => true,
                 'role_id' => 1,
