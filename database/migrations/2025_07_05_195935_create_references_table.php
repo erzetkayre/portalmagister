@@ -45,6 +45,13 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Schema::create('ref_ruang', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_ruang');
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
@@ -54,5 +61,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('ref_mahasiswa');
         Schema::dropIfExists('ref_dosen');
+        Schema::dropIfExists('ref_jabatan');
+
     }
 };
