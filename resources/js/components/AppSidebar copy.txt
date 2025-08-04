@@ -6,7 +6,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarGroup } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, BookOpenCheck, BookUser, GraduationCap, LayoutGrid, User2Icon, UserCheck, UsersRound, Presentation  } from 'lucide-vue-next';
+import { BookOpen, BookOpenCheck, BookUser, GraduationCap, LayoutGrid, User2Icon, UserCheck, UsersRound } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { computed} from 'vue';
 
@@ -57,27 +57,10 @@ const dosenMainNavItems: NavItem[] = [
 // Menu Mahasiswa
 const mahasiswaMainNavItems: NavItem[] = [
     { title: 'Dashboard', href: route('mahasiswa.dashboard'), routeName: 'mahasiswa.dashboard', icon: LayoutGrid },
-    { title: 'Tesis', href: '#',icon: BookOpenCheck,
+    { title: 'Pratesis', href: '#',icon: BookOpenCheck,
         items: [
-            { title: 'Pengajuan Proposal Tesis', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
-            { title: 'Logbook Tesis', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
-            { title: 'Perubahan Judul', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
-            { title: 'Perubahan Pembimbing', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
-        ]},
-
-];
-const mahasiswaSeminarNavItems: NavItem[] = [
-    { title: 'Seminar Proposal', href: '#',icon: Presentation,
-        items: [
-            { title: 'Penndaftaran Seminar Proposal', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.sempro.*'},
-        ]},
-    { title: 'Seminar Hasil', href: '#',icon: Presentation,
-        items: [
-            { title: 'Pendaftaran Seminar Hasil', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
-        ]},
-    { title: 'Ujian Tesis', href: '#',icon: Presentation,
-        items: [
-            { title: 'Penpendaftaran Ujian Tesis', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
+            { title: 'Pengajuan Draft', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
+            { title: 'Pengajuan Pratesis', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
         ]},
 ];
 
@@ -117,7 +100,6 @@ const footerNavItems: NavItem[] = [
             </SidebarGroup>
             <SidebarGroup v-else class="px-2 py-0">
                 <NavMainDropdown :label="'Menu Utama'" :items="mahasiswaMainNavItems"/>
-                <NavMainDropdown :label="'Menu Seminar'" :items="mahasiswaSeminarNavItems"/>
             </SidebarGroup>
         </SidebarContent>
 

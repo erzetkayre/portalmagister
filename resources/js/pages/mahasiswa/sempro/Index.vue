@@ -71,7 +71,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Proposal Tesis',
-        href: route('mahasiswa.draft.index'),
+        href: route('mahasiswa.sempro.index'),
     },
 ];
 

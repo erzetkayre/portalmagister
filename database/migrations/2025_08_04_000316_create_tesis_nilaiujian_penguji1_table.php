@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tesis_nilai_ujian_pembimbing_elektro', function (Blueprint $table) {
+        Schema::create('tesis_nilaiujian_penguji1', function (Blueprint $table) {
             $table->id();
-            $table->foreigId('tesis_pembimbing_id')->constrained('tesis_pembimbing_elektro')->cascadeOnDelete();
+            $table->foreignId('tesis_penguji_id')->constrained('tesis_penguji_elektro')->cascadeOnDelete();
             $table->integer('a')->nullable();
             $table->integer('a1')->nullable();
             $table->integer('a2')->nullable();
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tesis_nilai_ujian_pembimbing_elektro');
+        Schema::dropIfExists('tesis_nilaiujian_penguji1');
     }
 };

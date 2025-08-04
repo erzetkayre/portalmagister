@@ -74,7 +74,7 @@ class DraftPratesisController extends Controller
         // Check if draft already exists
         $existingDraft = TesisDraft::where('mhs_id', $mahasiswa->id)->where('status','!=','rejected')->first();
         if ($existingDraft) {
-            return redirect()->route('mahasiswa.draft.index')->with('info', 'Anda sudah memiliki draft yang sedang diproses');
+            return redirect()->route('mahasiswa.draft.index')->with('info', 'Anda sudah memiliki proposal yang sedang diproses');
         }
 
         $request->validate([

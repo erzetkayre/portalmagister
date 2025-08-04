@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tesis', function (Blueprint $table) {
+        Schema::create('tesis_elektro', function (Blueprint $table) {
             $table->id();
             $table->foreignId('mahasiswa_id')->constrained('ref_mahasiswa')->onDelete('cascade');
             $table->text('judul');
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tesis');
+        Schema::dropIfExists('tesis_elektro');
     }
 };
