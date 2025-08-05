@@ -32,8 +32,8 @@ const adminMainNavItems: NavItem[] = [
     { title: 'Dashboard', href: route('admin.dashboard'), routeName: 'admin.dashboard', icon: LayoutGrid },
     { title: 'Pratesis', href: '#',icon: BookOpenCheck,
         items: [
-            { title: 'Daftar Pengajuan Draft', href: route('admin.draft.index'), routeName: 'admin.pratesis.draft.*'},
-            { title: 'Daftar Pengajuan Pratesis', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
+            { title: 'List Pengajuan Pratesis', href: route('admin.draft.index'), routeName: 'admin.pratesis.draft.*'},
+            { title: 'List Pengajuan Ujian', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
         ]},
 ];
 
@@ -59,6 +59,10 @@ const mahasiswaMainNavItems: NavItem[] = [
     { title: 'Dashboard', href: route('mahasiswa.dashboard'), routeName: 'mahasiswa.dashboard', icon: LayoutGrid },
     { title: 'Tesis', href: '#',icon: BookOpenCheck,
         items: [
+<<<<<<< HEAD
+            { title: 'Pengajuan Pratesis', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
+            { title: 'Pengajuan Seminar', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
+=======
             { title: 'Pengajuan Proposal Tesis', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
             { title: 'Logbook Tesis', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
             { title: 'Perubahan Judul', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
@@ -78,6 +82,7 @@ const mahasiswaSeminarNavItems: NavItem[] = [
     { title: 'Ujian Tesis', href: '#',icon: Presentation,
         items: [
             { title: 'Penpendaftaran Ujian Tesis', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
+>>>>>>> 13328080a1d3d358f1e44c50dfc9f37537a563cf
         ]},
 ];
 

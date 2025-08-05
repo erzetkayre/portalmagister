@@ -25,11 +25,14 @@ class TesisDraft extends Model
         'file_khs',
         'file_krs',
         'file_sk_pembimbing',
+        'file_surat_permohonan',
+        'tgl_upload_surat',
         'file_tesis',
     ];
 
     protected $casts = [
         'tgl_pengajuan' => 'datetime',
+        'tgl_upload_surat' => 'datetime',
     ];
 
     public function mahasiswa()
@@ -51,6 +54,7 @@ class TesisDraft extends Model
     {
         return match($this->status) {
             'pending' => ['text' => 'WAITING', 'class' => 'bg-yellow-100 text-yellow-800 border-yellow-300'],
+            'surat_uploaded' => ['text' => 'SURAT UPLOADED', 'class' => 'bg-blue-100 text-blue-800 border-blue-300'],
             'approved' => ['text' => 'SETUJU', 'class' => 'bg-green-100 text-green-800 border-green-300'],
             'rejected' => ['text' => 'TOLAK', 'class' => 'bg-red-100 text-red-800 border-red-300'],
             default => ['text' => 'DRAFT', 'class' => 'bg-gray-100 text-gray-800 border-gray-300'],
