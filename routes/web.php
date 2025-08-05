@@ -107,6 +107,10 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
             Route::get('/pengajuan', [Mahasiswa\DraftPratesisController::class, 'create'])->name('create');
             Route::post('/', [Mahasiswa\DraftPratesisController::class, 'store'])->name('store');
             Route::get('/{id}', [Mahasiswa\DraftPratesisController::class, 'show'])->name('show');
+
+            // Route baru untuk template surat dan upload
+            Route::get('/{id}/template-surat', [Mahasiswa\DraftPratesisController::class, 'generateSuratPermohonan'])->name('template-surat');
+            Route::post('/{id}/upload-surat', [Mahasiswa\DraftPratesisController::class, 'uploadSuratPermohonan'])->name('upload-surat');
         });
 
         Route::prefix('pratesis')->name('pratesis.')->group(function(){

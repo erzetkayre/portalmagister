@@ -170,7 +170,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         </Link>
                     </Button>
                     <Button
-                        v-if="props.draft.status === 'pending'"
+                        v-if="props.draft.status === 'surat_uploaded'"
                         @click="openApprovalModal"
                         class="bg-green-600 hover:bg-green-700" size="sm"
                     >
@@ -284,6 +284,15 @@ const breadcrumbs: BreadcrumbItem[] = [
                             >
                                 <FileText class="h-4 w-4" />
                                 Lihat KRS
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                class="w-full justify-start"
+                                @click="openPdfModal(`/storage/surat_permohonan/${props.draft.mahasiswa.nim}_surat_permohonan_bimbingan.pdf`, 'File Surat Permohonan Pembimbing')"
+                            >
+                                <FileText class="h-4 w-4" />
+                                Lihat Surat Permohonan Pembimbing
                             </Button>
                         </CardContent>
                     </Card>

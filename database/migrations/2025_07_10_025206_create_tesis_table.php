@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string('file_khs')->nullable();
             $table->string('file_krs')->nullable();
             $table->string('file_sk_pembimbing')->nullable();
+            $table->string('file_surat_permohonan')->nullable();
+            $table->string('tgl_upload_surat')->nullable();
             $table->string('file_tesis')->nullable();
             $table->softDeletes();
             $table->timestamps();

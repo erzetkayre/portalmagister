@@ -210,7 +210,7 @@ function rejectDraft() {
 const showDraft = (draft: Draft) => router.get(`/admin/draft/${draft.id}`);
 const showKRS = (draft: Draft) => openPdfModal(`/storage/file_lampiran_krs/${draft.mahasiswa.nim}_file_krs.pdf`, 'File KRS');
 const showKHS = (draft: Draft) => openPdfModal(`/storage/file_lampiran_khs/${draft.mahasiswa.nim}_file_khs.pdf`, 'File KHS');
-
+const showSPP = (draft: Draft) => openPdfModal(`/storage/surat_permohonan/${draft.mahasiswa.nim}_surat_permohonan_bimbingan.pdf`, 'File Surat Permohonan Pembimbing');
 
 // Table Configuration
 const tableColumns = ref([
@@ -230,10 +230,11 @@ const getDraftActions = (item: Draft) => {
         { key: 'show', icon: Eye, tooltip: 'Lihat Detail'},
         { key: 'show-krs', icon: FileDown, tooltip: 'Lihat KRS'},
         { key: 'show-khs', icon: FileDown, tooltip: 'Lihat KHS'},
+        { key: 'show-spp', icon: FileDown, tooltip: 'Lihat Surat Permohonan Pembmimbing'},
     ];
 
     // Only add approval button if status is pending
-    if (item.status === 'pending') {
+    if (item.status === 'surat_uploaded') {
         baseActions.push({ key: 'approve', icon: CheckCircle, tooltip: 'Persetujuan', class: 'text-green-600 hover:text-green-800' });
     }
 
@@ -250,6 +251,9 @@ const handleDraftAction = (actionKey: string, draft: Draft) => {
             break;
         case 'show-khs':
             showKHS(draft);
+            break;
+        case 'show-spp':
+            showSPP(draft);
             break;
         case 'approve':
             openApprovalModal(draft);
