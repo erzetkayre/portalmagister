@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('tesis_semhas_elektro', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tesis_id')->constrained('tesis_elektro')->cascadeOnDelete();
+            $table->date('tanggal')->nullable();
+            $table->foreignId('tempat')->constrained('ref_ruang')->cascadeOnDelete();
+            $table->time('jam_mulai')->nullable();
+            $table->time('jam_selesai')->nullable();
+            $table->enum('status_semhas', ['waiting', 'approved', 'rejected', 'revision', 'done'])->default('waiting');
+            $table->string('cetak_semhas')->nullable();
+            $table->text('summary')->nullable();
+            $table->string('berita_acara')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

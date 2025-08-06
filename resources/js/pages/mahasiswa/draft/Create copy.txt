@@ -31,11 +31,11 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: route('mahasiswa.dashboard'),
     },
     {
-        title: 'Proposal Tesis',
+        title: 'Draft Pratesis',
         href: route('mahasiswa.draft.index'),
     },
     {
-        title: 'Buat Proposal',
+        title: 'Buat Draft',
         href: route('mahasiswa.draft.create'),
     },
 ];

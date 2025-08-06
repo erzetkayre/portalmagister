@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { ref, watch, onMounted } from 'vue';
 import { Head, useForm, router, usePage} from '@inertiajs/vue3';
 
-import { useAlert } from '@/composables/UseAlert';
+import { useAlert } from '@/composables/useAlert';
 import { useDebounce } from '@/composables/useDebounce';
 import { usePaginationFilters } from '@/composables/usePaginationFilters';
 

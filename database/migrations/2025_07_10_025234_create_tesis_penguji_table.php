@@ -16,9 +16,6 @@ return new class extends Migration
             $table->foreignId('tesis_id')->constrained('tesis')->cascadeOnDelete();
             $table->foreignId('penguji')->constrained('ref_dosen');
             $table->enum('no_penguji', [1, 2]);
-            $table->enum('status_pratesis', ['waiting', 'approved', 'rejected'])->default('waiting');
-            $table->enum('status_tesis_satu', ['waiting', 'approved', 'rejected'])->default('waiting');
-            $table->enum('status_tesis_dua', ['waiting', 'approved', 'rejected'])->default('waiting');
             $table->softDeletes();
             $table->timestamps();
         });
