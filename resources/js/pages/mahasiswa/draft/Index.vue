@@ -95,16 +95,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const steps = [
-<<<<<<< HEAD
     { id: 1, title: 'Form Pengajuan', icon: FileText, description: 'Isi formulir pengajuan draft pratesis' },
     { id: 2, title: 'Upload Surat', icon: Upload, description: 'Upload surat permohonan bimbingan' },
     { id: 3, title: 'Persetujuan', icon: Clock, description: 'Menunggu persetujuan admin' },
     { id: 4, title: 'Selamat!', icon: CheckCircle, description: 'Draft pratesis telah disetujui' }
-=======
-    { id: 1, title: 'Form Pengajuan', icon: FileText, description: 'Isi formulir pengajuan proposal tesis' },
-    { id: 2, title: 'Persetujuan', icon: Clock, description: 'Menunggu persetujuan' },
-    { id: 3, title: 'Selamat!', icon: CheckCircle, description: 'Proposal pratesis telah disetujui' }
->>>>>>> 13328080a1d3d358f1e44c50dfc9f37537a563cf
 ];
 
 function getStatusBadge(status: string) {
@@ -150,10 +144,10 @@ function submitUploadSurat() {
     });
 }
 
-// function downloadTemplate() {
-//     if (!props.draft) return;
-//     window.open(route('mahasiswa.draft.template-surat', props.draft.id), '_blank');
-// }
+function downloadTemplate() {
+    if (!props.draft) return;
+    window.open(route('mahasiswa.draft.template-surat', props.draft.id), '_blank');
+}
 </script>
 
 <template>
@@ -289,18 +283,12 @@ function submitUploadSurat() {
 
                             <!-- Template dan Upload Actions -->
                             <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                                <a
-                                    href="https://docs.google.com/document/d/1M8FQsndmpfBeYzZzGgyn3K86payYDJf5YQjGQQoN2zU/edit?tab=t.0"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                <Button variant="outline">
-                                    <Download class="h-4 w-4 mr-2" />
+                                <Button variant="outline" @click="downloadTemplate">
+                                    <Download class="h-4 w-4" />
                                     Download Template Surat
                                 </Button>
-                                </a>
                                 <Button @click="openUploadModal">
-                                    <Upload class="h-4 w-4 mr-2" />
+                                    <Upload class="h-4 w-4" />
                                     Upload Surat Bertanda Tangan
                                 </Button>
                             </div>
@@ -317,7 +305,7 @@ function submitUploadSurat() {
 
                             <div v-if="draft.us_abstrak">
                                 <h4 class="font-medium text-sm text-muted-foreground mb-1">Abstrak</h4>
-                                <p class="text-sm">{{ draft.us_abstrak }}</p>
+                                <p class="text-sm text-justify">{{ draft.us_abstrak }}</p>
                             </div>
                         </div>
 

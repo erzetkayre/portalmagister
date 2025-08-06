@@ -70,15 +70,15 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: route('mahasiswa.dashboard'),
     },
     {
-        title: 'Draft Pratesis',
+        title: 'Proposal Tesis',
         href: route('mahasiswa.draft.index'),
     },
 ];
 
 const steps = [
-    { id: 1, title: 'Form Pengajuan', icon: FileText, description: 'Isi formulir pengajuan draft pratesis' },
-    { id: 2, title: 'Persetujuan', icon: Clock, description: 'Menunggu persetujuan admin' },
-    { id: 3, title: 'Selamat!', icon: CheckCircle, description: 'Draft pratesis telah disetujui' }
+    { id: 1, title: 'Form Pengajuan', icon: FileText, description: 'Isi formulir pengajuan proposal tesis' },
+    { id: 2, title: 'Persetujuan', icon: Clock, description: 'Menunggu persetujuan' },
+    { id: 3, title: 'Selamat!', icon: CheckCircle, description: 'Proposal pratesis telah disetujui' }
 ];
 
 function getStatusBadge(status: string) {
@@ -111,8 +111,8 @@ function formatDate(dateString: string) {
             <!-- Header -->
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold">Draft Pratesis</h1>
-                    <p class="text-muted-foreground">Kelola pengajuan draft pratesis Anda</p>
+                    <h1 class="text-2xl font-bold">Proposal Tesis</h1>
+                    <p class="text-muted-foreground">Kelola pengajuan proposal tesis Anda</p>
                 </div>
                 <Button v-if="!draft" as-child>
                     <Link :href="route('mahasiswa.draft.create')">
@@ -168,14 +168,14 @@ function formatDate(dateString: string) {
                     <CardContent>
                         <div class="text-center py-8 border-t-1">
                             <FileText class="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                            <h3 class="text-lg font-semibold mb-2">Belum Ada Draft</h3>
+                            <h3 class="text-lg font-semibold mb-2">Belum Ada Proposal</h3>
                             <p class="text-muted-foreground mb-4">
-                                Anda belum mengajukan draft pratesis. Klik tombol di bawah untuk memulai pengajuan.
+                                Anda belum mengajukan proposal tesis. Klik tombol di bawah untuk memulai pengajuan.
                             </p>
                             <Button as-child>
                                 <Link :href="route('mahasiswa.draft.create')">
                                     <Plus class="h-4 w-4" />
-                                    Ajukan Draft Sekarang
+                                    Ajukan Proposal Sekarang
                                 </Link>
                             </Button>
                         </div>

@@ -30,10 +30,10 @@ const userRole = computed(() => {
 // Menu Admin
 const adminMainNavItems: NavItem[] = [
     { title: 'Dashboard', href: route('admin.dashboard'), routeName: 'admin.dashboard', icon: LayoutGrid },
-    { title: 'Pratesis', href: '#',icon: BookOpenCheck,
+    { title: 'Proposal Tesis', href: '#',icon: BookOpenCheck,
         items: [
-            { title: 'List Pengajuan Pratesis', href: route('admin.draft.index'), routeName: 'admin.pratesis.draft.*'},
-            { title: 'List Pengajuan Ujian', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
+            { title: 'Pengajuan Proposal Tesis', href: route('admin.draft.index'), routeName: 'admin.pratesis.draft.*'},
+            { title: 'Pengajuan Seminar Proposal', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*'},
         ]},
 ];
 
@@ -57,32 +57,10 @@ const dosenMainNavItems: NavItem[] = [
 // Menu Mahasiswa
 const mahasiswaMainNavItems: NavItem[] = [
     { title: 'Dashboard', href: route('mahasiswa.dashboard'), routeName: 'mahasiswa.dashboard', icon: LayoutGrid },
-    { title: 'Tesis', href: '#',icon: BookOpenCheck,
+    { title: 'Seminar Proposal', href: '#',icon: BookOpenCheck,
         items: [
-<<<<<<< HEAD
-            { title: 'Pengajuan Pratesis', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
-            { title: 'Pengajuan Seminar', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
-=======
             { title: 'Pengajuan Proposal Tesis', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
-            { title: 'Logbook Tesis', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
-            { title: 'Perubahan Judul', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
-            { title: 'Perubahan Pembimbing', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
-        ]},
-
-];
-const mahasiswaSeminarNavItems: NavItem[] = [
-    { title: 'Seminar Proposal', href: '#',icon: Presentation,
-        items: [
-            { title: 'Penndaftaran Seminar Proposal', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.sempro.*'},
-        ]},
-    { title: 'Seminar Hasil', href: '#',icon: Presentation,
-        items: [
-            { title: 'Pendaftaran Seminar Hasil', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
-        ]},
-    { title: 'Ujian Tesis', href: '#',icon: Presentation,
-        items: [
-            { title: 'Penpendaftaran Ujian Tesis', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
->>>>>>> 13328080a1d3d358f1e44c50dfc9f37537a563cf
+            { title: 'Pengajuan Seminar Proposal', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
         ]},
 ];
 
@@ -122,7 +100,7 @@ const footerNavItems: NavItem[] = [
             </SidebarGroup>
             <SidebarGroup v-else class="px-2 py-0">
                 <NavMainDropdown :label="'Menu Utama'" :items="mahasiswaMainNavItems"/>
-                <NavMainDropdown :label="'Menu Seminar'" :items="mahasiswaSeminarNavItems"/>
+                <!-- <NavMainDropdown :label="'Menu Seminar'" :items="mahasiswaSeminarNavItems"/> -->
             </SidebarGroup>
         </SidebarContent>
 

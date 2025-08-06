@@ -149,91 +149,12 @@ class DraftPratesisController extends Controller
         $user = Auth::user();
         $mahasiswa = $user->mahasiswa;
         $draft = TesisDraft::with(['mahasiswa.user', 'dosenPembimbingSatu', 'dosenPembimbingDua'])
-        ->where('mhs_id', $mahasiswa->id)
-        ->where('id', $id)
-        ->firstOrFail();
-
-        // Cek apakah sudah ada file surat permohonan yang diunggah
-        if ($draft->file_surat_permohonan !== null) {
-            // Load data yang dibutuhkan
-            $data = [
-                'draft' => $draft,
-                'mahasiswa' => $draft->mahasiswa,
-                'dosen_pembimbing_1' => $draft->dosenPembimbingSatu,
-                'dosen_pembimbing_2' => $draft->dosenPembimbingDua,
-                'tanggal' => Carbon::now()->translatedFormat('d F Y'),
-            ];
-
-            $config = [
-                'format' => 'A4-P',
-                'margin_left' => 30,
-                'margin_right' => 25,
-                'margin_top' => 35,
-                'margin_header' => 5,
-                'margin_footer' => 5,
-            ];
-
-            $monthList = [
-                'Jan' => 'Januari',
-                'Feb' => 'Februari',
-                'Mar' => 'Maret',
-                'Apr' => 'April',
-                'May' => 'Mei',
-                'Jun' => 'Juni',
-                'Jul' => 'Juli',
-                'Aug' => 'Agustus',
-                'Sep' => 'September',
-                'Oct' => 'Oktober',
-                'Nov' => 'November',
-                'Dec' => 'Desember',
-            ];
-
-            $pdf = PDF::loadView('surat.cetak_permohonan', compact('data', 'monthList'), [], $config);
-            return $pdf->stream('Surat_Permohonan_Bimbingan.pdf');
-
-        } else {
-            // Update kolom `file_surat_permohonan` untuk simulasikan sebagai telah dibuat (optional)
-            $draft->update([
-                'file_surat_permohonan' => 'generated_' . time() . '.pdf',
-                'tgl_upload_surat' => now(),
-            ]);
-
-            // Load ulang data untuk PDF
-            $data = [
-                'draft' => $draft,
-                'mahasiswa' => $draft->mahasiswa,
-                'dosen_pembimbing_1' => $draft->dosenPembimbingSatu,
-                'dosen_pembimbing_2' => $draft->dosenPembimbingDua,
-                'tanggal' => Carbon::now()->translatedFormat('d F Y'),
-            ];
-
-            $config = [
-                'format' => 'A4-P',
-                'margin_left' => 30,
-                'margin_right' => 25,
-                'margin_top' => 35,
-                'margin_header' => 5,
-                'margin_footer' => 5,
-            ];
-
-            $monthList = [
-                'Jan' => 'Januari',
-                'Feb' => 'Februari',
-                'Mar' => 'Maret',
-                'Apr' => 'April',
-                'May' => 'Mei',
-                'Jun' => 'Juni',
-                'Jul' => 'Juli',
-                'Aug' => 'Agustus',
-                'Sep' => 'September',
-                'Oct' => 'Oktober',
-                'Nov' => 'November',
-                'Dec' => 'Desember',
-            ];
-
-            $pdf = PDF::loadView('surat.cetak_permohonan', compact('data', 'monthList'), [], $config);
-            return $pdf->stream('Surat_Permohonan_Bimbingan.pdf');
-        }
+            ->where('mhs_id', $mahasiswa->id)
+            ->where('id', $id)
+            ->firstOrFail();
+        // dd($draft);
+        $pdf = PDF::loadView('surat.cetak_permohonan_pratesis',compact('draft'));
+        return $pdf->stream('Surat_Permohonan_Bimbingan.pdf');
     }
 
     /**

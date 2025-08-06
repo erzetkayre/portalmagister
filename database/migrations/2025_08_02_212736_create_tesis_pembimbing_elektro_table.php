@@ -23,6 +23,11 @@ return new class extends Migration
             $table->float('nilai_sempro') ->nullable();
             $table->float('nilai_semhas') ->nullable();
             $table->float('nilai_ujian') ->nullable();
+            $table->integer('status_perubahanjudul') ->nullable();
+            $table->integer('status_perubahanpembimbing') ->nullable();
+            $table->integer('status_perpanjangan1') ->nullable();
+            $table->integer('status_perpanjangan2') ->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
