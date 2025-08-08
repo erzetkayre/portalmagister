@@ -24,7 +24,7 @@
         <div style="padding-top: 15px; text-align: center; margin-bottom: 15px;">
             <strong style="font-size: 15px">
                 PERMOHONAN TIM PEMBIMBING THESIS
-            </b>
+            </strong>
         </div>
         <div style="text-align: justify;">
             {{-- Pembuka --}}

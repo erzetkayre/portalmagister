@@ -33,7 +33,7 @@ const adminMainNavItems: NavItem[] = [
     { title: 'Proposal Tesis', href: '#',icon: BookOpenCheck,
         items: [
             { title: 'Pengajuan Proposal Tesis', href: route('admin.draft.index'), routeName: 'admin.pratesis.draft.*'},
-            { title: 'Pengajuan Seminar Proposal', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*'},
+            // { title: 'Pengajuan Seminar Proposal', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*'},
         ]},
 ];
 
@@ -57,10 +57,10 @@ const dosenMainNavItems: NavItem[] = [
 // Menu Mahasiswa
 const mahasiswaMainNavItems: NavItem[] = [
     { title: 'Dashboard', href: route('mahasiswa.dashboard'), routeName: 'mahasiswa.dashboard', icon: LayoutGrid },
-    { title: 'Seminar Proposal', href: '#',icon: BookOpenCheck,
+    { title: 'Proposal Tesis', href: '#',icon: BookOpenCheck,
         items: [
-            { title: 'Pengajuan Proposal Tesis', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
-            { title: 'Pengajuan Seminar Proposal', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*' },
+            { title: 'Pengajuan Proposal', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
+            { title: 'Seminar Proposal', href: route('mahasiswa.sempro.index'), routeName: 'mahasiswa.sempro.*' },
         ]},
 ];
 
