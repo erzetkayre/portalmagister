@@ -113,10 +113,19 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
             Route::post('/{id}/upload-surat', [Mahasiswa\DraftPratesisController::class, 'uploadSuratPermohonan'])->name('upload-surat');
         });
 
-        Route::prefix('pratesis')->name('pratesis.')->group(function(){
-            Route::get('/',[Mahasiswa\PratesisController::class,'index'])->name('index');
-            Route::get('/{id}',[Mahasiswa\PratesisController::class,'edit'])->name('edit');
-            Route::get('/{id}',[Mahasiswa\PratesisController::class,'update'])->name('update');
+        Route::prefix('pratesis')->name('sempro.')->group(function(){
+           Route::get('/', [Mahasiswa\SeminarProposalController::class, 'index'])->name('index');
+            Route::post('/', [Mahasiswa\SeminarProposalController::class, 'store'])->name('store');
+            Route::get('/{id}', [Mahasiswa\SeminarProposalController::class, 'show'])->name('show');
+
+            // Upload surat kelayakan
+            Route::post('/{id}/upload-surat', [Mahasiswa\SeminarProposalController::class, 'uploadSuratKelayakan'])->name('upload-surat');
+
+            // Download template surat
+            Route::get('/{id}/template-surat', [Mahasiswa\SeminarProposalController::class, 'generateSuratKelayakan'])->name('template-surat');
+
+            // Update jadwal
+            Route::post('/{id}/update-jadwal', [Mahasiswa\SeminarProposalController::class, 'updateJadwal'])->name('update-jadwal');
         });
 
 
