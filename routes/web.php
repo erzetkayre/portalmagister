@@ -73,6 +73,16 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
             Route::get('/{id}',[Admin\DraftPratesisController::class,'show'])->name('show');
             Route::post('/{id}',[Admin\DraftPratesisController::class,'update'])->name('update');
         });
+        Route::prefix('sempro')->name('sempro.')->group(function(){
+            Route::get('',[Admin\SeminarProposalController::class,'index'])->name('index');
+            Route::get('/{id}',[Admin\SeminarProposalController::class,'show'])->name('show');
+            Route::post('/{id}',[Admin\SeminarProposalController::class,'update'])->name('update');
+            Route::post('/{id}/approve', [Admin\SeminarProposalController::class, 'approve'])->name('approve');
+            Route::post('/{id}/reject', [Admin\SeminarProposalController::class, 'reject'])->name('reject');
+            Route::post('/{id}/approve-schedule', [Admin\SeminarProposalController::class, 'approveSchedule'])->name('approve-schedule');
+            Route::get('/{id}/download-invitation', [Admin\SeminarProposalController::class, 'downloadInvitation'])->name('download-invitation');
+        });
+
     });
 
 
@@ -122,7 +132,7 @@ Route::middleware(['auth', 'firstlogin'])->group(function () {
             Route::post('/{id}/upload-surat', [Mahasiswa\SeminarProposalController::class, 'uploadSuratKelayakan'])->name('upload-surat');
 
             // Download template surat
-            Route::get('/{id}/template-surat', [Mahasiswa\SeminarProposalController::class, 'generateSuratKelayakan'])->name('template-surat');
+            Route::get('/{id}/template-surat', [Mahasiswa\SeminarProposalController::class, 'generateSuratKelayak   an'])->name('template-surat');
 
             // Update jadwal
             Route::post('/{id}/update-jadwal', [Mahasiswa\SeminarProposalController::class, 'updateJadwal'])->name('update-jadwal');

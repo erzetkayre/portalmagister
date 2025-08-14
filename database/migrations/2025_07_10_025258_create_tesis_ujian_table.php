@@ -20,7 +20,7 @@ return new class extends Migration
             $table->time('jam_selesai')->nullable();
             $table->string('kartu_bimbingan')->nullable();
             $table->string('surat_kelayakan')->nullable();
-            $table->enum('status_seminar', ['kartu_uploaded','waiting', 'approved', 'rejected', 'revision', 'done'])->default('waiting');
+            $table->enum('status_seminar', ['kartu_uploadedw','waiting', 'approved', 'rejected', 'revision', 'done'])->default('waiting');
             $table->string('draft_semhas')->nullable();
             $table->text('summary')->nullable();
             $table->text('catatan')->nullable();

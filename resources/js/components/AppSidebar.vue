@@ -33,7 +33,7 @@ const adminMainNavItems: NavItem[] = [
     { title: 'Proposal Tesis', href: '#',icon: BookOpenCheck,
         items: [
             { title: 'Pengajuan Proposal Tesis', href: route('admin.draft.index'), routeName: 'admin.pratesis.draft.*'},
-            // { title: 'Pengajuan Seminar Proposal', href: route('mahasiswa.pratesis.index'), routeName: 'mahasiswa.pratesis.*'},
+            { title: 'Pengajuan Seminar Proposal', href: route('admin.sempro.index'), routeName: 'admin.sempro.*'},
         ]},
 ];
 
