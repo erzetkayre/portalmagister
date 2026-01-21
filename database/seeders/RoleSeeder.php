@@ -13,11 +13,15 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('roles')->insert([
-            ['id' => 1, 'nama_role' => 'admin', 'deskripsi' => 'Administrator', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'nama_role' => 'koordinator', 'deskripsi' => 'Koordinator', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 3, 'nama_role' => 'dosen', 'deskripsi' => 'Dosen', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 4, 'nama_role' => 'mahasiswa', 'deskripsi' => 'Mahasiswa', 'created_at' => now(), 'updated_at' => now()],
+        DB::connection('main')->table('roles')->insert([
+            ['role_id' => 1, 'role_name' => 'elektro_admin', 'description' => 'Administrator Magister Elektro', 'created_at' => now(), 'updated_at' => now()],
+            ['role_id' => 2, 'role_name' => 'elektro_koordinator', 'description' => 'Koordinator Magister Elektro', 'created_at' => now(), 'updated_at' => now()],
+            ['role_id' => 3, 'role_name' => 'elektro_dosen', 'description' => 'Dosen Magister Elektro', 'created_at' => now(), 'updated_at' => now()],
+            ['role_id' => 4, 'role_name' => 'elektro_mahasiswa', 'description' => 'Mahasiswa Magister Elektro', 'created_at' => now(), 'updated_at' => now()],
+            ['role_id' => 5, 'role_name' => 'pwk_admin', 'description' => 'Administrator Magister PWK', 'created_at' => now(), 'updated_at' => now()],
+            ['role_id' => 6, 'role_name' => 'pwk_koordinator', 'description' => 'Koordinator Magister PWK', 'created_at' => now(), 'updated_at' => now()],
+            ['role_id' => 7, 'role_name' => 'pwk_dosen', 'description' => 'Dosen Magister PWK', 'created_at' => now(), 'updated_at' => now()],
+            ['role_id' => 8, 'role_name' => 'pwk_mahasiswa', 'description' => 'Mahasiswa Magister PWK', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 }
