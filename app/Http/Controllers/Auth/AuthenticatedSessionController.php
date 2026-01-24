@@ -32,19 +32,7 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        $role = Auth::user()->role->nama_role;
-        $user = User::find(Auth::user()->id);
-
-        if ($role == 'admin') {
-            return redirect()->intended(route('admin.dashboard', absolute: false));
-        } elseif ($role == 'koordinator') {
-            return redirect()->intended(route('koordinator.dashboard', absolute: false));
-        } elseif ($role == 'dosen') {
-            return redirect()->intended(route('dosen.dashboard', absolute: false));
-        } else {
-            return redirect()->intended(route('mahasiswa.dashboard', absolute: false));
-        }
-
+        return redirect()->intended(route('dashboard',absolute:false));
     }
 
     /**

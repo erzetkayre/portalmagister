@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Mahasiswa extends Model
 {
     use HasFactory;
+    protected $connection = 'pwk';
     protected $table = 'ref_mahasiswa';
 
     protected $fillable = [
@@ -21,8 +22,4 @@ class Mahasiswa extends Model
         'gender',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }

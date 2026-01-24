@@ -29,38 +29,38 @@ const userRole = computed(() => {
 
 // Menu Admin
 const adminMainNavItems: NavItem[] = [
-    { title: 'Dashboard', href: route('admin.dashboard'), routeName: 'admin.dashboard', icon: LayoutGrid },
+    // { title: 'Dashboard', href: route('admin.dashboard'), routeName: 'admin.dashboard', icon: LayoutGrid },
     { title: 'Proposal Tesis', href: '#',icon: BookOpenCheck,
         items: [
-            { title: 'Pengajuan Proposal Tesis', href: route('admin.draft.index'), routeName: 'admin.pratesis.draft.*'},
-            { title: 'Pengajuan Seminar Proposal', href: route('admin.sempro.index'), routeName: 'admin.sempro.*'},
+            // { title: 'Pengajuan Proposal Tesis', href: route('admin.draft.index'), routeName: 'admin.pratesis.draft.*'},
+            // { title: 'Pengajuan Seminar Proposal', href: route('admin.sempro.index'), routeName: 'admin.sempro.*'},
         ]},
 ];
 
 const managementNavItems: NavItem[] = [
-    { title: 'Dosen', href: route('admin.dosen.index'), routeName: 'admin.dosen.*', icon: UsersRound },
-    { title: 'Mahasiswa', href: route('admin.mahasiswa.index'), routeName: 'admin.mahasiswa.*', icon: GraduationCap },
-    { title: 'Users', href: route('admin.users.index'), routeName: 'admin.users.*', icon: BookUser },
+    // { title: 'Dosen', href: route('admin.dosen.index'), routeName: 'admin.dosen.*', icon: UsersRound },
+    // { title: 'Mahasiswa', href: route('admin.mahasiswa.index'), routeName: 'admin.mahasiswa.*', icon: GraduationCap },
+    // { title: 'Users', href: route('admin.users.index'), routeName: 'admin.users.*', icon: BookUser },
 ];
 
 // Menu Koordinator
 const koordinatorMainNavItems: NavItem[] = [
-    { title: 'Dashboard', href: route('koordinator.dashboard'), routeName: 'koordinator.dashboard', icon: LayoutGrid },
+    // { title: 'Dashboard', href: route('koordinator.dashboard'), routeName: 'koordinator.dashboard', icon: LayoutGrid },
 
 ];
 
 // Menu Dosen
 const dosenMainNavItems: NavItem[] = [
-    { title: 'Dashboard', href: route('dosen.dashboard'), routeName: 'dosen.dashboard', icon: LayoutGrid },
+    // { title: 'Dashboard', href: route('dosen.dashboard'), routeName: 'dosen.dashboard', icon: LayoutGrid },
 ];
 
 // Menu Mahasiswa
 const mahasiswaMainNavItems: NavItem[] = [
-    { title: 'Dashboard', href: route('mahasiswa.dashboard'), routeName: 'mahasiswa.dashboard', icon: LayoutGrid },
+    // { title: 'Dashboard', href: route('mahasiswa.dashboard'), routeName: 'mahasiswa.dashboard', icon: LayoutGrid },
     { title: 'Proposal Tesis', href: '#',icon: BookOpenCheck,
         items: [
-            { title: 'Pengajuan Proposal', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
-            { title: 'Seminar Proposal', href: route('mahasiswa.sempro.index'), routeName: 'mahasiswa.sempro.*' },
+            // { title: 'Pengajuan Proposal', href: route('mahasiswa.draft.index'), routeName: 'mahasiswa.draft.*'},
+            // { title: 'Seminar Proposal', href: route('mahasiswa.sempro.index'), routeName: 'mahasiswa.sempro.*' },
         ]},
 ];
 
@@ -79,9 +79,9 @@ const footerNavItems: NavItem[] = [
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="dashboardRoute">
+                        <!-- <Link :href="dashboardRoute">
                             <AppLogo />
-                        </Link>
+                        </Link> -->
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarMenu>

@@ -28,7 +28,6 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'role' => RoleCheckMiddleware::class,
             'firstlogin' => FirstLoginMiddleware::class,
         ]);
     })

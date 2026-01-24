@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             StudyProgramSeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
+            DosenSeeder::class,
+            MahasiswaSeeder::class,
         ]);
     }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\StudyProgram;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -17,14 +18,17 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
+    protected $connection = 'main';
     protected $fillable = [
-        'nama',
+        'name',
         'email',
-        'password',
-        'role_id',
         'nomor_induk',
+        'email_verified_at',
+        'password',
         'first_login',
         'is_active',
+        'study_program_id',
         'photo',
         'phone',
     ];
@@ -54,43 +58,8 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Get the role that belongs to the user.
-     */
-    public function role()
+    public function studyProgram()
     {
-        return $this->belongsTo(Role::class);
-    }
-
-    public function hasRole($roleName)
-    {
-        return $this->role && $this->role->nama_role === $roleName;
-    }
-
-    public function hasAnyRole($roles)
-    {
-        return $this->role && in_array($this->role->nama_role, $roles);
-    }
-
-    public function mahasiswa()
-    {
-        return $this->hasOne(Mahasiswa::class);
-    }
-
-    public function dosen()
-    {
-        return $this->hasOne(Dosen::class);
-    }
-
-    /**
-     * Get the URL for the user's profile photo.
-     */
-    public function getPhotoUrlAttribute(): ?string
-    {
-        if (!$this->photo) {
-            return null;
-        }
-
-        return route('profile.photo.current');
+        return $this->belongsTo(StudyProgram::class);
     }
 }

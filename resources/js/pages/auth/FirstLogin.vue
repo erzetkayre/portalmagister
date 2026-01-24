@@ -10,9 +10,8 @@ import { ref, computed } from 'vue';
 
 interface Props {
     user: {
-        nama: string;
+        name: string;
         email: string;
-        role: string;
     };
 }
 
@@ -46,7 +45,6 @@ const isFormValid = computed(() => {
 });
 
 const submit = () => {
-    // Validasi sebelum submit
     if (!isFormValid.value) {
         return;
     }
@@ -84,8 +82,8 @@ const submit = () => {
                             <div class="flex items-center space-x-3">
                                 <User class="h-5 w-5 text-destructive" />
                                 <div>
-                                    <p class="font-medium text-gray-900 dark:text-white">{{ user.nama }}</p>
-                                    <p class="text-sm text-gray-600 dark:text-muted-foreground">{{ user.email }} • {{ user.role }}</p>
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ user.name }}</p>
+                                    <p class="text-sm text-gray-600 dark:text-muted-foreground">{{ user.email }}</p>
                                 </div>
                             </div>
                         </div>

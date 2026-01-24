@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('pwk')->create('ref_dosen', function (Blueprint $table) {
-            $table->id('dsn_id');
+            $table->id();
             $table->integer('user_id');
             $table->string('kode_dsn')->unique()->nullable();
             $table->string('nip')->unique();
@@ -26,14 +26,14 @@ return new class extends Migration
         });
 
         Schema::connection('pwk')->create('ref_mahasiswa', function (Blueprint $table) {
-            $table->id('mhs_id');
+            $table->id();
             $table->integer('user_id');
             $table->string('nim')->unique();
             $table->string('nama_mhs');
             $table->integer('angkatan')->nullable();
             $table->integer('sks')->default(0)->nullable();
             $table->decimal('ipk')->default(0)->nullable();
-            $table->foreignId('pem_akademik')->constrained('ref_dosen','dsn_id');
+            $table->foreignId('pem_akademik')->constrained('ref_dosen');
             $table->string('status_mhs')->default('aktif');
             $table->string('signature_mhs')->nullable();
             $table->enum('gender', ['L', 'P'])->nullable();
@@ -42,22 +42,22 @@ return new class extends Migration
         });
 
         Schema::connection('pwk')->create('ref_jabatan', function (Blueprint $table) {
-            $table->id('jabatan_id');
-            $table->foreignId('dosen_id')->constrained('ref_dosen','dsn_id')->onDelete('cascade');
+            $table->id();
+            $table->foreignId('dosen_id')->constrained('ref_dosen')->onDelete('cascade');
             $table->string('nama_jabatan');
             $table->timestamps();
             $table->softDeletes();
         });
 
         Schema::connection('pwk')->create('ref_ruang', function (Blueprint $table) {
-            $table->id('ruang_id');
+            $table->id();
             $table->string('nama_ruang');
             $table->timestamps();
             $table->softDeletes();
         });
 
         Schema::connection('pwk')->create('ref_mata_kuliah', function (Blueprint $table) {
-            $table->id('mk_id');
+            $table->id();
             $table->string('nama_mk');
             $table->string('kode_mk')->nullable();
             $table->integer('sks')->default(0)->nullable();

@@ -10,6 +10,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
 ];
+
 </script>
 
 <template>

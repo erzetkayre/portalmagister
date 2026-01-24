@@ -2,10 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Gate;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -37,15 +38,10 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
-
         return [
             ...parent::share($request),
             'name' => config('app.name'),
-            'quote' => ['message' => trim($message), 'author' => trim($author)],
-            'auth' => [
-                'user' => $request->user() ? $request->user()->load('role') : null,
-            ],
+            'auth' => $this->getUserInfo($request),
             'flash' => [
                 'message' => fn () => $request->session()->get('message')
             ],
@@ -54,6 +50,34 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+        ];
+    }
+
+    public function getUserInfo(Request $request): array
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return [
+                'user' => null,
+                'can' => [],
+                'program' => null,
+                ];
+                }
+
+        $user->loadMissing('studyProgram');
+        return [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'study_program' => $user->studyProgram->program_name
+            ],
+            'can' => [
+                'admin' => Gate::allows('admin'),
+                'dosen' => Gate::allows('dosen'),
+                'mahasiswa' => Gate::allows('mahasiswa'),
+            ],
+            'program' => $user->studyProgram->db_connection,
         ];
     }
 }

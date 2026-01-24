@@ -11,13 +11,13 @@ use Illuminate\Validation\Rules\Password;
 
 class FirstLoginController extends Controller
 {
-    public function index() {
+    public function create() {
         $user = Auth::user();
+        // dd($user);
         return Inertia::render('auth/FirstLogin',[
             'user' => [
-                'nama' => $user->nama,
+                'name' => $user->name,
                 'email' => $user->email,
-                'role' => $user->role->nama_role
             ]
         ]);
     }
@@ -33,6 +33,6 @@ class FirstLoginController extends Controller
             'first_login' => 1,
         ]);
 
-        return redirect()->route($user->role->nama_role.'.dashboard')->with('success', 'Password berhasil diubah! Selamat datang.');
+        return redirect()->route('dashboard')->with('success', 'Password berhasil diubah! Selamat datang.');
     }
 }

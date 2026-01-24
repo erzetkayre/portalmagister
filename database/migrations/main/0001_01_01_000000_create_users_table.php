@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('main')->create('roles', function (Blueprint $table) {
-            $table->id('role_id');
+            $table->id();
             $table->string('role_name');
             $table->string('description');
             $table->timestamps();
@@ -21,7 +21,7 @@ return new class extends Migration
 
 
         Schema::connection('main')->create('study_programs', function (Blueprint $table) {
-            $table->id('program_id');
+            $table->id();
             $table->string('program_name');
             $table->string('description');
             $table->string('db_connection');
@@ -30,7 +30,7 @@ return new class extends Migration
         });
 
         Schema::connection('main')->create('users', function (Blueprint $table) {
-            $table->id('user_id');
+            $table->id();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('nomor_induk')->unique();
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->string('password');
             $table->boolean('first_login')->default(false);
             $table->boolean('is_active')->default(true);
-            $table->foreignId('study_program_id')->constrained('study_programs','program_id');
+            $table->foreignId('study_program_id')->constrained('study_programs');
             $table->string('photo')->nullable();
             $table->string('phone')->nullable();
             $table->rememberToken();
@@ -47,9 +47,9 @@ return new class extends Migration
         });
 
         Schema::connection('main')->create('user_roles', function (Blueprint $table) {
-            $table->id('id');
-            $table->foreignId('role_id')->constrained('roles','role_id');
-            $table->foreignId('user_id')->constrained('users','user_id');
+            $table->id();
+            $table->foreignId('role_id')->constrained('roles');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -21,27 +21,24 @@ class FirstLoginMiddleware
         }
 
         $user = Auth::user();
-        $currentRoute = $request->route()->getName();
-        $role = $user->role->nama_role ?? 'mahasiswa';
+        $route = $request->route();
+        $currentRoute = $route?->getName();
 
-        // Route first login yang diizinkan
-        $firstLoginRoutes = ['index.first.login', 'post.first.login'];
-        $isFirstLoginRoute = in_array($currentRoute, haystack: $firstLoginRoutes);
+        $allowedRoutes = ['create.first.login', 'post.first.login', 'logout'];
 
         if ($user->first_login == 0) {
-            // Belum first login - paksa ke halaman ganti password (kecuali logout)
-            if (!$isFirstLoginRoute && $currentRoute !== 'logout') {
-                return redirect()->route('index.first.login')
+            if (!in_array($currentRoute, $allowedRoutes)) {
+                return redirect()->route('create.first.login')
                     ->with('warning', 'Silakan ganti password terlebih dahulu');
             }
         } else {
-            // Sudah first login - tidak boleh akses halaman first login lagi
-            if ($isFirstLoginRoute) {
-                return redirect()->route($role . '.dashboard')
+            if (in_array($currentRoute, ['create.first.login', 'post.first.login'])) {
+                return redirect()->route( 'dashboard')
                     ->with('info', 'Anda sudah pernah mengganti password');
             }
         }
 
         return $next($request);
     }
+
 }
