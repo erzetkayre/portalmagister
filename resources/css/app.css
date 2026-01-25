@@ -134,7 +134,7 @@ body {
   --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
   --font-serif: "Georgia", serif;
   --font-mono: "JetBrains Mono", monospace;
-  --radius: 0.5rem;
+  --radius: 0.75rem;
   --shadow-x: 0px;
   --shadow-y: 8px;
   --shadow-blur: 24px;
@@ -189,7 +189,7 @@ body {
   --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
   --font-serif: "Georgia", serif;
   --font-mono: "JetBrains Mono", monospace;
-  --radius: 1rem;
+  --radius: 0.75rem;
   --shadow-x: 0px;
   --shadow-y: 16px;
   --shadow-blur: 40px;

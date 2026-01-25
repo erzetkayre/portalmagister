@@ -100,7 +100,7 @@ const handleGenderSelect = (value: string) => {
 
 // Forms
 const profileForm = useForm({
-    nama: user.nama || '',
+    nama: user.name || '',
     email: user.email || '',
     nomor_induk: user.nomor_induk || '',
     phone: user.phone || '',

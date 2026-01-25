@@ -21,7 +21,6 @@ export interface NavItem {
 
 export type AppPageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     name: string;
-    quote: { message: string; author: string };
     auth: Auth;
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
@@ -29,7 +28,7 @@ export type AppPageProps<T extends Record<string, unknown> = Record<string, unkn
 
 export interface User {
     id: number;
-    nama: string;
+    name: string;
     email: string;
     nomor_induk: string;
     photo?: string;
@@ -37,12 +36,7 @@ export interface User {
     email_verified_at: string | null;
     first_login: boolean;
     is_active: boolean;
-    role_id: number;
-    role_data?: {
-        gender?: string;
-        nama_mhs?: string;
-        nama_dosen?: string;
-    };
+    study_program_id: number;
     created_at: string;
     updated_at: string;
 }

@@ -14,7 +14,7 @@ class FirstLoginController extends Controller
     public function create() {
         $user = Auth::user();
         // dd($user);
-        return Inertia::render('auth/FirstLogin',[
+        return Inertia::render('auth/ChangePassword',[
             'user' => [
                 'name' => $user->name,
                 'email' => $user->email,

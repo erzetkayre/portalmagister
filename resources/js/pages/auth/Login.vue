@@ -24,13 +24,14 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
 </script>
 
 <template>
     <div class="absolute right-3 top-3 sm:right-4 sm:top-4 md:fixed md:right-6 md:top-6 z-50">
         <AppearanceButton />
     </div>
-    <AuthBase title="Portal Thesis MPWK" description="Silahkan login untuk mengakses layanan">
+    <AuthBase title="Portal Tesis Fakultas Teknik" description="Silahkan login untuk mengakses layanan">
         <Head title="Log in" />
 
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
@@ -38,7 +39,7 @@ const submit = () => {
         </div>
 
         <form @submit.prevent="submit" class="flex flex-col gap-6">
-            <div class="grid gap-6">
+            <div class="grid gap-4">
                 <div class="grid gap-2">
                     <Label for="credential">NIM / NIP / Email</Label>
                     <Input
@@ -49,27 +50,27 @@ const submit = () => {
                         :tabindex="1"
                         autocomplete="username"
                         v-model="form.credential"
-                        placeholder="nim | nip | email@example.com "
+                        placeholder="nim | nip | email@example.com"
                     />
-                    <InputError :message="form.errors.credential" />
                 </div>
 
                 <div class="grid gap-2">
                     <Label for="email">Password</Label>
                     <Input
-                        id="password"
-                        type="password"
-                        required
-                        :tabindex="2"
-                        autocomplete="current-password"
-                        v-model="form.password"
-                        placeholder="password"
+                    id="password"
+                    type="password"
+                    required
+                    :tabindex="2"
+                    autocomplete="current-password"
+                    v-model="form.password"
+                    placeholder="password"
                     />
-                    <InputError :message="form.errors.password" />
                 </div>
+                <InputError :message="form.errors.credential" />
+                <InputError :message="form.errors.password" />
 
                 <div class="flex items-center justify-between">
-                    <Label for="remember" class="flex items-center space-x-2">
+                    <Label for="remember" class="flex items-center space-x-1">
                         <Checkbox id="remember" v-model="form.remember" :tabindex="3" />
                         <span>Remember me</span>
                     </Label>

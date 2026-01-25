@@ -159,5 +159,5 @@ Route::middleware(['auth','firstlogin'])->group(function () {
 
 
 // require __DIR__.'/auth.php';
-require __DIR__.'/lite.php';
-require __DIR__.'/standard.php';
+require __DIR__.'/elektro.php';
+require __DIR__.'/pwk.php';
