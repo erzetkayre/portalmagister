@@ -72,6 +72,7 @@ body {
   letter-spacing: var(--tracking-normal);
 }
 
+
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
@@ -111,8 +112,8 @@ body {
   --secondary-foreground: hsl(0 0% 100%);
   --muted: hsl(210.0000 40.0000% 98.0392%);
   --muted-foreground: hsl(215.3846 16.3180% 46.8627%);
-  --accent: hsl(54.9153 96.7213% 88.0392%);
-  --accent-foreground: hsl(31.7647 80.9524% 28.8235%);
+  --accent: hsl(192.2034 96.7213% 88.0392%);
+  --accent-foreground: hsl(203 81.0811% 29.0196%);
   --destructive: hsl(0 84.2365% 60.1961%);
   --destructive-foreground: hsl(0 0% 100%);
   --border: hsl(214.2857 31.8182% 91.3725%);
@@ -120,7 +121,7 @@ body {
   --ring: hsl(198.4375 93.2039% 59.6078%);
   --chart-1: hsl(198.4375 93.2039% 59.6078%);
   --chart-2: hsl(197.8846 44.8276% 54.5098%);
-  --chart-3: hsl(52.7586 98.3051% 76.8627%);
+  --chart-3: hsl(195.1304 98.2906% 77.0588%);
   --chart-4: hsl(215.0000 20.2247% 65.0980%);
   --chart-5: hsl(214.2857 31.8182% 91.3725%);
   --sidebar: hsl(210 20.0000% 98.0392%);
@@ -134,7 +135,7 @@ body {
   --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
   --font-serif: "Georgia", serif;
   --font-mono: "JetBrains Mono", monospace;
-  --radius: 0.75rem;
+  --radius: 1rem;
   --shadow-x: 0px;
   --shadow-y: 8px;
   --shadow-blur: 24px;
@@ -166,8 +167,8 @@ body {
   --secondary-foreground: hsl(210.0000 40.0000% 98.0392%);
   --muted: hsl(217.2414 32.5843% 17.4510%);
   --muted-foreground: hsl(215.0000 20.2247% 65.0980%);
-  --accent: hsl(26.0000 83.3333% 14.1176%);
-  --accent-foreground: hsl(54.9153 96.7213% 88.0392%);
+  --accent: hsl(213.5593 83.0986% 13.9216%);
+  --accent-foreground: hsl(192.2034 96.7213% 88.0392%);
   --destructive: hsl(0 70% 35.2941%);
   --destructive-foreground: hsl(210.0000 40.0000% 98.0392%);
   --border: hsl(215.2941 25.0000% 26.6667%);
@@ -175,7 +176,7 @@ body {
   --ring: hsl(198.4375 93.2039% 59.6078%);
   --chart-1: hsl(198.4375 93.2039% 59.6078%);
   --chart-2: hsl(196.4706 84.5304% 35.4902%);
-  --chart-3: hsl(52.7586 98.3051% 76.8627%);
+  --chart-3: hsl(195.1304 98.2906% 77.0588%);
   --chart-4: hsl(215.2941 25.0000% 26.6667%);
   --chart-5: hsl(217.2414 32.5843% 17.4510%);
   --sidebar: hsl(228.5714 84.0000% 4.9020%);
@@ -189,7 +190,7 @@ body {
   --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
   --font-serif: "Georgia", serif;
   --font-mono: "JetBrains Mono", monospace;
-  --radius: 0.75rem;
+  --radius: 1rem;
   --shadow-x: 0px;
   --shadow-y: 16px;
   --shadow-blur: 40px;

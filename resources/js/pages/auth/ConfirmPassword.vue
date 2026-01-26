@@ -37,12 +37,11 @@ const submit = () => {
                         autocomplete="current-password"
                         autofocus
                     />
-
                     <InputError :message="form.errors.password" />
                 </div>
 
                 <div class="flex items-center">
-                    <Button class="w-full" :disabled="form.processing">
+                    <Button type="submit" class="w-full" :disabled="form.processing">
                         <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                         Confirm Password
                     </Button>

@@ -26,13 +26,13 @@ class FirstLoginController extends Controller
         $request->validate([
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
-        $user = Auth::user();
 
+        $user = Auth::user();
         $user->update([
             'password' => Hash::make($request->password),
             'first_login' => 1,
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Password berhasil diubah! Selamat datang.');
+        return redirect()->route('dashboard')->with('success', ['title' => 'Password Changed', 'description' => 'Your password has been changed successfully.']);
     }
 }

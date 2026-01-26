@@ -24,6 +24,7 @@ class FirstLoginMiddleware
         $route = $request->route();
         $currentRoute = $route?->getName();
 
+        // Allowed routes during first login
         $allowedRoutes = ['create.first.login', 'post.first.login', 'logout'];
 
         if ($user->first_login == 0) {
