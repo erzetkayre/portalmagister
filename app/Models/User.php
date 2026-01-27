@@ -62,4 +62,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(StudyProgram::class);
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
+    }
+
+    public function hasRole(string $role)
+    {
+        return $this->roles->contains('role_name', $role);
+    }
 }

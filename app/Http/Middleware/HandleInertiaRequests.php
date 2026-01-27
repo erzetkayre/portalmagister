@@ -65,10 +65,10 @@ class HandleInertiaRequests extends Middleware
                 'user' => null,
                 'can' => [],
                 'program' => null,
-                ];
-                }
+            ];
+        }
 
-        $user->loadMissing('studyProgram');
+        $user->loadMissing(['roles', 'studyProgram']);
         return [
             'user' => [
                 'id' => $user->id,
@@ -77,6 +77,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'can' => [
                 'admin' => Gate::allows('admin'),
+                'koordinator' => Gate::allows('koordinator'),
                 'dosen' => Gate::allows('dosen'),
                 'mahasiswa' => Gate::allows('mahasiswa'),
             ],

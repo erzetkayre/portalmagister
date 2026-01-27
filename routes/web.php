@@ -20,8 +20,8 @@ Route::get('/', function () {return Inertia::render('Welcome');})->name('home');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('guest')->group(function () {
-    Route::get('login', [Auth\AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('login', [Auth\AuthenticatedSessionController::class, 'store']);
+    Route::get('login', [Auth\LoginController::class, 'create'])->name('login');
+    Route::post('login', [Auth\LoginController::class, 'store']);
 });
 
 Route::middleware(['auth','firstlogin'])->group(function () {
@@ -30,7 +30,7 @@ Route::middleware(['auth','firstlogin'])->group(function () {
     Route::post('change-password', [Auth\FirstLoginController::class, 'update'])->name('post.first.login');
     Route::get('dashboard',[Shared\DashboardController::class,'index'])->name('dashboard');
 
-    Route::post('logout', [Auth\AuthenticatedSessionController::class, 'destroy'])->name('logout');
+    Route::post('logout', [Auth\LoginController::class, 'destroy'])->name('logout');
 
      // Profile Routes
     Route::get('pengaturan/profil', [Auth\ProfileController::class, 'edit'])->name('profile.edit');

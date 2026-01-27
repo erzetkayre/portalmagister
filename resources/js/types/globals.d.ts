@@ -14,7 +14,22 @@ declare module 'vite/client' {
 }
 
 declare module '@inertiajs/core' {
-    interface PageProps extends InertiaPageProps, AppPageProps {}
+  interface PageProps extends InertiaPageProps {
+    auth: {
+      user: {
+        id: number
+        name: string
+        study_program: string
+      } | null
+      can: {
+        admin: boolean
+        koordinator: boolean
+        dosen: boolean
+        mahasiswa: boolean
+      }
+      program: 'pwk' | 'elektro'
+    }
+  }
 }
 
 declare module '@vue/runtime-core' {

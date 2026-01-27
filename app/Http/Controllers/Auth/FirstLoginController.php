@@ -23,16 +23,21 @@ class FirstLoginController extends Controller
     }
 
     public function update(Request $request) {
+        $user = Auth::user()->password;
         $request->validate([
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
         $user = Auth::user();
-        $user->update([
-            'password' => Hash::make($request->password),
-            'first_login' => 1,
-        ]);
+        if(Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['password' => 'Password baru tidak boleh sama dengan password lama.']);
+        } else {
+            $user->update([
+                'password' => Hash::make($request->password),
+                'first_login' => 1,
+            ]);
+        }
 
-        return redirect()->route('dashboard')->with('success', ['title' => 'Password Changed', 'description' => 'Your password has been changed successfully.']);
+        return redirect()->route('dashboard')->with('success', ['title' => 'Ubah Password Berhasil', 'description' => 'Password Anda telah berhasil diubah.']);
     }
 }

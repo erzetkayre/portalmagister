@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Route;
 use App\Http\Requests\Auth\LoginRequest;
 
-class AuthenticatedSessionController extends Controller
+class LoginController extends Controller
 {
     /**
      * Show the login page.
@@ -31,8 +29,13 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
         $request->session()->regenerate();
+        $user = Auth::user()->name;
 
-        return redirect()->intended(route('dashboard',absolute:false));
+        return redirect()->intended(route('dashboard',absolute:false))
+            ->with('success', [
+                'title' => 'Login Berhasil',
+                'description' => "Selamat datang kembali $user."
+                ]);
     }
 
     /**
