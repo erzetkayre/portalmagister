@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import PlaceholderPattern from '../../../../components/PlaceholderPattern.vue';
+import Heading from '../../../../components/Heading.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link} from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { useAuth } from '@/composables/useAuth';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Dashboard', href: '/dashboard' },
+    { title: 'User Management', href: '/admin/users' },
 ];
 
 const {
@@ -24,31 +25,10 @@ const {
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="User Management" />
     <AppLayout :breadcrumbs="breadcrumbs">
-    <Head title="Dashboard" />
-        <template v-if="program === 'pwk'">
-            Dashboard PWK
-            <!-- <Button as-child><Link :href="route('pwk.dashboard')"></Link></Button> -->
-        </template>
-        <template v-else-if="program === 'elektro'">
-            Dashboard Elektro
-            <!-- <Button as-child><Link :href="route('elektro.dashboard')"></Link></Button> -->
-
-            <div v-if="can.admin">
-                Admin Panel
-            </div>
-            <div v-if="can.mahasiswa">
-                Mahasiswa Panel
-            </div>
-            <div v-if="can.koordinator">
-                Koordinator Panel
-            </div>
-        </template>
-        <template v-else>
-            Tidak memiliki akses
-        </template>
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+            <Heading :title="'User Management'" :description="'Kelola pengguna dan hak akses sistem.'" />
             <div class="grid auto-rows-min gap-4 md:grid-cols-3">
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern />

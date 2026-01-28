@@ -1,0 +1,6 @@
+<!-- Role Gate and Permission -->
+Gate::define('admin', fn ($user) => $user->hasRole('admin'));
+Gate::define('koordinator', fn ($user) => $user->hasRole('koordinator'));
+Gate::define('dosen', fn ($user) => $user->hasRole('dosen'));
+Gate::define('mahasiswa', fn ($user) => $user->hasRole('mahasiswa'));
+

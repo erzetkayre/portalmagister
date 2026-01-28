@@ -63,7 +63,12 @@ class HandleInertiaRequests extends Middleware
         if (!$user) {
             return [
                 'user' => null,
-                'can' => [],
+                'can' => [
+                    'admin' => false,
+                    'koordinator' => false,
+                    'dosen' => false,
+                    'mahasiswa' => false
+                ],
                 'program' => null,
             ];
         }
@@ -74,7 +79,10 @@ class HandleInertiaRequests extends Middleware
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'study_program' => $user->studyProgram->program_name
+                'nomor_induk' => $user->nomor_induk,
+                'study_program' => $user->studyProgram->program_name,
+                'photo' => $user->photo,
+                'phone' => $user->phone,
             ],
             'can' => [
                 'admin' => Gate::allows('admin'),

@@ -158,10 +158,9 @@ class ProfileController extends Controller
             $user->update(['photo' => null]);
         }
 
-        return back()->with('message', [
-            'type' => 'success',
+        return back()->with('success', [
             'title' => 'Foto Berhasil Dihapus',
-            'message' => 'Foto profile Anda telah dihapus.'
+            'description' => 'Foto profile Anda telah dihapus.'
         ]);
     }
 }

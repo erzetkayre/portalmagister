@@ -3,37 +3,40 @@ import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavMainDropdown from '@/components/NavMainDropdown.vue';
 import NavUser from '@/components/NavUser.vue';
+import AppLogo from './AppLogo.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarGroup } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, BookOpenCheck, BookUser, GraduationCap, LayoutGrid, User2Icon, UserCheck, UsersRound, Presentation  } from 'lucide-vue-next';
-import AppLogo from './AppLogo.vue';
-import { computed} from 'vue';
+import { Link } from '@inertiajs/vue3';
+import { BookOpen, BookOpenCheck, GraduationCap, IdCard, LayoutGrid, List, UsersRound } from 'lucide-vue-next';
+import { useAuth } from '@/composables/useAuth';
 
-const { props } = usePage();
+const {
+    user,
+    can,
+    program,
+    isAuthenticated,
+    isAdmin,
+    isKoordinator,
+    isPWK,
+    isElektro
+} = useAuth();
 
-const dashboardRoute = computed(() => {
-    const user = props.auth?.user as any;
-    if (!user) return '/login';
-
-    const role = user.role?.nama_role;
-    // console.log(user);
-
-    return route(`${role}.dashboard`);
-});
-
-const userRole = computed(() => {
-    const user = props.auth?.user as any;
-    return user?.role?.nama_role || 'guest';
-});
+// Menu Dashboard
+const dashboardNavItems: NavItem[] = [
+    { title: 'Dashboard', href: route('dashboard'), routeName: 'dashboard', icon: LayoutGrid },
+];
 
 // Menu Admin
-const adminMainNavItems: NavItem[] = [
-    // { title: 'Dashboard', href: route('admin.dashboard'), routeName: 'admin.dashboard', icon: LayoutGrid },
-    { title: 'Proposal Tesis', href: '#',icon: BookOpenCheck,
-        items: [
-            // { title: 'Pengajuan Proposal Tesis', href: route('admin.draft.index'), routeName: 'admin.pratesis.draft.*'},
-            // { title: 'Pengajuan Seminar Proposal', href: route('admin.sempro.index'), routeName: 'admin.sempro.*'},
+const  adminMainNavItems: NavItem[] = [
+    { title: 'User Management', href: route('admin.users.index'), routeName: 'admin.users.index', icon: UsersRound },
+    { title: 'Daftar Mahasiswa', href: route('dashboard'), routeName: 'dashboard', icon: GraduationCap },
+    { title: 'Daftar Dosen', href: route('dashboard'), routeName: 'dashboard', icon: IdCard },
+    { title: 'Data Pendukung', href: '#',icon: List,
+    items: [
+            { title: 'Daftar Pembimbing Akademik', href: route('dashboard'), routeName: 'dashboard' },
+            { title: 'Daftar Mata Kuliah', href: route('dashboard'), routeName: 'admin.pratesis.draft.*'},
+            { title: 'Daftar Ruang', href: route('dashboard'), routeName: 'admin.sempro.*'},
+            { title: 'Daftar Jabatan', href: route('dashboard'), routeName: 'admin.sempro.*'},
         ]},
 ];
 
@@ -88,19 +91,11 @@ const footerNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <SidebarGroup v-if="userRole === 'admin'" class="px-2 py-0">
-                <NavMainDropdown :label="'Menu Utama'" :items="adminMainNavItems"/>
-                <NavMain :label="'Manajemen'" :items="managementNavItems"/>
+            <SidebarGroup class="px-2 py-0">
+                <NavMain :label="''" :items="dashboardNavItems"/>
             </SidebarGroup>
-            <SidebarGroup v-else-if="userRole === 'koordinator'" class="px-2 py-0">
-                <NavMain :label="'Manajemen'" :items="koordinatorMainNavItems"/>
-            </SidebarGroup>
-            <SidebarGroup v-else-if="userRole === 'dosen'" class="px-2 py-0">
-                <NavMain :label="'Manajemen'" :items="dosenMainNavItems"/>
-            </SidebarGroup>
-            <SidebarGroup v-else class="px-2 py-0">
-                <NavMainDropdown :label="'Menu Utama'" :items="mahasiswaMainNavItems"/>
-                <!-- <NavMainDropdown :label="'Menu Seminar'" :items="mahasiswaSeminarNavItems"/> -->
+            <SidebarGroup v-if="isAdmin" class="px-2 py-0">
+                <NavMainDropdown :label="'Administrator'" :items="adminMainNavItems"/>
             </SidebarGroup>
         </SidebarContent>
 

@@ -25,11 +25,12 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware(['auth','firstlogin'])->group(function () {
-
+    // First Login Password Change
     Route::get('change-password', [Auth\FirstLoginController::class, 'create'])->name('create.first.login');
     Route::post('change-password', [Auth\FirstLoginController::class, 'update'])->name('post.first.login');
-    Route::get('dashboard',[Shared\DashboardController::class,'index'])->name('dashboard');
 
+    // Dashboard Route
+    Route::get('dashboard',[Shared\DashboardController::class,'index'])->name('dashboard');
     Route::post('logout', [Auth\LoginController::class, 'destroy'])->name('logout');
 
      // Profile Routes
@@ -40,6 +41,11 @@ Route::middleware(['auth','firstlogin'])->group(function () {
     // Route::get('foto-profil/{userId}', [Auth\ProfilePhotoController::class, 'show'])->name('profile.photo.show');
     // Route::get('foto-profil', [Auth\ProfilePhotoController::class, 'current'])->name('profile.photo.current');
     Route::delete('foto-profil', [Auth\ProfileController::class, 'deletePhoto'])->name('profile.photo.delete');
+
+    // Admin Routes
+    Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('users', [Shared\Admin\UserManagementController::class, 'index'])->name('users.index');
+    });
     // // Route Admin
     // Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
     //     Route::get('dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
@@ -159,5 +165,5 @@ Route::middleware(['auth','firstlogin'])->group(function () {
 
 
 // require __DIR__.'/auth.php';
-require __DIR__.'/elektro.php';
-require __DIR__.'/pwk.php';
+// require __DIR__.'/elektro.php';
+// require __DIR__.'/pwk.php';

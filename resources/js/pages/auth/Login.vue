@@ -31,7 +31,7 @@ const submit = () => {
     <div class="absolute right-3 top-3 sm:right-4 sm:top-4 md:fixed md:right-6 md:top-6 z-50">
         <AppearanceButton />
     </div>
-    <AuthBase title="Portal Tesis Fakultas Teknik" description="Silahkan login untuk mengakses layanan">
+    <AuthBase title="Portal Magister Fakultas Teknik" description="Silahkan login untuk mengakses layanan">
         <Head title="Log in" />
 
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
