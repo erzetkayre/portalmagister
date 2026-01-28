@@ -2,17 +2,7 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 import { Link } from '@inertiajs/vue3'
-import {
-    Home,
-    ShieldX,
-    LayoutDashboard,
-    Search,
-    AlertTriangle,
-    Shield,
-    Clock,
-    Wrench,
-    XCircle
-} from 'lucide-vue-next'
+import { Home, ShieldX, LayoutDashboard, Search, AlertTriangle, Shield, Clock, Wrench, XCircle } from 'lucide-vue-next'
 import { usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
@@ -25,46 +15,20 @@ const page = computed(() => usePage().props)
 const dashboardRoute = computed(() => {
     const user = page.value.auth?.user as any;
     if (!user) return '/login';
-
-    const role = user.role?.nama_role;
-    // console.log(user);
-
-    return route(`${role}.dashboard`);
+    // const role = user.role?.nama_role;
+    // // console.log(user);
+    return route(`dashboard`);
 });
 
 // Dynamic content berdasarkan status code
 const errorConfig = computed(() => {
-    const configs = {
-        403: {
-            icon: ShieldX,
-            title: 'Access Forbidden',
-            description: 'You don\'t have permission to access this resource.',
-        },
-        404: {
-            icon: Search,
-            title: 'Page Not Found',
-            description: 'The page you\'re looking for doesn\'t exist or has been moved.',
-        },
-        500: {
-            icon: AlertTriangle,
-            title: 'Server Error',
-            description: 'Something went wrong on our end. We\'re working to fix it.',
-        },
-        503: {
-            icon: Wrench,
-            title: 'Under Maintenance',
-            description: 'We\'re currently performing scheduled maintenance. We\'ll be back shortly.',
-        },
-        419: {
-            icon: Shield,
-            title: 'Session Expired',
-            description: 'Your session has expired. Please refresh the page and try again.',
-        },
-        429: {
-            icon: Clock,
-            title: 'Too Many Requests',
-            description: 'You\'ve made too many requests. Please wait a moment and try again.',
-        }
+    const configs: Record<number, any> = {
+        403: { icon: ShieldX, title: 'Access Forbidden', description: 'You don\'t have permission to access this resource.' },
+        404: { icon: Search, title: 'Page Not Found', description: 'The page you\'re looking for doesn\'t exist or has been moved.' },
+        500: { icon: AlertTriangle, title: 'Server Error', description: 'Something went wrong on our end. We\'re working to fix it.' },
+        503: { icon: Wrench, title: 'Under Maintenance', description: 'We\'re currently performing scheduled maintenance. We\'ll be back shortly.' },
+        419: { icon: Shield, title: 'Session Expired', description: 'Your session has expired. Please refresh the page and try again.' },
+        429: { icon: Clock, title: 'Too Many Requests', description: 'You\'ve made too many requests. Please wait a moment and try again.' }
     };
 
     return configs[propsStatus.status] || {

@@ -41,4 +41,13 @@ export interface User {
     updated_at: string;
 }
 
+export interface AuthUser {
+    id: number;
+    name: string;
+    email: string;
+    nomor_induk: string;
+    photo?: string;
+    phone?: string;
+}
+
 export type BreadcrumbItemType = BreadcrumbItem;

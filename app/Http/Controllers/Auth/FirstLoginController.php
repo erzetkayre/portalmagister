@@ -38,6 +38,9 @@ class FirstLoginController extends Controller
             ]);
         }
 
-        return redirect()->route('dashboard')->with('success', ['title' => 'Ubah Password Berhasil', 'description' => 'Password Anda telah berhasil diubah.']);
+        return redirect()->route('dashboard')->with('success', [
+            'title' => 'Ubah Password Berhasil',
+            'description' => 'Password Anda telah berhasil diubah.'
+        ]);
     }
 }

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, usePage} from '@inertiajs/vue3';
+import { Head, usePage, Link} from '@inertiajs/vue3';
 import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import Button from '@/components/ui/button/Button.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,29 +15,32 @@ const breadcrumbs: BreadcrumbItem[] = [
 const page = usePage()
 
 console.log(page.props)
+const can = page.props.auth.can
 const program = page.props.auth.program
 
-const dashboardType = (() => {
-    if (program === 'pwk') {
-        return 'pwk'
-    }
-
-    if (program === 'elektro') {
-        return 'elektro'
-    }
-
-    return 'unknown'})();
 </script>
 
 <template>
     <Head title="Dashboard" />
     <AppLayout :breadcrumbs="breadcrumbs">
     <Head title="Dashboard" />
-        <template v-if="dashboardType === 'pwk'">
+        <template v-if="program === 'pwk'">
             Dashboard PWK
+            <Button as-child><Link :href="route('pwk.dashboard')"></Link></Button>
         </template>
-        <template v-else-if="dashboardType === 'elektro'">
+        <template v-else-if="program === 'elektro'">
             Dashboard Elektro
+            <Button as-child><Link :href="route('elektro.dashboard')"></Link></Button>
+
+            <div v-if="can.admin">
+                Admin Panel
+            </div>
+            <div v-if="can.mahasiswa">
+                Mahasiswa Panel
+            </div>
+            <div v-if="can.koordinator">
+                Koordinator Panel
+            </div>
         </template>
         <template v-else>
             Tidak memiliki akses

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\RoleCheckMiddleware;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\StudyProgramMiddleware;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -29,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'firstlogin' => FirstLoginMiddleware::class,
+            'program' => StudyProgramMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
