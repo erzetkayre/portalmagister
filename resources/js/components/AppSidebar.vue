@@ -33,7 +33,7 @@ const  adminMainNavItems: NavItem[] = [
     { title: 'Daftar Dosen', href: route('dashboard'), routeName: 'dashboard', icon: IdCard },
     { title: 'Data Pendukung', href: '#',icon: List,
     items: [
-            { title: 'Daftar Pembimbing Akademik', href: route('dashboard'), routeName: 'dashboard' },
+            { title: 'Pembimbing Akademik', href: route('dashboard'), routeName: 'dashboard' },
             { title: 'Daftar Mata Kuliah', href: route('dashboard'), routeName: 'admin.pratesis.draft.*'},
             { title: 'Daftar Ruang', href: route('dashboard'), routeName: 'admin.sempro.*'},
             { title: 'Daftar Jabatan', href: route('dashboard'), routeName: 'admin.sempro.*'},

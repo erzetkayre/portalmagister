@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\Sortable;
+use App\Helpers\Filterable;
 use App\Models\StudyProgram;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,7 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes, Sortable, Filterable;
 
     /**
      * The attributes that are mass assignable.
@@ -58,6 +60,34 @@ class User extends Authenticatable
         ];
     }
 
+    protected array $filterableColumns = [
+        'search' => [
+            'name',
+            'email',
+            'nomor_induk',
+        ],
+        'is_active',
+    ];
+
+    protected array $sortableColumns = [
+        'name',
+        'is_active',
+        'nomor_induk',
+        'created_at',
+    ];
+
+    public function toSearchResult(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'is_active' => $this->is_active,
+            'nomor_induk' => $this->nomor_induk,
+            'created_at' => $this->created_at->format('d M Y'),
+        ];
+    }
+
     public function studyProgram()
     {
         return $this->belongsTo(StudyProgram::class);
@@ -72,4 +102,10 @@ class User extends Authenticatable
     {
         return $this->roles->contains('role_name', $role);
     }
+
+    public function scopeByStudyProgram($query, $program)
+    {
+        return $query->where('study_program_id', $program);
+    }
+
 }

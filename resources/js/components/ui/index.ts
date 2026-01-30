@@ -183,11 +183,6 @@ export { default as TooltipTrigger } from './tooltip/TooltipTrigger.vue';
 
 // Custom Components
 export { default as StatCard } from './StatCard.vue';
-export { default as AlertNotification } from './AlertNotification.vue';
-export { default as DataTable } from './DataTable.vue';
-export { default as FilterBar } from './FilterBar.vue';
-export { default as ActionButtons } from './ActionButtons.vue';
-export { default as ConfirmationDialog } from './ConfirmationDialog.vue';
 
 
 

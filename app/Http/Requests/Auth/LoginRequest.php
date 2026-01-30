@@ -50,7 +50,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey(), 300);
 
             throw ValidationException::withMessages([
-                'credential' => trans('auth.failed'),
+                'credential' => 'Email atau password tidak sesuai. Silakan periksa kembali.',
             ]);
         }
 
