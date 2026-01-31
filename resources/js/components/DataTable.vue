@@ -6,10 +6,8 @@ import {
 } from '@/components/ui';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ChevronUp, ChevronDown } from 'lucide-vue-next';
+import { computed } from 'vue';
 
-// ============================================
-// TYPES
-// ============================================
 interface Column {
     key: string;
     label: string;
@@ -25,13 +23,8 @@ interface PaginationData {
     lastPage: number;
     from: number;
     to: number;
-    prevPageUrl: string | null;
-    nextPageUrl: string | null;
 }
 
-// ============================================
-// PROPS & EMITS
-// ============================================
 const props = defineProps<{
     columns: Column[];
     data: any[];
@@ -47,9 +40,6 @@ const emit = defineEmits<{
     perPageChange: [value: number];
 }>();
 
-// ============================================
-// METHODS
-// ============================================
 const getRowKey = (item: any, index: number) => {
     return props.itemKey ? item[props.itemKey] : index;
 };
@@ -64,9 +54,8 @@ const getSortIcon = (column: Column) => {
 };
 
 const handleSort = (column: Column) => {
-    if (column.sortable) {
-        emit('sort', column.key);
-    }
+    if (!column.sortable) return;
+    emit('sort', column.key);
 };
 
 const handlePageChange = (page: number) => {
@@ -75,9 +64,21 @@ const handlePageChange = (page: number) => {
     }
 };
 
-const handlePerPageChange = (value: string) => {
-    emit('perPageChange', Number(value));
+const handlePerPageChange = (value: unknown) => {
+    const perPage = Number(value);
+    if (Number.isNaN(perPage)) return;
+
+    emit('perPageChange', perPage);
 };
+
+const rowInfo = computed(() => {
+  const p = props.pagination
+  if (!p || p.total === 0) {
+    return '0 of 0 row(s)'
+  }
+  return `${p.from}–${p.to} of ${p.total} row(s)`
+})
+
 </script>
 
 <template>
@@ -94,15 +95,17 @@ const handlePerPageChange = (value: string) => {
                                 column.class,
                                 column.sortable && 'cursor-pointer select-none hover:bg-muted/50'
                             ]"
-                            @click="handleSort(column)"
-                        >
-                            <div class="flex items-center gap-2">
+                            @click="handleSort(column)">
+                            <div :class="[
+                                'flex items-center gap-2',
+                                column.key === 'number' && 'justify-center',
+                                column.key === 'actions' && 'justify-center'
+                                ]">
                                 <span>{{ column.label }}</span>
                                 <component
                                     :is="getSortIcon(column)"
                                     v-if="getSortIcon(column)"
-                                    class="h-4 w-4 flex-shrink-0"
-                                />
+                                    class="h-4 w-4 flex-shrink-0"/>
                             </div>
                         </TableHead>
                     </TableRow>
@@ -110,31 +113,26 @@ const handlePerPageChange = (value: string) => {
                 <TableBody>
                     <TableRow
                         v-for="(item, index) in data"
-                        :key="getRowKey(item, index)"
-                    >
+                        :key="getRowKey(item, index)">
                         <TableCell
                             v-for="column in columns"
                             :key="column.key"
-                            :class="column.cellClass"
-                        >
+                            :class="column.cellClass">
                             <slot
                                 :name="column.key"
                                 :item="item"
                                 :index="index"
-                                :value="getValue(item, column.key)"
-                            >
+                                :value="getValue(item, column.key)">
                                 {{ getValue(item, column.key) }}
                             </slot>
                         </TableCell>
                     </TableRow>
-
                     <!-- Empty State -->
                     <TableRow v-if="!data.length">
                         <TableCell
                             :colspan="columns.length"
-                            class="text-center py-8 text-muted-foreground"
-                        >
-                            Tidak ada data
+                            class="text-center py-8 text-muted-foreground">
+                            No data available.
                         </TableCell>
                     </TableRow>
                 </TableBody>
@@ -142,16 +140,19 @@ const handlePerPageChange = (value: string) => {
         </div>
 
         <!-- Pagination & Controls -->
-        <div class="flex items-center justify-between pt-4 border-t min-h-[40px]">
-            <!-- Left: Row per page (FIXED WIDTH) -->
-            <div class="flex items-center gap-2 w-[180px] flex-shrink-0">
+        <div class="flex flex-wrap items-center justify-between pt-4 border-t min-h-[40px]">
+            <div class="flex-wrap text-center">
+                <span class="text-sm text-muted-foreground">
+                    {{ rowInfo }}
+                </span>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
                 <span class="text-xs text-muted-foreground whitespace-nowrap">
-                    Row per page
+                    Rows per page
                 </span>
                 <Select
                     :model-value="String(pagination.perPage)"
-                    @update:model-value="handlePerPageChange"
-                >
+                    @update:model-value="handlePerPageChange">
                     <SelectTrigger class="w-[70px] h-9">
                         <SelectValue />
                     </SelectTrigger>
@@ -167,38 +168,59 @@ const handlePerPageChange = (value: string) => {
                 </Select>
             </div>
 
-            <!-- Right: Pagination (ALWAYS RENDERED) -->
-            <div class="flex-shrink-0">
+            <div class="hidden md:flex justify-end">
                 <Pagination
                     :items-per-page="pagination.perPage"
                     :total="pagination.total"
-                    :default-page="pagination.currentPage"
-                >
+                    :default-page="pagination.currentPage">
                     <PaginationContent>
                         <PaginationPrevious
                             @click="handlePageChange(pagination.currentPage - 1)"
-                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === 1 }"
-                        />
+                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === 1 }"/>
 
-                        <!-- Hanya tampilkan page numbers jika lastPage > 1 -->
                         <template v-if="pagination.lastPage > 1">
                             <PaginationItem
                                 v-for="pageNum in Math.min(pagination.lastPage, 5)"
                                 :key="pageNum"
                                 :value="pageNum"
                                 :is-active="pageNum === pagination.currentPage"
-                                @click="handlePageChange(pageNum)"
-                            >
+                                @click="handlePageChange(pageNum)">
                                 {{ pageNum }}
                             </PaginationItem>
-
                             <PaginationEllipsis v-if="pagination.lastPage > 5" />
                         </template>
 
                         <PaginationNext
                             @click="handlePageChange(pagination.currentPage + 1)"
-                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === pagination.lastPage }"
-                        />
+                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === pagination.lastPage }"/>
+                    </PaginationContent>
+                </Pagination>
+            </div>
+            <div class="flex justify-center w-full mt-4 md:hidden">
+                <Pagination
+                    :items-per-page="pagination.perPage"
+                    :total="pagination.total"
+                    :default-page="pagination.currentPage">
+                    <PaginationContent>
+                        <PaginationPrevious
+                            @click="handlePageChange(pagination.currentPage - 1)"
+                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === 1 }"/>
+
+                        <template v-if="pagination.lastPage > 1">
+                            <PaginationItem
+                                v-for="pageNum in Math.min(pagination.lastPage, 5)"
+                                :key="pageNum"
+                                :value="pageNum"
+                                :is-active="pageNum === pagination.currentPage"
+                                @click="handlePageChange(pageNum)">
+                                {{ pageNum }}
+                            </PaginationItem>
+                            <PaginationEllipsis v-if="pagination.lastPage > 5" />
+                        </template>
+
+                        <PaginationNext
+                            @click="handlePageChange(pagination.currentPage + 1)"
+                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === pagination.lastPage }"/>
                     </PaginationContent>
                 </Pagination>
             </div>

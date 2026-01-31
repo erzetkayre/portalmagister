@@ -25,6 +25,12 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -94,8 +100,7 @@ body {
 @layer utilities {
     body,
     html {
-        --font-sans:
-            'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+        --font-sans: var(--font-sans);
     }
 }
 
@@ -119,6 +124,12 @@ body {
   --border: hsl(214.2857 31.8182% 91.3725%);
   --input: hsl(214.2857 31.8182% 91.3725%);
   --ring: hsl(198.4375 93.2039% 59.6078%);
+  --success: hsl(142 71% 45%);
+  --success-foreground: hsl(0 0% 100%);
+  --warning: hsl(38 92% 50%);
+  --warning-foreground: hsl(0 0% 100%);
+  --info: hsl(199 89% 48%);
+  --info-foreground: hsl(0 0% 100%);
   --chart-1: hsl(198.4375 93.2039% 59.6078%);
   --chart-2: hsl(197.8846 44.8276% 54.5098%);
   --chart-3: hsl(195.1304 98.2906% 77.0588%);
@@ -133,7 +144,7 @@ body {
   --sidebar-border: hsl(210.0000 40.0000% 96.0784%);
   --sidebar-ring: hsl(198.4375 93.2039% 59.6078%);
   --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
-  --font-serif: "Georgia", serif;
+  --font-serif: "Geist", serif;
   --font-mono: "JetBrains Mono", monospace;
   --radius: 1rem;
   --shadow-x: 0px;
@@ -174,6 +185,12 @@ body {
   --border: hsl(215.2941 25.0000% 26.6667%);
   --input: hsl(215.2941 25.0000% 26.6667%);
   --ring: hsl(198.4375 93.2039% 59.6078%);
+  --success: hsl(142 71% 45%);
+  --success-foreground: hsl(222.2222 47.3684% 11.1765%);
+  --warning: hsl(38 92% 50%);
+  --warning-foreground: hsl(222.2222 47.3684% 11.1765%);
+  --info: hsl(199 89% 48%);
+  --info-foreground: hsl(222.2222 47.3684% 11.1765%);
   --chart-1: hsl(198.4375 93.2039% 59.6078%);
   --chart-2: hsl(196.4706 84.5304% 35.4902%);
   --chart-3: hsl(195.1304 98.2906% 77.0588%);
@@ -188,7 +205,7 @@ body {
   --sidebar-border: hsl(215.2941 25.0000% 26.6667%);
   --sidebar-ring: hsl(198.4375 93.2039% 59.6078%);
   --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
-  --font-serif: "Georgia", serif;
+  --font-serif: "Geist", serif;
   --font-mono: "JetBrains Mono", monospace;
   --radius: 1rem;
   --shadow-x: 0px;

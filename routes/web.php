@@ -44,7 +44,17 @@ Route::middleware(['auth','firstlogin'])->group(function () {
 
     // Admin Routes
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
-        Route::get('users', [Shared\Admin\UserManagementController::class, 'index'])->name('users.index');
+        Route::prefix('users')->name('users.')->group(function(){
+            Route::get('/', [Shared\Admin\UserManagementController::class, 'index'])->name('index');
+            Route::get('/create', [Shared\Admin\UserManagementController::class, 'create'])->name('create');
+            Route::post('/', [Shared\Admin\UserManagementController::class, 'store'])->name('store');
+            Route::get('/{id}', [Shared\Admin\UserManagementController::class, 'show'])->name('show');
+            Route::get('/edit/{id}', [Shared\Admin\UserManagementController::class, 'edit'])->name('edit');
+            Route::post('/{id}', [Shared\Admin\UserManagementController::class, 'update'])->name('update');
+            Route::delete('/{id}', [Shared\Admin\UserManagementController::class, 'destroy'])->name('delete');
+            Route::post('/{id}/reset-password', [Shared\Admin\UserManagementController::class, 'resetPassword'])->name('reset.password');
+            Route::post('/import', [Shared\Admin\UserManagementController::class, 'import'])->name('import');
+        });
     });
     // // Route Admin
     // Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {

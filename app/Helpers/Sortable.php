@@ -6,11 +6,11 @@ trait Sortable
 {
     public function scopeApplySorting(Builder $query, array $filters): Builder
     {
-        $sortBy = $filters['sort_by'] ?? 'id';
-        $direction = strtolower($filters['sort_direction'] ?? 'asc');
+        $sortBy = $filters['sort_by'] ?? 'created_at';
+        $direction = $filters['sort_direction'] ?? 'asc';
 
         if (!in_array($sortBy, $this->sortableColumns ?? [])) {
-            $sortBy = 'id';
+            $sortBy = 'created_at';
         }
 
         if (!in_array($direction, ['asc', 'desc'])) {

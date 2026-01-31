@@ -35,7 +35,7 @@ class LoginController extends Controller
             ->with('success', [
                 'title' => 'Login Berhasil',
                 'description' => "Selamat datang kembali $user."
-                ]);
+            ]);
     }
 
     /**

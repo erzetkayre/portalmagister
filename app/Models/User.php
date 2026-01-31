@@ -66,7 +66,7 @@ class User extends Authenticatable
             'email',
             'nomor_induk',
         ],
-        'is_active',
+        'is_active' => 'is_active',
     ];
 
     protected array $sortableColumns = [
@@ -84,7 +84,7 @@ class User extends Authenticatable
             'email' => $this->email,
             'is_active' => $this->is_active,
             'nomor_induk' => $this->nomor_induk,
-            'created_at' => $this->created_at->format('d M Y'),
+            'created_at' => $this->created_at->format('j F Y'),
         ];
     }
 

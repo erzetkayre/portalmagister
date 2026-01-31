@@ -16,11 +16,9 @@ export function useTable(options: UseTableOptions) {
 
     const searchQuery = ref(initialFilters.search || '');
     const filters = ref<Record<string, any>>({
-        is_active: initialFilters.is_active ?? null,
         per_page: initialFilters.per_page ?? 10,
-        ...initialFilters
     })
-    const sortBy = ref(initialFilters.sort_by || 'id');
+    const sortBy = ref(initialFilters.sort_by || 'created_at');
     const sortDirection = ref<'asc' | 'desc'>(initialFilters.sort_direction || 'asc');
 
     const fetchData = (options: {
@@ -48,10 +46,12 @@ export function useTable(options: UseTableOptions) {
             preserveScroll: options.preserveScroll ?? true,
         });
     };
+
     const handlePerPageChange = (value: number) => {
         filters.value.per_page = value
         fetchData({ page: 1 })
     }
+
     let searchTimeout: number | null = null;
     watch(searchQuery, () => {
         if (searchTimeout) clearTimeout(searchTimeout);
@@ -60,7 +60,7 @@ export function useTable(options: UseTableOptions) {
         }, debounceMs);
     });
 
-    const setFilter = (key: string, value: string) => {
+    const setFilter = (key: any, value: any) => {
         filters.value = { ...filters.value, [key]: value };
         fetchData();
     };
@@ -69,9 +69,8 @@ export function useTable(options: UseTableOptions) {
         searchQuery.value = '';
         filters.value = {
             per_page: filters.value.per_page ?? 10,
-            is_active: null,
         };
-        sortBy.value = 'id';
+        sortBy.value = 'created_at';
         sortDirection.value = 'asc';
         fetchData({ page: 1 });
     };
@@ -83,7 +82,7 @@ export function useTable(options: UseTableOptions) {
             sortBy.value = column;
             sortDirection.value = 'asc';
         }
-        fetchData();
+        fetchData({ preserveScroll: false });
     };
 
     const handlePageChange = (page: number) => {

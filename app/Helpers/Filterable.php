@@ -13,12 +13,10 @@ trait Filterable
         foreach ($this->filterableColumns as $key => $columns) {
             $value = $filters[$key] ?? null;
 
-            // Skip jika value kosong
-            if (empty($value)) {
+            if ($value === null || $value === '') {
                 continue;
             }
 
-            // Search (LIKE) - multiple columns
             if (is_array($columns)) {
                 $query->where(function ($q) use ($columns, $value) {
                     foreach ($columns as $column) {
@@ -26,7 +24,7 @@ trait Filterable
                     }
                 });
             }
-            // Exact match - single column
+
             else {
                 $query->where($columns, $value);
             }
