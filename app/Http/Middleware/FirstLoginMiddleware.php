@@ -34,9 +34,7 @@ class FirstLoginMiddleware
             }
         } else {
             if (in_array($currentRoute, ['create.first.login', 'post.first.login'])) {
-                return redirect()->route( 'dashboard')
-                    ->with('info', 'Anda sudah pernah mengganti password');
-            }
+                return redirect()->route( 'dashboard');}
         }
 
         return $next($request);

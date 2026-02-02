@@ -24,23 +24,15 @@ import { Pencil, Trash2, UserRoundPlus, FileUp, Eye, KeyRound } from 'lucide-vue
 import { computed, ref } from 'vue';
 import { useTable } from '@/composables/useTable';
 import { buttonVariants } from '@/components/ui/button';
+import type { User } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'User Management', href: '/admin/users' },
 ];
 
-// Props and Interface Declaration
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    is_active: boolean;
-    nomor_induk: string;
-    created_at: string | null;
-}
-
-interface UsersPagination {
-    data: User[];
+// Define Interface and Props
+interface UsersPagination<T> {
+    data: T[];
     current_page: number;
     last_page: number;
     per_page: number;
@@ -63,7 +55,7 @@ interface Filters {
 }
 
 interface Props {
-    users: UsersPagination;
+    users: UsersPagination<User>;
     filters: Filters;
 }
 
@@ -147,7 +139,7 @@ const importUsers = () => {
     <Head title="User Management" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <Heading :title="'Daftar Pengguna'" :description="'Kelola pengguna dan hak akses sistem.'" />
+            <Heading :title="'Daftar Pengguna'" description="Kelola pengguna dan hak akses sistem." />
             <div class="flex flex-wrap gap-2 justify-between">
                 <TableFilters
                     v-model:search-value="searchQuery"
@@ -174,53 +166,52 @@ const importUsers = () => {
                         Import User
                     </Button>
                     <AlertDialog>
-    <AlertDialogTrigger as-child>
-        <Button
-            variant="outline"
-            size="sm"
-            class="h-9">
-            <FileUp class="h-4 w-4" />
-            Import User
-        </Button>
-    </AlertDialogTrigger>
+                        <AlertDialogTrigger as-child>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                class="h-9">
+                                <FileUp class="h-4 w-4" />
+                                Import User
+                            </Button>
+                        </AlertDialogTrigger>
 
-    <AlertDialogContent class="sm:max-w-md">
-        <AlertDialogHeader>
-            <AlertDialogTitle>Import User</AlertDialogTitle>
-            <AlertDialogDescription>
-                Upload file Excel (.xls / .xlsx) untuk menambahkan user secara massal.
-            </AlertDialogDescription>
-        </AlertDialogHeader>
+                        <AlertDialogContent class="sm:max-w-md">
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Import User</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Upload file Excel (.xls / .xlsx) untuk menambahkan user secara massal.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
 
-        <!-- File Input -->
-        <div class="grid gap-2 py-4">
-            <input
-                type="file"
-                accept=".xls,.xlsx"
-                class="block w-full text-sm
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-md file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-primary file:text-primary-foreground
-                    hover:file:bg-primary/90 border-dashed border-2"
-            />
-            <p class="text-xs text-muted-foreground">
-                Maksimal 2MB. Format: XLS / XLSX
-            </p>
-        </div>
+                            <!-- File Input -->
+                            <div class="grid gap-2 py-4">
+                                <input
+                                    type="file"
+                                    accept=".xls,.xlsx"
+                                    class="block w-full text-sm
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-md file:border-0
+                                        file:text-sm file:font-semibold
+                                        file:bg-primary file:text-primary-foreground
+                                        hover:file:bg-primary/90 border-dashed border-2"
+                                />
+                                <p class="text-xs text-muted-foreground">
+                                    Maksimal 2MB. Format: XLS / XLSX
+                                </p>
+                            </div>
 
-        <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction
-                type="button"
-                :disabled="!excelFile"
-                @click="submitImport">
-                Upload
-            </AlertDialogAction>
-        </AlertDialogFooter>
-    </AlertDialogContent>
-</AlertDialog>
-
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Batal</AlertDialogCancel>
+                                <AlertDialogAction
+                                    type="button"
+                                    :disabled="!excelFile"
+                                    @click="submitImport">
+                                    Upload
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             </div>
             <!-- Table -->
@@ -247,7 +238,7 @@ const importUsers = () => {
                 <template #actions="{ item }">
                     <div class="flex justify-center gap-4">
                         <TextLink
-                            :href="`/admin/users/${item.id}/show`"
+                            :href="`/admin/users/${item.id}`"
                             class="hover:underline text-sm"
                             :tooltip="`Lihat ${item.name}`">
                             <Eye class="w-4 h-4 text-primary" />

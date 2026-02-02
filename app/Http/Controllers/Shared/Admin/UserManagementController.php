@@ -41,7 +41,11 @@ class UserManagementController extends Controller
 
     public function show($id)
     {
-        //
+        $user = User::with('roles')->findOrFail($id);
+        // dd($user);
+        return Inertia::Render('shared/admin/user/Show',[
+            'user' => $user,
+        ]);
     }
 
     public function edit($id)
