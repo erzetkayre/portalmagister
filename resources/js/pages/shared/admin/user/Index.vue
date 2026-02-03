@@ -231,20 +231,20 @@ const importUsers = () => {
                     </span>
                 </template>
                 <template #is_active="{ value }">
-                    <Badge :variant="value ? 'default' : 'destructive'">
+                    <Badge :variant="value ? 'primary-outline' : 'destructive-outline'">
                         {{ value ? 'Aktif' : 'Tidak Aktif' }}
                     </Badge>
                 </template>
                 <template #actions="{ item }">
                     <div class="flex justify-center gap-4">
                         <TextLink
-                            :href="`/admin/users/${item.id}`"
+                            :href="route('admin.users.show',item.id)"
                             class="hover:underline text-sm"
                             :tooltip="`Lihat ${item.name}`">
                             <Eye class="w-4 h-4 text-primary" />
                         </TextLink>
                             <TextLink
-                            :href="`/admin/users/${item.id}/edit`"
+                            :href="route('admin.users.edit',item.id)"
                             class="hover:underline text-sm"
                             :tooltip="`Edit ${item.name}`">
                             <Pencil class="w-4 h-4 text-warning" />

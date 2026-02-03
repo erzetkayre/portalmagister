@@ -3,11 +3,10 @@ import AppContent from '@/components/AppContent.vue';
 import AppShell from '@/components/AppShell.vue';
 import AppSidebar from '@/components/AppSidebar.vue';
 import AppSidebarHeader from '@/components/AppSidebarHeader.vue';
-import AppearanceButton from '@/components/AppearanceButtons.vue';
-import type { BreadcrumbItemType } from '@/types';
+import type { BreadcrumbItem } from '@/types';
 
 interface Props {
-    breadcrumbs?: BreadcrumbItemType[];
+    breadcrumbs?: BreadcrumbItem[];
 }
 
 withDefaults(defineProps<Props>(), {
@@ -21,7 +20,6 @@ withDefaults(defineProps<Props>(), {
         <AppContent variant="sidebar">
             <AppSidebarHeader :breadcrumbs="breadcrumbs" />
             <slot />
-            <AppearanceButton></AppearanceButton>
         </AppContent>
     </AppShell>
 </template>

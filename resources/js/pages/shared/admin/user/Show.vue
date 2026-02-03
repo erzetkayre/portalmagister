@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInitials } from '@/composables/useInitials';
 import { Button } from '@/components/ui';
-import { ArrowLeftToLine } from 'lucide-vue-next';
+import { ArrowLeftToLine, SquarePen } from 'lucide-vue-next';
 
 // Define Interface and Props
 interface Props {
@@ -80,8 +80,8 @@ const userType = computed(() => {
                 </div>
                 <div class="flex flex-col gap-3 my-2">
                     <Label>Status</Label>
-                    <Badge :variant="props.user.is_active ? 'default' : 'destructive'">
-                    {{ props.user.is_active ? 'User Aktif' : 'Tidak Aktif' }}
+                    <Badge :variant="props.user.is_active ? 'primary-outline' : 'destructive-outline'">
+                        {{ props.user.is_active ? 'Active' : 'Inactive' }}
                     </Badge>
                 </div>
                 <div class="flex flex-col gap-3 my-2">
@@ -98,11 +98,17 @@ const userType = computed(() => {
                 </div>
             </div>
             <hr>
-            <div class="inline-flex">
+            <div class="inline-flex gap-2">
                 <Button variant="outline" size="sm" as-child class="w-auto">
-                    <Link :href="route('admin.users.index')" class="flex items-center gap-2">
+                    <Link :href="route('admin.users.index')" class="flex items-center">
                         <ArrowLeftToLine class="w-4 h-4" />
                         Kembali
+                    </Link>
+                </Button>
+                <Button variant="secondary" size="sm" as-child class="w-auto">
+                    <Link :href="route('admin.users.edit', props.user.id)" class="flex items-center">
+                        <SquarePen class="w-4 h-4" />
+                        Edit
                     </Link>
                 </Button>
             </div>
