@@ -99,7 +99,8 @@ const rowInfo = computed(() => {
                             <div :class="[
                                 'flex items-center gap-2',
                                 column.key === 'number' && 'justify-center',
-                                column.key === 'actions' && 'justify-center'
+                                column.key === 'actions' && 'justify-center',
+                                column.key === 'roles' && 'justify-center'
                                 ]">
                                 <span>{{ column.label }}</span>
                                 <component

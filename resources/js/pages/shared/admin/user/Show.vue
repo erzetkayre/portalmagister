@@ -79,23 +79,23 @@ const userType = computed(() => {
                     <Input readonly :model-value="props.user.phone || '-'" />
                 </div>
                 <div class="flex flex-col gap-3 my-2">
-                    <Label>Status</Label>
-                    <Badge :variant="props.user.is_active ? 'primary-outline' : 'destructive-outline'">
-                        {{ props.user.is_active ? 'Active' : 'Inactive' }}
-                    </Badge>
-                </div>
-                <div class="flex flex-col gap-3 my-2">
                     <Label>Hak Akses</Label>
                     <div class="flex gap-2 flex-wrap">
-                    <Badge
+                        <Badge
                         v-for="role in props.user.roles"
                         :key="role.id"
                         variant="default"
                         class="capitalize">
                         {{ role.role_name }}
                     </Badge>
-                    </div>
                 </div>
+            </div>
+            <div class="flex flex-col gap-3 my-2">
+                <Label>Status</Label>
+                <Badge :variant="props.user.is_active ? 'primary-outline' : 'destructive-outline'">
+                    {{ props.user.is_active ? 'Active' : 'Inactive' }}
+                </Badge>
+            </div>
             </div>
             <hr>
             <div class="inline-flex gap-2">

@@ -50,7 +50,7 @@ Route::middleware(['auth','firstlogin'])->group(function () {
             Route::post('/', [Shared\Admin\UserManagementController::class, 'store'])->name('store');
             Route::get('/{id}', [Shared\Admin\UserManagementController::class, 'show'])->name('show');
             Route::get('/edit/{id}', [Shared\Admin\UserManagementController::class, 'edit'])->name('edit');
-            Route::post('/{id}', [Shared\Admin\UserManagementController::class, 'update'])->name('update');
+            Route::put('/{id}', [Shared\Admin\UserManagementController::class, 'update'])->name('update');
             Route::delete('/{id}', [Shared\Admin\UserManagementController::class, 'destroy'])->name('delete');
             Route::post('/{id}/reset-password', [Shared\Admin\UserManagementController::class, 'resetPassword'])->name('reset.password');
             Route::post('/import', [Shared\Admin\UserManagementController::class, 'import'])->name('import');

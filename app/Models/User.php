@@ -84,6 +84,10 @@ class User extends Authenticatable
             'email' => $this->email,
             'is_active' => $this->is_active,
             'nomor_induk' => $this->nomor_induk,
+            'roles' => $this->roles->map(fn ($r) => [
+                'id' => $r->id,
+                'role_name' => $r->role_name,
+            ]),
             'created_at' => $this->created_at->format('j F Y'),
         ];
     }

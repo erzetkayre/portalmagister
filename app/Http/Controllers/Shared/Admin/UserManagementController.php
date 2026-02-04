@@ -7,6 +7,7 @@ use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UserRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -59,18 +60,9 @@ class UserManagementController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => "required|email|unique:email",
-            'nomor_induk' => 'required|string|max:50',
-            'phone' => 'nullable|string|max:20',
-            'is_active' => 'required|boolean',
-            'roles' => 'nullable|array',
-            'roles.*' => 'exists:roles,id',
-        ]);
-
+        $validatedData = $request->validated();
         $user = User::findOrFail($id);
         $user->update([
             'name' => $validatedData['name'],
@@ -80,15 +72,12 @@ class UserManagementController extends Controller
             'is_active' => $validatedData['is_active'],
         ]);
 
-        $roles = $validatedData['roles'] ?? [];
-        $user->roles()->sync($roles);
-
-        dd($request);
+        $user->roles()->sync($validatedData['roles'] ?? []);
 
         return redirect()->intended(route('admin.users.index',absolute:false))
             ->with('success', [
                 'title' => 'Update Berhasil',
-                'description' => "Informasi user $user berhasil diperbarui."
+                'description' => "Informasi user $user->name berhasil diperbarui."
         ]);
     }
 

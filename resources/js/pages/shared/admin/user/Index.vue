@@ -21,7 +21,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/vue3';
 import { Badge } from '@/components/ui/badge'
 import { Pencil, Trash2, UserRoundPlus, FileUp, Eye, KeyRound } from 'lucide-vue-next'
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useTable } from '@/composables/useTable';
 import { buttonVariants } from '@/components/ui/button';
 import type { User } from '@/types';
@@ -79,12 +79,12 @@ const {
 // Table Variables
 const columns = [
     { key: 'number', label: '#', sortable: false, class: 'w-[5%]', cellClass: 'text-center'},
-    { key: 'name', label: 'Nama', sortable: false, class: 'w-[20%]'},
-    { key: 'email', label: 'Email', sortable: false, class: 'w-[20%]'},
+    { key: 'name', label: 'Nama', sortable: false, class: 'w-[15%]'},
     { key: 'nomor_induk', label: 'Nomor Induk', sortable: true, class: 'w-[15%]'},
-    { key: 'is_active', label: 'Status', sortable: true, class: 'w-[10%]'},
-    { key: 'created_at', label: 'Tanggal Terdaftar', sortable: true, class: 'w-[10%]'},
-    { key: 'actions', label: 'Opsi', sortable: false, class: 'w-[20%] text-center', cellClass: 'justify-center'},
+    { key: 'email', label: 'Email', sortable: false, class: 'w-[15%]'},
+    { key: 'roles', label: 'Hak Akses', sortable: false, class: 'w-[35%]', cellClass: 'text-center flex justify-center' },
+    { key: 'created_at', label: 'Tanggal Terdaftar', sortable: true, class: 'w-[5%]'},
+    { key: 'actions', label: 'Opsi', sortable: false, class: 'w-[10%] text-center', cellClass: 'justify-center'},
 ];
 
 const filterConfigs = [
@@ -230,11 +230,19 @@ const importUsers = () => {
                         {{ getRowNumber(index) }}
                     </span>
                 </template>
-                <template #is_active="{ value }">
-                    <Badge :variant="value ? 'primary-outline' : 'destructive-outline'">
-                        {{ value ? 'Aktif' : 'Tidak Aktif' }}
-                    </Badge>
+                <template #roles="{ item }">
+                    <div class="flex flex-wrap gap-1">
+                        <Badge
+                        v-for="role in item.roles"
+                        :key="role.id"
+                        variant="primary-outline"
+                        class="capitalize"
+                        >
+                        {{ role.role_name }}
+                        </Badge>
+                    </div>
                 </template>
+                <!-- Action Button -->
                 <template #actions="{ item }">
                     <div class="flex justify-center gap-4">
                         <TextLink
@@ -249,6 +257,7 @@ const importUsers = () => {
                             :tooltip="`Edit ${item.name}`">
                             <Pencil class="w-4 h-4 text-warning" />
                         </TextLink>
+
                         <!-- Reset Password and Delete Button -->
                         <AlertDialog>
                             <AlertDialogTrigger as-child>

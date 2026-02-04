@@ -44,6 +44,9 @@ const {
             <div v-if="can.koordinator">
                 Koordinator Panel
             </div>
+            <div v-if="can.dosen">
+                dosen Panel
+            </div>
         </template>
         <template v-else>
             Tidak memiliki akses

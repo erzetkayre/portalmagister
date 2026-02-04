@@ -38,7 +38,7 @@ const submit = () => {
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit" class="flex flex-col gap-6">
+        <form @submit.prevent="submit" novalidate class="flex flex-col gap-6">
             <div class="grid gap-4">
                 <div class="grid gap-2">
                     <Label for="credential">NIM / NIP / Email</Label>
