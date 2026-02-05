@@ -20,7 +20,7 @@ const props = defineProps<Props>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'User Management', href: '/admin/users' },
-    { title: props.user.name, href: '#' },
+    { title: `Edit ${props.user.name}`, href: '#' },
 ];
 
 // Avatar Logic
@@ -148,12 +148,12 @@ const toggleRole = (roleId: number, checked: boolean) => {
                     <Button variant="outline" size="sm" as-child class="w-auto">
                         <Link :href="route('admin.users.index')" class="flex items-center">
                             <ArrowLeftToLine class="w-4 h-4" />
-                            Kembali
+                            Back
                         </Link>
                     </Button>
-                    <Button type="submit" variant="secondary" size="sm" class="w-auto flex items-center gap-2" :disabled="form.processing">
+                    <Button type="submit" variant="default" size="sm" class="w-auto flex items-center gap-2" :disabled="form.processing">
                         <SquarePen class="w-4 h-4" />
-                        Simpan
+                        Save
                     </Button>
                 </div>
             </form>

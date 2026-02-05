@@ -18,13 +18,14 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, Link } from '@inertiajs/vue3';
 import { Badge } from '@/components/ui/badge'
 import { Pencil, Trash2, UserRoundPlus, FileUp, Eye, KeyRound } from 'lucide-vue-next'
 import { computed } from 'vue';
 import { useTable } from '@/composables/useTable';
 import { buttonVariants } from '@/components/ui/button';
 import type { User } from '@/types';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'User Management', href: '/admin/users' },
@@ -32,31 +33,37 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 // Define Interface and Props
 interface UsersPagination<T> {
-    data: T[];
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-    from: number;
-    to: number;
+    data: T[]
+    current_page: number
+    last_page: number
+    per_page: number
+    total: number
+    from: number
+    to: number
     links: {
-        url: string | null;
-        label: string;
-        active: boolean;
+        url: string | null
+        label: string
+        active: boolean
     }[];
 }
 
+interface Role {
+    id: number
+    role_name: string
+}
+
 interface Filters {
-    search: string;
-    is_active: number | null;
-    sort_by: string;
-    sort_direction: 'asc' | 'desc';
-    per_page: number;
+    search: string
+    role: string | null
+    sort_by: string
+    sort_direction: 'asc' | 'desc'
+    per_page: number
 }
 
 interface Props {
-    users: UsersPagination<User>;
-    filters: Filters;
+    users: UsersPagination<User>
+    filters: Filters
+    roles: Role[]
 }
 
 const props = defineProps<Props>();
@@ -82,23 +89,24 @@ const columns = [
     { key: 'name', label: 'Nama', sortable: false, class: 'w-[15%]'},
     { key: 'nomor_induk', label: 'Nomor Induk', sortable: true, class: 'w-[15%]'},
     { key: 'email', label: 'Email', sortable: false, class: 'w-[15%]'},
-    { key: 'roles', label: 'Hak Akses', sortable: false, class: 'w-[35%]', cellClass: 'text-center flex justify-center' },
-    { key: 'created_at', label: 'Tanggal Terdaftar', sortable: true, class: 'w-[5%]'},
+    { key: 'roles', label: 'Hak Akses', sortable: false, class: 'w-[30%]', cellClass: 'text-center flex justify-center' },
+    { key: 'created_at', label: 'Tanggal Terdaftar', sortable: true, class: 'w-[10%]'},
     { key: 'actions', label: 'Opsi', sortable: false, class: 'w-[10%] text-center', cellClass: 'justify-center'},
 ];
 
-const filterConfigs = [
+const filterConfigs = computed(() => [
     {
-        key: 'is_active',
-        label: 'Status',
+        key: 'role',
+        label: 'Role',
         options: [
-            { value: '1', label: 'Aktif' },
-            { value: '0', label: 'Tidak Aktif' }
+            { value: 'admin', label: 'Admin' },
+            { value: 'dosen', label: 'Dosen' },
+            { value: 'koordinator', label: 'Koordinator' },
+            { value: 'mahasiswa', label: 'Mahasiswa' },
         ],
-        clearLabel: 'Semua Status'
-    }
-];
-
+        clearLabel: 'Semua Role',
+    },
+])
 const paginationData = computed(() => ({
     currentPage: props.users.current_page,
     total: props.users.total,
@@ -108,10 +116,12 @@ const paginationData = computed(() => ({
     to: props.users.to,
 }));
 
+// Numbering
 const getRowNumber = (index: number): number => {
     return props.users.from + index;
 };
 
+// Post Request Reset and Delete
 const confirmResetPassword = (userId: number) => {
     router.post(
         route('admin.users.reset.password', userId),
@@ -119,7 +129,6 @@ const confirmResetPassword = (userId: number) => {
         { preserveScroll: true }
     );
 };
-
 const confirmDelete = (userId: number) => {
     router.delete(
         route('admin.users.delete', userId),
@@ -148,14 +157,12 @@ const importUsers = () => {
                     :filter-values="activeFilters"
                     @filter-change="setFilter"
                     @clear-all-filters="clearAllFilters"/>
-                <div class="flex flex-wrap  gap-2">
-                    <Button
-                        variant="default"
-                        size="sm"
-                        class="h-9"
-                        @click="$emit('clearAllFilters')">
-                        <UserRoundPlus class="h-4 w-4" />
-                        Tambah User
+                <div class="flex flex-wrap gap-2">
+                    <Button variant="default" size="sm" as-child class="h-9">
+                        <Link :href="route('admin.users.create')" class="flex items-center">
+                            <UserRoundPlus class="w-4 h-4" />
+                            Tambah User
+                        </Link>
                     </Button>
                     <Button
                         variant="outline"
@@ -257,58 +264,45 @@ const importUsers = () => {
                             :tooltip="`Edit ${item.name}`">
                             <Pencil class="w-4 h-4 text-warning" />
                         </TextLink>
-
                         <!-- Reset Password and Delete Button -->
-                        <AlertDialog>
-                            <AlertDialogTrigger as-child>
-                                <button
-                                    class="text-secondary hover:underline text-sm">
-                                    <KeyRound class="w-4 h-4" />
+                        <ConfirmDialog
+                            title="Reset Password"
+                            confirm-text="Ya, Reset Password"
+                            :confirm-class="buttonVariants({ variant: 'ghost' })"
+                            :on-confirm="() => confirmResetPassword(item.id)">
+                            <template #trigger>
+                                <button class="text-secondary hover:underline text-sm">
+                                <KeyRound class="w-4 h-4" />
                                 </button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Reset Password</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Apakah Anda yakin ingin mereset password user
-                                        <span class="font-semibold text-foreground">{{ item.name }}</span>?
-                                        Password akan direset ke default.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Batal</AlertDialogCancel>
-                                    <AlertDialogAction type="button" @click="confirmResetPassword(item.id)" :class="buttonVariants({ variant: 'ghost' })">
-                                        Ya, Reset Password
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                        <AlertDialog>
-                            <AlertDialogTrigger as-child>
-                                <button
-                                    class="text-destructive hover:text-underline text-sm">
-                                    <Trash2 class="w-4 h-4" />
+                            </template>
+                            <template #description>
+                                <AlertDialogDescription>
+                                Apakah Anda yakin ingin mereset password user
+                                <span class="font-semibold text-foreground">
+                                    {{ item.name }}
+                                </span>?
+                                Password akan direset ke default.
+                                </AlertDialogDescription>
+                            </template>
+                        </ConfirmDialog>
+                        <ConfirmDialog
+                            title="Hapus User"
+                            confirm-text="Ya, Hapus User"
+                            :confirm-class="buttonVariants({ variant: 'destructive' })"
+                            :on-confirm="() => confirmDelete(item.id)">
+                            <template #trigger>
+                                <button class="text-destructive hover:underline text-sm">
+                                <Trash2 class="w-4 h-4" />
                                 </button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Hapus User</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Apakah Anda yakin ingin menghapus user
+                            </template>
+                            <template #description>
+                                <AlertDialogDescription>
+                                    Apakah Anda yakin ingin menghapus user
                                         <span class="font-semibold text-foreground">{{ item.name }}</span>?<br>
                                         <span class="text-destructive font-semibold">Tindakan ini tidak dapat dibatalkan!</span><br>
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Batal</AlertDialogCancel>
-                                    <AlertDialogAction
-                                        class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                        @click="confirmDelete(item.id)">
-                                        Ya, Hapus User
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
+                                </AlertDialogDescription>
+                            </template>
+                        </ConfirmDialog>
                     </div>
                     </template>
             </DataTable>

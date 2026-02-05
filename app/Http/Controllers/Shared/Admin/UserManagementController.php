@@ -17,28 +17,36 @@ class UserManagementController extends Controller
     public function index(Request $request)
     {
         $filters = $this->filters($request);
-        $query = User::query()->byStudyProgram(Auth::user()->study_program_id)
+        $query = User::query()->with('roles')
+            ->byStudyProgram(Auth::user()->study_program_id)
+            ->filterRole($filters['role'])
             ->applyFilters($filters)
             ->applySorting($filters)
             ->paginate($filters['per_page'])
             ->withQueryString()
             ->through(fn($user) => $user->toSearchResult());
-
+        $roles = Role::select('id', 'role_name')->orderBy('role_name')->get();
         // dd($request);
         return Inertia::render('shared/admin/user/Index',[
             'users' => $query,
             'filters' => $filters,
+            'roles' => $roles,
         ]);
     }
 
     public function create()
     {
-        //
+        $roles = Role::select('id', 'role_name')->orderBy('role_name')->get();
+        return Inertia::render('shared/admin/user/Create',[
+            'roles' => $roles,
+        ]);
     }
 
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        //
+        $user = Auth::user()->study_program_id;
+        $validatedData = $request->validated();
+        
     }
 
     public function show($id)
@@ -86,7 +94,7 @@ class UserManagementController extends Controller
         $user = User::findOrFail($id);
         if($user->id == Auth::user()->id){
             return redirect()->back()->with('error', [
-                'title' => 'Reset Password Gagal',
+                'title' => 'Hapus User Gagal',
                 'description' => "Tidak bisa menghapus akun sendiri"
             ]);
         }
@@ -101,8 +109,11 @@ class UserManagementController extends Controller
     public function resetPassword($id)
     {
         $user = User::findOrFail($id);
-        $user->password = Hash::make($user->nomor_induk);
-        $user->save();
+        $user->update([
+            'password' => Hash::make($user->nomor_induk),
+            'first_login' => false,
+            'remember_token' => null,
+        ]);
 
         return redirect()->back()->with('success', [
             'title' => 'Reset Password Berhasil',
@@ -114,7 +125,7 @@ class UserManagementController extends Controller
     {
         return [
             'search' => $request->input('search', ''),
-            'is_active' => $request->input('is_active'),
+            'role' => $request->input('role'),
             'sort_by' => in_array(
                 $request->input('sort_by'),
                 ['name', 'nomor_induk','email', 'is_active', 'created_at']

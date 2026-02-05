@@ -102,7 +102,7 @@ const userType = computed(() => {
                 <Button variant="outline" size="sm" as-child class="w-auto">
                     <Link :href="route('admin.users.index')" class="flex items-center">
                         <ArrowLeftToLine class="w-4 h-4" />
-                        Kembali
+                        Back
                     </Link>
                 </Button>
                 <Button variant="secondary" size="sm" as-child class="w-auto">

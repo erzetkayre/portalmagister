@@ -89,6 +89,7 @@ class User extends Authenticatable
                 'role_name' => $r->role_name,
             ]),
             'created_at' => $this->created_at->format('j F Y'),
+            'created_at_raw' => $this->created_at
         ];
     }
 
@@ -104,12 +105,23 @@ class User extends Authenticatable
 
     public function hasRole(string $role)
     {
-        return $this->roles->contains('role_name', $role);
+        return $this->roles()
+            ->where('role_name', $role)
+            ->exists();
     }
 
     public function scopeByStudyProgram($query, $program)
     {
         return $query->where('study_program_id', $program);
+    }
+
+    public function scopeFilterRole($query, $role)
+    {
+        if (!$role) return $query;
+
+        return $query->whereHas('roles', fn ($q) =>
+            $q->where('role_name', $role)
+        );
     }
 
 }
