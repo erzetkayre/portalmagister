@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Models\PWK;
+namespace App\Models\Elektro;
 
-use App\Helpers\Filterable;
 use App\Helpers\Sortable;
+use App\Helpers\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Mahasiswa extends Model
 {
     use HasFactory, Filterable, Sortable;
-    protected $connection = 'pwk';
+    protected $connection = 'elektro';
     protected $table = 'ref_mahasiswa';
 
     protected $fillable = [
