@@ -6,6 +6,7 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/docs
 /vendor
 .env
 .env.backup
@@ -24,7 +25,7 @@ yarn-error.log
 /.zed
 /.claude
 /.sixth
-/docs
 ruvector.db
 flow.md
+CLAUDE.md
 
