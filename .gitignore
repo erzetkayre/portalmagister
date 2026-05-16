@@ -22,3 +22,9 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/.claude
+/.sixth
+/docs
+ruvector.db
+flow.md
+
