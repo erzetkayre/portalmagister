@@ -18,6 +18,7 @@ class RoleSeeder extends Seeder
             ['id' => 2, 'role_name' => 'koordinator', 'description' => 'Koordinator', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 3, 'role_name' => 'dosen', 'description' => 'Dosen', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 4, 'role_name' => 'mahasiswa', 'description' => 'Mahasiswa', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 5, 'role_name' => 'kaprodi', 'description' => 'Kaprodi', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 }

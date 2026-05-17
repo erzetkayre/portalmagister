@@ -6,12 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::connection('pwk')->create('ref_dosen', function (Blueprint $table) {
+        Schema::connection('elektro')->create('ref_dosen', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
             $table->string('kode_dsn')->unique()->nullable();
@@ -20,12 +17,12 @@ return new class extends Migration
             $table->string('signature_dsn')->nullable();
             $table->string('status_dsn')->default('aktif');
             $table->string('bidang_keahlian')->nullable();
-            $table->enum('gender', allowed: ['L', 'P'])->nullable();
+            $table->enum('gender', ['L', 'P'])->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
 
-        Schema::connection('pwk')->create('ref_mahasiswa', function (Blueprint $table) {
+        Schema::connection('elektro')->create('ref_mahasiswa', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
             $table->string('nim')->unique();
@@ -33,15 +30,16 @@ return new class extends Migration
             $table->integer('angkatan')->nullable();
             $table->integer('sks')->default(0)->nullable();
             $table->decimal('ipk')->default(0)->nullable();
-            $table->foreignId('pem_akademik')->constrained('ref_dosen');
-            $table->string('status_mhs')->default('aktif');
+            $table->unsignedBigInteger('pem_akademik')->nullable();
+            $table->foreign('pem_akademik')->references('id')->on('ref_dosen');
+            $table->enum('status_mhs',['aktif', 'lulus', 'dropout'])->default('aktif');
             $table->string('signature_mhs')->nullable();
             $table->enum('gender', ['L', 'P'])->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
 
-        Schema::connection('pwk')->create('ref_jabatan', function (Blueprint $table) {
+        Schema::connection('elektro')->create('ref_jabatan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('dosen_id')->constrained('ref_dosen')->onDelete('cascade');
             $table->string('nama_jabatan');
@@ -49,14 +47,14 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        Schema::connection('pwk')->create('ref_ruang', function (Blueprint $table) {
+        Schema::connection('elektro')->create('ref_ruang', function (Blueprint $table) {
             $table->id();
             $table->string('nama_ruang');
             $table->timestamps();
             $table->softDeletes();
         });
 
-        Schema::connection('pwk')->create('ref_mata_kuliah', function (Blueprint $table) {
+        Schema::connection('elektro')->create('ref_mata_kuliah', function (Blueprint $table) {
             $table->id();
             $table->string('nama_mk');
             $table->string('kode_mk')->nullable();
@@ -67,15 +65,12 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::connection('pwk')->dropIfExists('ref_dosen');
-        Schema::connection('pwk')->dropIfExists('ref_mahasiswa');
-        Schema::connection('pwk')->dropIfExists('ref_jabatan');
-        Schema::connection('pwk')->dropIfExists('ref_ruang');
-        Schema::connection('pwk')->dropIfExists('ref_mata_kuliah');
+        Schema::connection('elektro')->dropIfExists('ref_jabatan');
+        Schema::connection('elektro')->dropIfExists('ref_mahasiswa');
+        Schema::connection('elektro')->dropIfExists('ref_dosen');
+        Schema::connection('elektro')->dropIfExists('ref_ruang');
+        Schema::connection('elektro')->dropIfExists('ref_mata_kuliah');
     }
 };
