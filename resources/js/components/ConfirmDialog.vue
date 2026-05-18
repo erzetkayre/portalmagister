@@ -15,6 +15,7 @@ defineProps<{
   title: string
   confirmText?: string
   confirmClass?: string
+  contentClass?: string
   onConfirm: () => void
 }>()
 </script>
@@ -25,11 +26,15 @@ defineProps<{
       <slot name="trigger" />
     </AlertDialogTrigger>
 
-    <AlertDialogContent>
+    <AlertDialogContent :class="contentClass">
       <AlertDialogHeader>
-        <AlertDialogTitle>{{ title }}</AlertDialogTitle>
-        <slot name="description" />
+        <div class="flex items-center gap-3">
+          <slot name="icon" />
+          <AlertDialogTitle>{{ title }}</AlertDialogTitle>
+        </div>
       </AlertDialogHeader>
+
+      <slot name="description" />
 
       <AlertDialogFooter>
         <AlertDialogCancel>Batal</AlertDialogCancel>
