@@ -1,393 +1,431 @@
 <script setup lang="ts">
-import { Head, Link, useForm, usePage, router } from '@inertiajs/vue3';
-import { ref, onMounted, computed } from 'vue';
-import { Home, Camera, Trash2, Upload } from 'lucide-vue-next';
+import { Head, useForm, usePage, router } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import { Camera, Trash2, Upload, PenLine, UploadCloud, X, ImageIcon, ShieldCheck, Palette, User } from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 
 import AppearanceTabs from '@/components/AppearanceTabs.vue';
-import { Button, Input, Label, Card, CardContent, CardDescription, CardHeader, CardTitle,
-    Avatar, AvatarFallback, AvatarImage, AlertNotification, DropdownMenu, DropdownMenuContent,
-    DropdownMenuItem, DropdownMenuTrigger
+import { Button, Input, Label, Card, CardContent, Separator,
+    Avatar, AvatarFallback, AvatarImage,
+    DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 } from '@/components/ui';
 
-import { useAlert } from '@/composables/UseAlert';
 import InputError from '@/components/InputError.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem, type User } from '@/types';
+import { type BreadcrumbItem } from '@/types';
 
-// Interface
 interface Props {
-    mustVerifyEmail: boolean;
-    status?: string;
+    gender?: string | null;
+    signature_url?: string | null;
 }
 
-// States
-defineProps<Props>();
-const page = usePage();
-const user = page.props.auth.user as User;
-const dashboardRoute = computed(() => {
-    const user = page.props.auth?.user as any;
-    if (!user) return '/login';
-
-    const role = user.role?.nama_role;
-    // console.log(user);
-
-    return route(`${role}.dashboard`);
-});
+const props = defineProps<Props>();
+const page  = usePage();
+const user  = computed(() => page.props.auth.user as any);
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Pengaturan', href: '/pengaturan/profil',},
+    { title: 'Pengaturan Profil', href: '/pengaturan/profil' },
 ];
 
-// Composables
-const { showAlert, alertType, alertTitle, alertDescription, showSuccessAlert, showErrorAlert, closeAlert } = useAlert();
-
-onMounted(() => {
-    if (page.props.flash?.message) {
-        const msg = page.props.flash.message;
-        if (msg.type === 'success') {
-            showSuccessAlert(msg.title, msg.message);
-        } else if (msg.type === 'error') {
-            showErrorAlert(msg.title, msg.message);
-        }
-    }
-});
-
-// Photo handling
+// Photo
 const photoInput = ref<HTMLInputElement>();
-const triggerFileInput = () => {
-    photoInput.value?.click();
-};
+
 const handlePhotoChange = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files[0]) {
-        profileForm.photo = target.files[0];
-    }
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) profileForm.photo = file;
 };
-const getAvatarUrl = () => {
-    if (profileForm.photo) {
-        return URL.createObjectURL(profileForm.photo);
-    }
-    return user.photo ? route('profile.photo.current') : null;
-};
-const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
-};
+const avatarUrl = computed((): string | undefined => {
+    if (profileForm.photo) return URL.createObjectURL(profileForm.photo as File);
+    return user.value.photo ?? undefined;
+});
+const getInitials = (name: string) =>
+    name?.split(' ').map((n: string) => n[0]).join('').toUpperCase() ?? '';
+
 const deletePhoto = () => {
+    if (profileForm.photo) {
+        profileForm.photo = null;
+        if (photoInput.value) photoInput.value.value = '';
+        return;
+    }
     router.delete(route('profile.photo.delete'), {
         preserveScroll: true,
-        onSuccess: () => {
-            profileForm.photo = null;
-            showSuccessAlert('Foto Berhasil Dihapus', 'Foto profile Anda telah dihapus.');
-            router.reload({ only: ['auth'] });
-        },
-        onError: () => {
-            showErrorAlert('Gagal Menghapus Foto', 'Terjadi kesalahan saat menghapus foto. Silakan coba lagi.');
-        }
+        onSuccess: () => router.reload({ only: ['auth'] }),
+        onError:   () => toast.error('Gagal menghapus foto profil.'),
     });
 };
 
-// Gender handling
-const getGenderText = (value: string) => {
-    switch (value) {
-        case 'L': return 'Laki-laki';
-        case 'P': return 'Perempuan';
-        default: return 'Pilih gender';
-    }
-};
-const handleGenderSelect = (value: string) => {
-    profileForm.gender = value;
+// Gender
+const getGenderText = (v: string) =>
+    v === 'L' ? 'Laki-laki' : v === 'P' ? 'Perempuan' : 'Pilih gender';
+
+// Signature
+const signatureFile     = ref<File | null>(null);
+const isDragging        = ref(false);
+const sigInputRef       = ref<HTMLInputElement | null>(null);
+const savedSignatureUrl = ref<string | null>(props.signature_url ?? null);
+
+const signaturePreview = computed(() =>
+    signatureFile.value ? URL.createObjectURL(signatureFile.value) : null
+);
+
+const formatFileSize = (bytes: number) => {
+    if (bytes < 1024)        return `${bytes} B`;
+    if (bytes < 1048576)     return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / 1048576).toFixed(1)} MB`;
 };
 
-// Forms
+const handleSigFileChange = (e: Event) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) signatureFile.value = file;
+};
+const handleSigDrop = (e: DragEvent) => {
+    isDragging.value = false;
+    const file = e.dataTransfer?.files[0];
+    if (file?.type === 'image/png') signatureFile.value = file;
+};
+const clearSigFile = () => {
+    signatureFile.value = null;
+    if (sigInputRef.value) sigInputRef.value.value = '';
+};
+
+const signatureForm = useForm({ signature: null as File | null });
+
+const submitSignature = () => {
+    if (!signatureFile.value) return;
+    signatureForm.signature = signatureFile.value;
+    signatureForm.post(route('signature.update'), {
+        preserveScroll: true,
+        forceFormData: true,
+        onSuccess: () => { savedSignatureUrl.value = signaturePreview.value; clearSigFile(); },
+        onError:   () => toast.error('Gagal menyimpan tanda tangan.', { description: 'File harus PNG, maks. 2MB.' }),
+    });
+};
+const deleteSignature = () => {
+    router.delete(route('signature.delete'), {
+        preserveScroll: true,
+        onSuccess: () => { savedSignatureUrl.value = null; },
+        onError:   () => toast.error('Gagal menghapus tanda tangan.'),
+    });
+};
+
+// Profile form
 const profileForm = useForm({
-    nama: user.name || '',
-    email: user.email || '',
-    nomor_induk: user.nomor_induk || '',
-    phone: user.phone || '',
-    gender: user.role_data?.gender || '',
-    photo: null as File | null,
+    nama:        user.value.name        || '',
+    email:       user.value.email       || '',
+    nomor_induk: user.value.nomor_induk || '',
+    phone:       user.value.phone       || '',
+    gender:      props.gender           || '',
+    photo:       null as File | null,
 });
 
-const passwordInput = ref<HTMLInputElement | null>(null);
-const currentPasswordInput = ref<HTMLInputElement | null>(null);
-const passwordForm = useForm({
-    current_password: '',
-    password: '',
-    password_confirmation: '',
-});
+const initial = {
+    nama:        user.value.name        || '',
+    email:       user.value.email       || '',
+    nomor_induk: user.value.nomor_induk || '',
+    phone:       user.value.phone       || '',
+    gender:      props.gender           || '',
+};
+
+const hasChanges = computed(() =>
+    profileForm.nama        !== initial.nama        ||
+    profileForm.email       !== initial.email       ||
+    profileForm.nomor_induk !== initial.nomor_induk ||
+    profileForm.phone       !== initial.phone       ||
+    profileForm.gender      !== initial.gender      ||
+    profileForm.photo       !== null
+);
+
 const submitProfile = () => {
     profileForm.post(route('profile.update'), {
         preserveScroll: true,
-        forceFormData: true,
-        onSuccess: () => {
-            showSuccessAlert('Profile Berhasil Diperbarui', 'Informasi profile Anda telah disimpan.');
-            router.reload({ only: ['auth'] });
+        forceFormData:  true,
+        onSuccess: () => { profileForm.photo = null; router.reload({ only: ['auth'] }); },
+        onError: (errors: any) => {
+            if (errors.photo) {
+                toast.error('Foto gagal diupload.', { description: errors.photo });
+            } else {
+                toast.error('Gagal memperbarui profil.', { description: 'Periksa kembali data yang diisi.' });
+            }
         },
-        onError: () => {
-            showErrorAlert('Gagal Memperbarui Profile', 'Terjadi kesalahan saat menyimpan profile. Silakan coba lagi.');
-        }
     });
 };
+
+// Password form
+const passwordForm = useForm({
+    current_password:      '',
+    password:              '',
+    password_confirmation: '',
+});
+
+const hasPasswordData = computed(() =>
+    !!passwordForm.current_password &&
+    !!passwordForm.password &&
+    !!passwordForm.password_confirmation
+);
 
 const submitPassword = () => {
     passwordForm.post(route('password.update'), {
         preserveScroll: true,
-        onSuccess: () => {
-            passwordForm.reset();
-            showSuccessAlert('Password Berhasil Diperbarui', 'Password Anda telah berhasil diubah.');
-        },
-        onError: (errors: any) => {
-            if (errors.password) {
-                passwordForm.reset('password', 'password_confirmation');
-                if (passwordInput.value instanceof HTMLInputElement) {
-                    passwordInput.value.focus();
-                }
-            }
-            if (errors.current_password) {
-                passwordForm.reset('current_password');
-                if (currentPasswordInput.value instanceof HTMLInputElement) {
-                    currentPasswordInput.value.focus();
-                }
-            }
-            showErrorAlert('Gagal Memperbarui Password', 'Terjadi kesalahan saat mengubah password. Periksa kembali password lama Anda.');
-        },
+        onSuccess: () => passwordForm.reset(),
+        onError: () => toast.error('Gagal memperbarui password.', { description: 'Periksa kembali data yang diisi.' }),
     });
 };
 </script>
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
-        <Head title="Profile settings" />
-        <div class="flex flex-1 flex-col rounded-xl p-4">
-            <AlertNotification :show="showAlert" :type="alertType" :title="alertTitle" :description="alertDescription" @close="closeAlert"/>
-            <div class="space-y-8">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="text-3xl font-bold tracking-tight">Pengaturan Profil</h1>
-                        <p class="text-muted-foreground mt-1">Perbarui informasi profil, kata sandi, dan pengaturan tampilan Anda</p>
-                    </div>
-                    <Button @click="router.get(dashboardRoute)" class="gap-2">
-                        <Home class="h-4 w-4" />
-                        Dashboard
-                    </Button>
+        <Head title="Pengaturan Profil" />
+        <div class="flex flex-1 flex-col p-4 md:p-6 max-w-4xl mx-auto w-full gap-0">
+            <!-- Section: Identity Header -->
+            <div class="flex flex-col items-center gap-3">
+                <div class="relative">
+                    <Avatar class="h-28 w-28 ring-2 ring-border ring-offset-2 ring-offset-background">
+                        <AvatarImage :src="avatarUrl" class="object-cover" />
+                        <AvatarFallback class="text-3xl font-bold">
+                            {{ getInitials(user.name) }}
+                        </AvatarFallback>
+                    </Avatar>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button class="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md ring-2 ring-background hover:bg-primary/90 transition-colors">
+                                <Camera class="h-4 w-4" />
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" class="w-40">
+                            <DropdownMenuItem @click="photoInput?.click()" class="cursor-pointer gap-2">
+                                <Upload class="h-4 w-4" /> Ganti Foto
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                v-if="user.photo || profileForm.photo"
+                                @click="deletePhoto"
+                                class="cursor-pointer gap-2 hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive">
+                                <Trash2 class="h-4 w-4" /> Hapus Foto
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <input ref="photoInput" type="file" class="hidden" @change="handlePhotoChange" accept="image/*" />
                 </div>
-
-                <!-- Two Column Layout -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Left Column - Profile Information -->
-                    <div class="flex flex-col">
-                        <Card class="flex-1">
-                            <CardHeader>
-                                <CardTitle>Informasi Profil</CardTitle>
-                                <CardDescription>Perbarui informasi profil dan detail pribadi Anda</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <form @submit.prevent="submitProfile" class="space-y-6">
-                                    <!-- Avatar Section -->
-                                    <div class="flex flex-col items-center space-y-4">
-                                        <div class="relative">
-                                            <Avatar class="w-24 h-24">
-                                                <AvatarImage :src="getAvatarUrl()" />
-                                                <AvatarFallback class="text-lg">{{ getInitials(user.nama) }}</AvatarFallback>
-                                            </Avatar>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button size="sm" class="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-2 hover:bg-primary/90 transition-colors">
-                                                        <Camera class="w-4 h-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem @click="triggerFileInput" class="cursor-pointer">
-                                                        <Upload class="w-4 h-4 mr-2" />
-                                                        Upload Photo
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        v-if="user.photo"
-                                                        @click="deletePhoto"
-                                                        class="cursor-pointer text-red-600 hover:text-red-700"
-                                                    >
-                                                        <Trash2 class="w-4 h-4 mr-2" />
-                                                        Delete Photo
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                            <input
-                                                ref="photoInput"
-                                                type="file"
-                                                class="hidden"
-                                                @change="handlePhotoChange"
-                                                accept="image/*"
-                                            />
-                                        </div>
-                                        <InputError :message="profileForm.errors.photo" />
-                                    </div>
-
-                                    <!-- Profile Fields -->
-                                    <div class="grid gap-2">
-                                        <Label for="nama">Nama Lengkap</Label>
-                                        <Input
-                                            id="nama"
-                                            v-model="profileForm.nama"
-                                            required
-                                            autocomplete="username"
-                                            placeholder="Username"
-                                        />
-                                        <InputError :message="profileForm.errors.nama" />
-                                    </div>
-
-                                    <div class="grid gap-2">
-                                        <Label for="email">AlamatEmail</Label>
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            v-model="profileForm.email"
-                                            required
-                                            autocomplete="email"
-                                            placeholder="Email address"
-                                        />
-                                        <InputError :message="profileForm.errors.email" />
-                                    </div>
-
-                                    <div class="grid gap-2">
-                                        <Label for="nomor_induk">Nomor Induk</Label>
-                                        <Input
-                                            id="nomor_induk"
-                                            v-model="profileForm.nomor_induk"
-                                            required
-                                            placeholder="NIP/NIM"
-                                        />
-                                        <InputError :message="profileForm.errors.nomor_induk" />
-                                    </div>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div class="grid gap-2">
-                                            <Label for="phone">Nomor Telepon</Label>
-                                            <Input
-                                                id="phone"
-                                                type="tel"
-                                                v-model="profileForm.phone"
-                                                placeholder="WhatsApp number"
-                                            />
-                                            <InputError :message="profileForm.errors.phone" />
-                                        </div>
-
-                                        <div class="grid gap-2">
-                                            <Label for="gender">Gender</Label>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="outline" class="w-full justify-between">
-                                                        {{ getGenderText(profileForm.gender) }}
-                                                        <svg class="w-4 h-4 opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path d="m6 9 6 6 6-6"/>
-                                                        </svg>
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent class="w-full">
-                                                    <DropdownMenuItem @click="handleGenderSelect('L')">
-                                                        Laki-laki
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem @click="handleGenderSelect('P')">
-                                                        Perempuan
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                            <InputError :message="profileForm.errors.gender" />
-                                        </div>
-                                    </div>
-
-                                    <!-- Email Verification Notice -->
-                                    <div v-if="mustVerifyEmail && !user.email_verified_at">
-                                        <p class="-mt-4 text-sm text-muted-foreground">
-                                            Your email address is unverified.
-                                            <Link
-                                                :href="route('verification.send')"
-                                                method="post"
-                                                as="button"
-                                                class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                                            >
-                                                Click here to resend the verification email.
-                                            </Link>
-                                        </p>
-
-                                        <div v-if="status === 'verification-link-sent'" class="mt-2 text-sm font-medium text-green-600">
-                                            A new verification link has been sent to your email address.
-                                        </div>
-                                    </div>
-
-                                    <div class="flex items-center gap-4">
-                                        <Button :disabled="profileForm.processing">Update Profile</Button>
-                                    </div>
-                                </form>
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    <!-- Right Column - Appearance & Password -->
-                    <div class="space-y-8 flex flex-col">
-                        <Card class="flex-1">
-                            <CardHeader>
-                                <CardTitle>Pengaturan Tampilan</CardTitle>
-                                <CardDescription>Perbarui pengaturan tampilan akun Anda</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <AppearanceTabs />
-                            </CardContent>
-                        </Card>
-
-                        <Card class="flex-1">
-                            <CardHeader>
-                                <CardTitle>Perbarui Password</CardTitle>
-                                <CardDescription>Pastikan akun Anda menggunakan password yang panjang dan acak untuk menjaga keamanan</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <form @submit.prevent="submitPassword" class="space-y-6">
-                                    <div class="grid gap-2">
-                                        <Label for="current_password">Password saat ini</Label>
-                                        <Input
-                                            id="current_password"
-                                            ref="currentPasswordInput"
-                                            v-model="passwordForm.current_password"
-                                            type="password"
-                                            autocomplete="current-password"
-                                            placeholder="Password saat ini"
-                                        />
-                                        <InputError :message="passwordForm.errors.current_password" />
-                                    </div>
-
-                                    <div class="grid gap-2">
-                                        <Label for="password">Password baru</Label>
-                                        <Input
-                                            id="password"
-                                            ref="passwordInput"
-                                            v-model="passwordForm.password"
-                                            type="password"
-                                            autocomplete="new-password"
-                                            placeholder="Password baru"
-                                        />
-                                        <InputError :message="passwordForm.errors.password" />
-                                    </div>
-
-                                    <div class="grid gap-2">
-                                        <Label for="password_confirmation">Konfirmasi password</Label>
-                                        <Input
-                                            id="password_confirmation"
-                                            v-model="passwordForm.password_confirmation"
-                                            type="password"
-                                            autocomplete="new-password"
-                                            placeholder="Konfirmasi password"
-                                        />
-                                        <InputError :message="passwordForm.errors.password_confirmation" />
-                                    </div>
-
-                                    <div class="flex items-center gap-4">
-                                        <Button :disabled="passwordForm.processing">Update Password</Button>
-                                    </div>
-                                </form>
-                            </CardContent>
-                        </Card>
-                    </div>
+                <div class="text-center space-y-1">
+                    <h1 class="text-xl font-bold">{{ user.name }}</h1>
+                    <p class="text-sm text-muted-foreground">{{ user.email }}</p>
+                    <p class="text-xs text-muted-foreground">{{ user.study_program }} · {{ user.nomor_induk }}</p>
                 </div>
+            </div>
+
+            <!-- Section: Informasi Pribadi -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 py-8">
+                <div class="lg:col-span-1 space-y-1">
+                    <div class="flex items-center gap-2 text-sm font-semibold">
+                        <User class="h-4 w-4" />
+                        Informasi Pribadi
+                    </div>
+                    <p class="text-xs text-muted-foreground leading-relaxed">
+                        Nama, email, dan data kontak yang ditampilkan dalam sistem.
+                    </p>
+                </div>
+                <Card class="lg:col-span-2">
+                    <CardContent>
+                        <form @submit.prevent="submitProfile" class="space-y-5">
+                            <div class="grid gap-1.5">
+                                <Label for="nama">Nama Lengkap</Label>
+                                <Input id="nama" v-model="profileForm.nama" autocomplete="name" placeholder="Nama lengkap" />
+                                <InputError :message="profileForm.errors.nama" />
+                            </div>
+                            <div class="grid gap-1.5">
+                                <Label for="email">Alamat Email</Label>
+                                <Input id="email" type="email" v-model="profileForm.email" autocomplete="email" placeholder="email@domain.com" />
+                                <InputError :message="profileForm.errors.email" />
+                            </div>
+                            <div class="grid gap-1.5">
+                                <Label for="nomor_induk">Nomor Induk (NIP/NIM)</Label>
+                                <Input id="nomor_induk" v-model="profileForm.nomor_induk" placeholder="NIP atau NIM" />
+                                <InputError :message="profileForm.errors.nomor_induk" />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="grid gap-1.5">
+                                    <Label for="phone">Nomor Telepon</Label>
+                                    <Input id="phone" type="tel" v-model="profileForm.phone" placeholder="08xx-xxxx-xxxx" />
+                                    <InputError :message="profileForm.errors.phone" />
+                                </div>
+                                <div class="grid gap-1.5">
+                                    <Label>Gender</Label>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="outline" class="w-full justify-between font-normal">
+                                                <span :class="profileForm.gender ? '' : 'text-muted-foreground'">
+                                                    {{ getGenderText(profileForm.gender) }}
+                                                </span>
+                                                <svg class="w-4 h-4 opacity-40" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent class="w-[--radix-dropdown-menu-trigger-width]">
+                                            <DropdownMenuItem @click="profileForm.gender = 'L'">Laki-laki</DropdownMenuItem>
+                                            <DropdownMenuItem @click="profileForm.gender = 'P'">Perempuan</DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                    <InputError :message="profileForm.errors.gender" />
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end pt-1">
+                                <Button type="submit" :disabled="profileForm.processing || !hasChanges" class="min-w-28">
+                                    {{ profileForm.processing ? 'Menyimpan…' : 'Simpan' }}
+                                </Button>
+                            </div>
+                        </form>
+                    </CardContent>
+                </Card>
+            </div>
+            <Separator />
+
+            <!-- Section: Password -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 py-8">
+                <div class="lg:col-span-1 space-y-1">
+                    <div class="flex items-center gap-2 text-sm font-semibold">
+                        <ShieldCheck class="h-4 w-4" />
+                        Security
+                    </div>
+                    <p class="text-xs text-muted-foreground leading-relaxed">
+                        Perbarui password secara berkala untuk menjaga keamanan akun Anda.
+                    </p>
+                </div>
+                <Card class="lg:col-span-2">
+                    <CardContent>
+                        <form @submit.prevent="submitPassword" class="space-y-5">
+                            <div class="grid gap-1.5">
+                                <Label for="current_password">Password Saat Ini</Label>
+                                <Input id="current_password" v-model="passwordForm.current_password" type="password" autocomplete="current-password" placeholder="••••••••" />
+                                <InputError :message="passwordForm.errors.current_password" />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="grid gap-1.5">
+                                    <Label for="password">Password Baru</Label>
+                                    <Input id="password" v-model="passwordForm.password" type="password" autocomplete="new-password" placeholder="••••••••" />
+                                    <InputError :message="passwordForm.errors.password" />
+                                </div>
+                                <div class="grid gap-1.5">
+                                    <Label for="password_confirmation">Konfirmasi</Label>
+                                    <Input id="password_confirmation" v-model="passwordForm.password_confirmation" type="password" autocomplete="new-password" placeholder="••••••••" />
+                                    <InputError :message="passwordForm.errors.password_confirmation" />
+                                </div>
+                            </div>
+                            <div class="flex justify-end pt-1">
+                                <Button type="submit" :disabled="passwordForm.processing || !hasPasswordData" class="min-w-28">
+                                    {{ passwordForm.processing ? 'Menyimpan…' : 'Ubah Password' }}
+                                </Button>
+                            </div>
+                        </form>
+                    </CardContent>
+                </Card>
+            </div>
+            <Separator />
+
+            <!-- Section: Tampilan -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 py-8">
+                <div class="lg:col-span-1 space-y-1">
+                    <div class="flex items-center gap-2 text-sm font-semibold">
+                        <Palette class="h-4 w-4" />
+                        Tampilan
+                    </div>
+                    <p class="text-xs text-muted-foreground leading-relaxed">
+                        Pilih tema yang nyaman untuk Anda.
+                    </p>
+                </div>
+                <Card class="lg:col-span-2">
+                    <CardContent>
+                        <AppearanceTabs />
+                    </CardContent>
+                </Card>
+            </div>
+
+            <Separator />
+
+            <!-- Section: Tanda Tangan -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 py-8">
+                <div class="lg:col-span-1 space-y-1">
+                    <div class="flex items-center gap-2 text-sm font-semibold">
+                        <PenLine class="h-4 w-4" />
+                        Tanda Tangan
+                    </div>
+                    <p class="text-xs text-muted-foreground leading-relaxed">
+                        Digunakan pada dokumen PDF seperti surat tugas dan berita acara. Gunakan PNG dengan latar transparan.
+                    </p>
+                </div>
+                <Card class="lg:col-span-2">
+                    <CardContent>
+                        <form @submit.prevent="submitSignature" class="space-y-4">
+
+                            <!-- Saved signature strip -->
+                            <div v-if="savedSignatureUrl" class="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+                                <div class="flex h-12 w-24 shrink-0 items-center justify-center rounded-md border bg-background overflow-hidden">
+                                    <img :src="savedSignatureUrl" alt="Tanda tangan aktif" class="max-h-full max-w-full object-contain p-1" />
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium">Tanda tangan aktif</p>
+                                    <p class="text-xs text-muted-foreground">Upload baru untuk mengganti</p>
+                                </div>
+                                <Button type="button" variant="ghost" size="sm"
+                                    class="shrink-0 gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                    @click="deleteSignature">
+                                    <Trash2 class="h-3.5 w-3.5" /> Hapus
+                                </Button>
+                            </div>
+                            <!-- Drop zone / file selected -->
+                            <Transition name="upload-swap" mode="out-in">
+                                <div v-if="!signatureFile" key="dropzone"
+                                    @click="sigInputRef?.click()"
+                                    @dragover.prevent="isDragging = true"
+                                    @dragleave.self="isDragging = false"
+                                    @drop.prevent="handleSigDrop"
+                                    :class="[
+                                        'flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 cursor-pointer transition-all duration-200 select-none',
+                                        isDragging ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/40 hover:bg-muted/40'
+                                    ]">
+                                    <input ref="sigInputRef" type="file" accept="image/png" class="sr-only" @change="handleSigFileChange" />
+                                    <UploadCloud :class="['w-9 h-9 transition-all duration-200', isDragging ? 'text-primary scale-110' : 'text-muted-foreground']" />
+                                    <div class="text-center">
+                                        <p class="text-sm font-medium">Tarik file ke sini atau <span class="text-primary underline underline-offset-2">klik untuk memilih</span></p>
+                                        <p class="mt-1 text-xs text-muted-foreground">PNG &bull; Maks. 2MB</p>
+                                    </div>
+                                </div>
+                                <div v-else key="file-preview"
+                                    class="flex items-center gap-3 rounded-xl border-2 border-primary/30 bg-primary/5 p-4">
+                                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 overflow-hidden">
+                                        <img v-if="signaturePreview" :src="signaturePreview" class="h-full w-full object-contain" alt="" />
+                                        <ImageIcon v-else class="h-5 w-5 text-primary" />
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="truncate text-sm font-medium">{{ signatureFile.name }}</p>
+                                        <p class="text-xs text-muted-foreground">{{ formatFileSize(signatureFile.size) }}</p>
+                                    </div>
+                                    <button type="button" @click.stop="clearSigFile"
+                                        class="shrink-0 rounded-md p-1 hover:bg-muted transition-colors">
+                                        <X class="h-4 w-4 text-muted-foreground" />
+                                    </button>
+                                </div>
+                            </Transition>
+                            <InputError :message="signatureForm.errors.signature" />
+                            <div class="flex justify-end pt-1">
+                                <Button type="submit" :disabled="signatureForm.processing || !signatureFile" class="min-w-28">
+                                    {{ signatureForm.processing ? 'Menyimpan…' : 'Simpan' }}
+                                </Button>
+                            </div>
+                        </form>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+.upload-swap-enter-active,
+.upload-swap-leave-active {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.upload-swap-enter-from,
+.upload-swap-leave-to {
+    opacity: 0;
+    transform: scale(0.97) translateY(6px);
+}
+</style>

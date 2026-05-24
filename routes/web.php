@@ -25,18 +25,18 @@ Route::middleware(['auth','firstlogin'])->group(function () {
     Route::get('change-password', [Auth\FirstLoginController::class, 'create'])->name('create.first.login');
     Route::post('change-password', [Auth\FirstLoginController::class, 'update'])->name('post.first.login');
 
-    // Dashboard Route
+    // Dashboard Routes
     Route::get('dashboard',[Shared\DashboardController::class,'index'])->name('dashboard');
     Route::post('logout', [Auth\LoginController::class, 'destroy'])->name('logout');
 
-     // Profile Routes
+    // Profile Routes
     Route::get('pengaturan/profil', [Auth\ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('pengaturan/profil', [Auth\ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('pengaturan/password', [Auth\ProfileController::class, 'updatePassword'])->name('password.update');
     Route::post('pengaturan/appearance', [Auth\ProfileController::class, 'updateAppearance'])->name('appearance.update');
-    // Route::get('foto-profil/{userId}', [Auth\ProfilePhotoController::class, 'show'])->name('profile.photo.show');
-    // Route::get('foto-profil', [Auth\ProfilePhotoController::class, 'current'])->name('profile.photo.current');
     Route::delete('foto-profil', [Auth\ProfileController::class, 'deletePhoto'])->name('profile.photo.delete');
+    Route::post('tanda-tangan', [Auth\ProfileController::class, 'updateSignature'])->name('signature.update');
+    Route::delete('tanda-tangan', [Auth\ProfileController::class, 'deleteSignature'])->name('signature.delete');
 
     // Admin Routes
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
@@ -45,37 +45,55 @@ Route::middleware(['auth','firstlogin'])->group(function () {
             Route::get('/', [Shared\Admin\UserManagementController::class, 'index'])->name('index');
             Route::get('/create', [Shared\Admin\UserManagementController::class, 'create'])->name('create');
             Route::post('/', [Shared\Admin\UserManagementController::class, 'store'])->name('store');
+            Route::post('/import', [Shared\Admin\UserManagementController::class, 'import'])->name('import');
+            Route::get('/template/{type}', [Shared\Admin\UserManagementController::class, 'template'])->name('template');
             Route::get('/{id}', [Shared\Admin\UserManagementController::class, 'show'])->name('show');
             Route::get('/edit/{id}', [Shared\Admin\UserManagementController::class, 'edit'])->name('edit');
             Route::put('/{id}', [Shared\Admin\UserManagementController::class, 'update'])->name('update');
             Route::delete('/{id}', [Shared\Admin\UserManagementController::class, 'destroy'])->name('delete');
             Route::post('/{id}/reset-password', [Shared\Admin\UserManagementController::class, 'resetPassword'])->name('reset.password');
-            Route::post('/import', [Shared\Admin\UserManagementController::class, 'import'])->name('import');
         });
 
         // Students Management
         Route::prefix('mahasiswa')->name('mahasiswa.')->group(function(){
-            Route::get('/',[]);
+            Route::get('/', [Shared\Admin\MahasiswaManagementController::class, 'index'])->name('index');
+            Route::get('/edit/{id}', [Shared\Admin\MahasiswaManagementController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [Shared\Admin\MahasiswaManagementController::class, 'update'])->name('update');
+            Route::delete('/{id}', [Shared\Admin\MahasiswaManagementController::class, 'destroy'])->name('delete');
+            Route::get('/{id}', [Shared\Admin\MahasiswaManagementController::class, 'show'])->name('show');
         });
 
         // Lecturers Management
         Route::prefix('dosen')->name('dosen.')->group(function(){
-            Route::get('/',[]);
+            Route::get('/', [Shared\Admin\DosenManagementController::class, 'index'])->name('index');
+            Route::get('/{id}', [Shared\Admin\DosenManagementController::class, 'show'])->name('show');
+            Route::get('/edit/{id}', [Shared\Admin\DosenManagementController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [Shared\Admin\DosenManagementController::class, 'update'])->name('update');
+            Route::delete('/{id}', [Shared\Admin\DosenManagementController::class, 'destroy'])->name('delete');
         });
 
         // Classes Management
         Route::prefix('ruang')->name('ruang.')->group(function(){
-            Route::get('/',[]);
+            Route::get('/', [Shared\Admin\RuangManagementController::class, 'index'])->name('index');
+            Route::post('/', [Shared\Admin\RuangManagementController::class, 'store'])->name('store');
+            Route::put('/{id}', [Shared\Admin\RuangManagementController::class, 'update'])->name('update');
+            Route::delete('/{id}', [Shared\Admin\RuangManagementController::class, 'destroy'])->name('delete');
         });
 
         // Courses Management
-        Route::prefix('mk')->name('mk.')->group(function(){
-            Route::get('/',[]);
+        Route::prefix('mata-kuliah')->name('mk.')->group(function(){
+            Route::get('/', [Shared\Admin\MataKuliahManagementController::class, 'index'])->name('index');
+            Route::post('/', [Shared\Admin\MataKuliahManagementController::class, 'store'])->name('store');
+            Route::put('/{id}', [Shared\Admin\MataKuliahManagementController::class, 'update'])->name('update');
+            Route::delete('/{id}', [Shared\Admin\MataKuliahManagementController::class, 'destroy'])->name('delete');
         });
 
         // Positions Management
         Route::prefix('jabatan')->name('jabatan.')->group(function(){
-            Route::get('/',[]);
+            Route::get('/', [Shared\Admin\JabatanManagementController::class, 'index'])->name('index');
+            Route::post('/', [Shared\Admin\JabatanManagementController::class, 'store'])->name('store');
+            Route::put('/{id}', [Shared\Admin\JabatanManagementController::class, 'update'])->name('update');
+            Route::delete('/{id}', [Shared\Admin\JabatanManagementController::class, 'destroy'])->name('delete');
         });
     });
 
