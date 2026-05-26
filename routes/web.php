@@ -59,6 +59,7 @@ Route::middleware(['auth','firstlogin'])->group(function () {
             Route::get('/', [Shared\Admin\MahasiswaManagementController::class, 'index'])->name('index');
             Route::get('/edit/{id}', [Shared\Admin\MahasiswaManagementController::class, 'edit'])->name('edit');
             Route::put('/{id}', [Shared\Admin\MahasiswaManagementController::class, 'update'])->name('update');
+            Route::post('/{id}/pem-akademik', [Shared\Admin\MahasiswaManagementController::class, 'assignPemAkademik'])->name('pem.akademik');
             Route::delete('/{id}', [Shared\Admin\MahasiswaManagementController::class, 'destroy'])->name('delete');
             Route::get('/{id}', [Shared\Admin\MahasiswaManagementController::class, 'show'])->name('show');
         });

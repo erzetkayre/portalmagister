@@ -117,7 +117,7 @@ const submit = () => form.post(route('admin.users.store'), {
                             </Link>
                         </Button>
                         <Button type="submit" size="sm" :disabled="form.processing || !hasData" class="flex items-center gap-2">
-                            Submit
+                            Simpan
                         </Button>
                     </div>
                 </form>

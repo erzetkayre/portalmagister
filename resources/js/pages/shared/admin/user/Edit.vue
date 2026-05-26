@@ -145,7 +145,7 @@ const submit = () => form.put(route('admin.users.update', props.user.id), {
                             </Link>
                         </Button>
                         <Button type="submit" size="sm" :disabled="form.processing || !hasChanges" class="flex items-center">
-                            Submit
+                            Simpan Perubahan
                         </Button>
                     </div>
                 </form>
