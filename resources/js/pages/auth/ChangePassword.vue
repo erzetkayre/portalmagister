@@ -12,7 +12,6 @@ import InputError from '@/components/InputError.vue';
 
 // Define props
 defineProps<Props>();
-
 interface Props {
     user: {
         name: string;
@@ -39,7 +38,7 @@ const submit = () => {
 </script>
 
 <template>
-    <ChangePasswordBase title="Ubah Password" description="Untuk keamanan akun, silakan ganti password default Anda">
+    <ChangePasswordBase title="Ubah Password" description="Untuk keamanan akun, silakan ganti password Anda">
     <Head title="Ubah Password" />
         <Alert variant="default" class="mb-6 p-4 bg-default/10 rounded-lg">
                 <div class="flex items-center space-x-3">

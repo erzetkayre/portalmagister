@@ -5,6 +5,7 @@ import FormInput from '@/components/FormInput.vue';
 import FormSelect from '@/components/FormSelect.vue';
 import FormCheckboxGroup from '@/components/FormCheckboxGroup.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { toast } from 'vue-sonner';
 import { BreadcrumbItem, Role } from '@/types';
 import { computed } from 'vue';
 import { Button } from '@/components/ui';
@@ -22,19 +23,19 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const form = useForm({
-    name:        '',
-    email:       '',
+    name: '',
+    email: '',
     nomor_induk: '',
-    phone:       '',
-    is_active:   true as boolean,
-    roles:       [] as number[],
+    phone: '',
+    is_active: true,
+    roles: [] as number[],
 });
 
 const selectedRoleNames = computed(() =>
     props.roles.filter(r => form.roles.includes(r.id)).map(r => r.role_name)
 );
 const isMahasiswa = computed(() => selectedRoleNames.value.includes('mahasiswa'));
-const isDosen     = computed(() => selectedRoleNames.value.some(r => ['dosen', 'koordinator', 'admin', 'kaprodi'].includes(r)));
+const isDosen = computed(() => selectedRoleNames.value.some(r => ['dosen', 'koordinator', 'admin', 'kaprodi'].includes(r)));
 
 const statusValue = computed({
     get: () => form.is_active ? '1' : '0',
@@ -42,19 +43,29 @@ const statusValue = computed({
 });
 
 const roleOptions = computed(() => props.roles.map(r => {
-    const isMhs      = r.role_name === 'mahasiswa'
+    const isMhs = r.role_name === 'mahasiswa'
     const isDisabled = isMhs ? isDosen.value : isMahasiswa.value
     return {
-        id:              r.id,
-        label:           r.role_name,
-        disabled:        isDisabled,
+        id: r.id,
+        label: r.role_name,
+        disabled: isDisabled,
         disabledTooltip: isDisabled
             ? (isMhs ? 'Tidak dapat dipilih bersamaan dengan admin / dosen / koordinator' : 'Tidak dapat dipilih bersamaan dengan mahasiswa')
             : undefined,
     }
 }));
 
-const submit = () => form.post(route('admin.users.store'), { preserveScroll: true });
+const hasData = computed(() =>
+    !!form.name &&
+    !!form.email &&
+    !!form.nomor_induk &&
+    form.roles.length > 0
+);
+
+const submit = () => form.post(route('admin.users.store'), {
+    preserveScroll: true,
+    onError: () => toast.error('Gagal menyimpan user.', { description: 'Periksa kembali data yang diisi.' }),
+});
 </script>
 
 <template>
@@ -65,7 +76,7 @@ const submit = () => form.post(route('admin.users.store'), { preserveScroll: tru
                 <PageHeader
                     title="Tambah Pengguna"
                     description="Masukkan informasi pengguna yang akan didaftarkan ke sistem. Detail profil dapat dilengkapi melalui manajemen mahasiswa atau dosen." />
-
+                <!-- Form -->
                 <form @submit.prevent="submit" novalidate class="flex flex-col gap-6">
                     <FormInput label="Nama Lengkap" v-model="form.name"
                         placeholder="Masukkan nama lengkap" :error="form.errors.name" />
@@ -97,7 +108,6 @@ const submit = () => form.post(route('admin.users.store'), { preserveScroll: tru
                             </TooltipProvider>
                         </template>
                     </FormCheckboxGroup>
-
                     <hr />
                     <div class="flex gap-2">
                         <Button variant="outline" size="sm" as-child>
@@ -106,7 +116,7 @@ const submit = () => form.post(route('admin.users.store'), { preserveScroll: tru
                                 Kembali
                             </Link>
                         </Button>
-                        <Button type="submit" size="sm" :disabled="form.processing" class="flex items-center gap-2">
+                        <Button type="submit" size="sm" :disabled="form.processing || !hasData" class="flex items-center gap-2">
                             Submit
                         </Button>
                     </div>

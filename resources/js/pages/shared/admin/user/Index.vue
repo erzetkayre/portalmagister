@@ -6,21 +6,13 @@ import DataTable from '@/components/DataTable.vue';
 import TableFilters from '@/components/FilterTable.vue';
 import TextLink from '@/components/TextLink.vue';
 import { route } from 'ziggy-js';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
+    AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, Link } from '@inertiajs/vue3';
 import { Badge } from '@/components/ui/badge'
-import { Pencil, Trash2, UserRoundPlus, FileUp, Eye, KeyRound, UploadCloud, FileSpreadsheet, X } from 'lucide-vue-next'
+import { Pencil, UserRoundPlus, FileUp, Eye, KeyRound, UploadCloud, FileSpreadsheet, X } from 'lucide-vue-next'
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { computed, ref } from 'vue';
 import { useTable } from '@/composables/useTable';
@@ -47,11 +39,6 @@ interface UsersPagination<T> {
     }[];
 }
 
-interface Role {
-    id: number
-    role_name: string
-}
-
 interface Filters {
     search: string
     role: string | null
@@ -63,7 +50,6 @@ interface Filters {
 interface Props {
     users: UsersPagination<User>
     filters: Filters
-    roles: Role[]
 }
 
 const props = defineProps<Props>();
@@ -83,14 +69,16 @@ const {
     initialFilters: props.filters,
 });
 
+// Table
 const columns = [
-    { key: 'number',     label: '#',                 sortable: false, class: 'w-[5%]',  cellClass: 'text-center', align: 'center' as const },
-    { key: 'name',       label: 'Nama',              sortable: false, class: 'w-[20%]' },
-    { key: 'nomor_induk',label: 'Nomor Induk',       sortable: true,  class: 'w-[15%]' },
-    { key: 'email',      label: 'Email',             sortable: false, class: 'w-[20%]' },
-    { key: 'roles',      label: 'Hak Akses',         sortable: false, class: 'w-[20%]', cellClass: 'text-center', align: 'center' as const },
-    { key: 'created_at', label: 'Terdaftar',         sortable: true,  class: 'w-[10%]' },
-    { key: 'actions',    label: 'Opsi',              sortable: false, class: 'w-[10%]', cellClass: 'justify-center', align: 'center' as const },
+    { key: 'number', label: '#', sortable: false, class: 'w-[5%]',  cellClass: 'text-center', align: 'center' as const },
+    { key: 'name', label: 'Nama', sortable: false, class: 'w-[20%]' },
+    { key: 'nomor_induk', label: 'Nomor Induk', sortable: true,  class: 'w-[15%]' },
+    { key: 'email', label: 'Email', sortable: false, class: 'w-[15%]' },
+    { key: 'roles', label: 'Hak Akses', sortable: false, class: 'w-[15%]', cellClass: 'text-center', align: 'center' as const },
+    { key: 'is_active', label: 'Status', sortable: true,  class: 'w-[10%]', cellClass: 'text-center', align: 'center' as const },
+    { key: 'created_at', label: 'Terdaftar', sortable: true,  class: 'w-[10%]' },
+    { key: 'actions', label: 'Opsi', sortable: false, class: 'w-[10%]', cellClass: 'justify-center', align: 'center' as const },
 ];
 
 const filterConfigs = computed(() => [
@@ -98,10 +86,11 @@ const filterConfigs = computed(() => [
         key: 'role',
         label: 'Role',
         options: [
-            { value: 'admin',        label: 'Admin' },
-            { value: 'dosen',        label: 'Dosen' },
-            { value: 'koordinator',  label: 'Koordinator' },
-            { value: 'mahasiswa',    label: 'Mahasiswa' },
+            { value: 'admin', label: 'Admin' },
+            { value: 'koordinator', label: 'Koordinator' },
+            { value: 'kaprodi', label: 'Kaprodi' },
+            { value: 'dosen', label: 'Dosen' },
+            { value: 'mahasiswa', label: 'Mahasiswa' },
         ],
         clearLabel: 'Semua Role',
     },
@@ -109,24 +98,27 @@ const filterConfigs = computed(() => [
 
 const paginationData = computed(() => ({
     currentPage: props.users.current_page,
-    total:       props.users.total,
-    perPage:     props.users.per_page,
-    lastPage:    props.users.last_page,
-    from:        props.users.from,
-    to:          props.users.to,
+    total: props.users.total,
+    perPage: props.users.per_page,
+    lastPage: props.users.last_page,
+    from: props.users.from,
+    to: props.users.to,
 }));
 
 const getRowNumber = (index: number): number => {
     return props.users.from + index;
 };
 
-// Import modal state
-const excelFile   = ref<File | null>(null)
-const importType  = ref<'mahasiswa' | 'dosen'>('mahasiswa')
-const isDragging  = ref(false)
+// Import modal
+const excelFile = ref<File | null>(null)
+const importType = ref<'mahasiswa' | 'dosen'>('mahasiswa')
+const isDragging = ref(false)
 const fileInputRef = ref<HTMLInputElement | null>(null)
 
-const triggerFileInput = () => fileInputRef.value?.click()
+const triggerFileInput = () => {
+    const el = Array.isArray(fileInputRef.value) ? fileInputRef.value[0] : fileInputRef.value
+    el?.click()
+}
 
 const handleFileChange = (e: Event) => {
     excelFile.value = (e.target as HTMLInputElement).files?.[0] ?? null
@@ -155,12 +147,9 @@ const submitImport = () => {
     })
 }
 
+// Actions
 const confirmResetPassword = (userId: number) => {
     router.post(route('admin.users.reset.password', userId), {}, { preserveScroll: true });
-};
-
-const confirmDelete = (userId: number) => {
-    router.delete(route('admin.users.delete', userId), { preserveScroll: true });
 };
 </script>
 
@@ -168,6 +157,7 @@ const confirmDelete = (userId: number) => {
     <Head title="User Management" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+            <!-- Header -->
             <PageHeader title="Daftar Pengguna" description="Kelola pengguna dan hak akses sistem.">
                 <template #actions>
                     <Button variant="default" size="sm" as-child class="h-9">
@@ -176,11 +166,14 @@ const confirmDelete = (userId: number) => {
                             Tambah User
                         </Link>
                     </Button>
-                    <AlertDialog>
+                    <!-- Import Excel -->
+                    <AlertDialog v-for="type in (['mahasiswa', 'dosen'] as const)" :key="type">
                         <AlertDialogTrigger as-child>
-                            <Button variant="outline" size="sm" class="h-9 flex items-center gap-2">
+                            <Button
+                                variant="outline" size="sm" class="h-9 flex items-center gap-2"
+                                @click="importType = type; excelFile = null">
                                 <FileUp class="h-4 w-4" />
-                                Import User
+                                Import {{ type.charAt(0).toUpperCase() + type.slice(1) }}
                             </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent class="sm:max-w-md">
@@ -189,43 +182,22 @@ const confirmDelete = (userId: number) => {
                                     <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
                                         <FileUp class="h-5 w-5 text-green-600 dark:text-green-400" />
                                     </div>
-                                    <AlertDialogTitle>Import User</AlertDialogTitle>
+                                    <AlertDialogTitle class="capitalize">Import {{ type }}</AlertDialogTitle>
                                 </div>
                             </AlertDialogHeader>
-
                             <AlertDialogDescription class="text-justify">
-                                Upload file Excel (.xls / .xlsx) untuk menambahkan user secara massal.
+                                Upload file Excel (.xls / .xlsx) untuk menambahkan {{ type }} secara massal.
                             </AlertDialogDescription>
-
-                            <!-- Type selector -->
-                            <div class="flex gap-2">
-                                <button
-                                    type="button"
-                                    v-for="t in ['mahasiswa', 'dosen']" :key="t"
-                                    @click="importType = t as 'mahasiswa' | 'dosen'"
-                                    :class="[
-                                        'flex-1 rounded-lg border py-1.5 text-sm font-medium transition-colors capitalize',
-                                        importType === t
-                                            ? 'border-primary bg-primary text-primary-foreground'
-                                            : 'border-border hover:bg-muted'
-                                    ]">
-                                    {{ t }}
-                                </button>
-                            </div>
-
-                            <!-- Template download -->
                             <div class="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
                                 <FileSpreadsheet class="h-4 w-4 shrink-0" />
                                 <span>Belum punya template?</span>
-                                <a :href="route('admin.users.template', importType)"
+                                <a :href="route('admin.users.template', type)"
                                     class="ml-auto font-medium text-primary underline underline-offset-2 hover:opacity-80">
-                                    Download template {{ importType }}
+                                    Download template {{ type }}
                                 </a>
                             </div>
-
                             <div class="py-2">
                                 <Transition name="upload-swap" mode="out-in">
-                                    <!-- Idle / drag-over state -->
                                     <div
                                         v-if="!excelFile"
                                         key="dropzone"
@@ -257,8 +229,6 @@ const confirmDelete = (userId: number) => {
                                             <p class="mt-1 text-xs text-muted-foreground">XLS / XLSX &bull; Maks. 2MB</p>
                                         </div>
                                     </div>
-
-                                    <!-- File selected state -->
                                     <div
                                         v-else
                                         key="file-preview"
@@ -292,7 +262,7 @@ const confirmDelete = (userId: number) => {
                     </AlertDialog>
                 </template>
             </PageHeader>
-
+            <!-- Table -->
             <TableFilters
                 v-model:search-value="searchQuery"
                 search-placeholder="Cari nama atau email..."
@@ -300,7 +270,6 @@ const confirmDelete = (userId: number) => {
                 :filter-values="activeFilters"
                 @filter-change="setFilter"
                 @clear-all-filters="clearAllFilters" />
-
             <DataTable
                 :columns="columns"
                 :data="users.data"
@@ -325,19 +294,23 @@ const confirmDelete = (userId: number) => {
                         </Badge>
                     </div>
                 </template>
+                <template #is_active="{ item }">
+                    <Badge :variant="item.is_active ? 'default' : 'destructive'" class="text-xs">
+                        {{ item.is_active ? 'Aktif' : 'Tidak Aktif' }}
+                    </Badge>
+                </template>
                 <template #actions="{ item }">
                     <div class="flex justify-center gap-3">
                         <TextLink
                             :href="route('admin.users.show', item.id)"
-                            :tooltip="`Lihat ${item.name}`">
+                            :tooltip="`Lihat User`">
                             <Eye class="w-4 h-4 text-primary" />
                         </TextLink>
                         <TextLink
                             :href="route('admin.users.edit', item.id)"
-                            :tooltip="`Edit ${item.name}`">
+                            :tooltip="`Edit User`">
                             <Pencil class="w-4 h-4 text-warning" />
                         </TextLink>
-
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger as-child>
@@ -367,39 +340,6 @@ const confirmDelete = (userId: number) => {
                                     </div>
                                 </TooltipTrigger>
                                 <TooltipContent><p>Reset Password</p></TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger as-child>
-                                    <div class="inline-flex">
-                                        <ConfirmDialog
-                                            title="Hapus User"
-                                            confirm-text="Ya, Hapus"
-                                            content-class="sm:max-w-md"
-                                            :confirm-class="buttonVariants({ variant: 'destructive' })"
-                                            :on-confirm="() => confirmDelete(item.id)">
-                                            <template #trigger>
-                                                <button class="text-destructive hover:opacity-70 transition-opacity">
-                                                    <Trash2 class="w-4 h-4" />
-                                                </button>
-                                            </template>
-                                            <template #icon>
-                                                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                                                    <Trash2 class="h-5 w-5 text-destructive" />
-                                                </div>
-                                            </template>
-                                            <template #description>
-                                                <AlertDialogDescription class="text-justify">
-                                                    Akun <span class="font-semibold text-foreground">{{ item.name }}</span> akan dihapus permanen.
-                                                    <span class="text-destructive font-semibold"> Tindakan ini tidak dapat dibatalkan.</span>
-                                                </AlertDialogDescription>
-                                            </template>
-                                        </ConfirmDialog>
-                                    </div>
-                                </TooltipTrigger>
-                                <TooltipContent><p>Hapus User</p></TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
                     </div>

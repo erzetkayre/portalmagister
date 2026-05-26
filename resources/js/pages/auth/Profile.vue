@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, useForm, usePage, router } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
+import { useAuth } from '@/composables/useAuth';
 import { Camera, Trash2, Upload, PenLine, UploadCloud, X, ImageIcon, ShieldCheck, Palette, User } from 'lucide-vue-next';
 import { toast } from 'vue-sonner';
 
@@ -16,12 +17,17 @@ import { type BreadcrumbItem } from '@/types';
 
 interface Props {
     gender?: string | null;
+    angkatan?: number | null;
+    kode_dsn?: string | null;
+    bidang_keahlian?: string | null;
     signature_url?: string | null;
 }
 
 const props = defineProps<Props>();
-const page  = usePage();
-const user  = computed(() => page.props.auth.user as any);
+const page = usePage();
+const user = computed(() => page.props.auth.user as any);
+const { can } = useAuth();
+const isMahasiswa = computed(() => can.value.mahasiswa);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Pengaturan Profil', href: '/pengaturan/profil' },
@@ -110,29 +116,38 @@ const deleteSignature = () => {
 
 // Profile form
 const profileForm = useForm({
-    nama:        user.value.name        || '',
-    email:       user.value.email       || '',
+    nama: user.value.name || '',
+    email: user.value.email || '',
     nomor_induk: user.value.nomor_induk || '',
-    phone:       user.value.phone       || '',
-    gender:      props.gender           || '',
-    photo:       null as File | null,
+    phone: user.value.phone || '',
+    gender: props.gender || '',
+    angkatan: props.angkatan ?? null as number | null,
+    kode_dsn: props.kode_dsn || '',
+    bidang_keahlian: props.bidang_keahlian || '',
+    photo: null as File | null,
 });
 
 const initial = {
-    nama:        user.value.name        || '',
-    email:       user.value.email       || '',
+    nama: user.value.name || '',
+    email: user.value.email || '',
     nomor_induk: user.value.nomor_induk || '',
-    phone:       user.value.phone       || '',
-    gender:      props.gender           || '',
+    phone: user.value.phone || '',
+    gender: props.gender || '',
+    angkatan: props.angkatan ?? null,
+    kode_dsn: props.kode_dsn || '',
+    bidang_keahlian: props.bidang_keahlian || '',
 };
 
 const hasChanges = computed(() =>
-    profileForm.nama        !== initial.nama        ||
-    profileForm.email       !== initial.email       ||
+    profileForm.nama !== initial.nama ||
+    profileForm.email !== initial.email ||
     profileForm.nomor_induk !== initial.nomor_induk ||
-    profileForm.phone       !== initial.phone       ||
-    profileForm.gender      !== initial.gender      ||
-    profileForm.photo       !== null
+    profileForm.phone !== initial.phone ||
+    profileForm.gender !== initial.gender ||
+    profileForm.angkatan !== initial.angkatan ||
+    profileForm.kode_dsn !== initial.kode_dsn ||
+    profileForm.bidang_keahlian !== initial.bidang_keahlian ||
+    profileForm.photo !== null
 );
 
 const submitProfile = () => {
@@ -176,6 +191,7 @@ const submitPassword = () => {
     <AppLayout :breadcrumbs="breadcrumbs">
         <Head title="Pengaturan Profil" />
         <div class="flex flex-1 flex-col p-4 md:p-6 max-w-4xl mx-auto w-full gap-0">
+
             <!-- Section: Identity Header -->
             <div class="flex flex-col items-center gap-3">
                 <div class="relative">
@@ -240,6 +256,23 @@ const submitPassword = () => {
                                 <Label for="nomor_induk">Nomor Induk (NIP/NIM)</Label>
                                 <Input id="nomor_induk" v-model="profileForm.nomor_induk" placeholder="NIP atau NIM" />
                                 <InputError :message="profileForm.errors.nomor_induk" />
+                            </div>
+                            <div v-if="isMahasiswa" class="grid gap-1.5">
+                                <Label for="angkatan">Angkatan</Label>
+                                <Input id="angkatan" type="number" v-model.number="profileForm.angkatan" placeholder="Tahun angkatan (cth: 2023)" />
+                                <InputError :message="profileForm.errors.angkatan" />
+                            </div>
+                            <div v-if="!isMahasiswa" class="grid grid-cols-2 gap-4">
+                                <div class="grid gap-1.5">
+                                    <Label for="kode_dsn">Kode Dosen</Label>
+                                    <Input id="kode_dsn" v-model="profileForm.kode_dsn" placeholder="Cth: BSD" />
+                                    <InputError :message="profileForm.errors.kode_dsn" />
+                                </div>
+                                <div class="grid gap-1.5">
+                                    <Label for="bidang_keahlian">Bidang Keahlian</Label>
+                                    <Input id="bidang_keahlian" v-model="profileForm.bidang_keahlian" placeholder="Cth: Sistem Tenaga Listrik" />
+                                    <InputError :message="profileForm.errors.bidang_keahlian" />
+                                </div>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="grid gap-1.5">

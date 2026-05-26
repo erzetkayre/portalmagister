@@ -6,20 +6,12 @@ use App\Helpers\Sortable;
 use App\Helpers\Filterable;
 use App\Models\StudyProgram;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes, Sortable, Filterable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    use HasFactory, Notifiable, Sortable, Filterable;
 
     protected $connection = 'main';
     protected $fillable = [
@@ -32,24 +24,15 @@ class User extends Authenticatable
         'is_active',
         'study_program_id',
         'photo',
+        'signature',
         'phone',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -89,8 +72,17 @@ class User extends Authenticatable
                 'role_name' => $r->role_name,
             ]),
             'created_at' => $this->created_at->format('j F Y'),
-            'created_at_raw' => $this->created_at
         ];
+    }
+
+    public function getPhotoUrlAttribute(): ?string
+    {
+        return $this->photo ? asset('storage/' . $this->photo) : null;
+    }
+
+    public function getSignatureUrlAttribute(): ?string
+    {
+        return $this->signature ? asset('storage/' . $this->signature) : null;
     }
 
     public function studyProgram()
@@ -108,6 +100,31 @@ class User extends Authenticatable
         return $this->roles()
             ->where('role_name', $role)
             ->exists();
+    }
+
+    public function getDbConnection(): string
+    {
+        return $this->studyProgram->db_connection;
+    }
+
+    public function mahasiswaProfile(): ?\Illuminate\Database\Eloquent\Model
+    {
+        $class = match ($this->getDbConnection()) {
+            'elektro' => \App\Models\Elektro\Mahasiswa::class,
+            'pwk' => \App\Models\PWK\Mahasiswa::class,
+            default => null,
+        };
+        return $class ? $class::where('user_id', $this->id)->first() : null;
+    }
+
+    public function dosenProfile(): ?\Illuminate\Database\Eloquent\Model
+    {
+        $class = match ($this->getDbConnection()) {
+            'elektro' => \App\Models\Elektro\Dosen::class,
+            'pwk' => \App\Models\PWK\Dosen::class,
+            default => null,
+        };
+        return $class ? $class::where('user_id', $this->id)->first() : null;
     }
 
     public function scopeByStudyProgram($query, $program)

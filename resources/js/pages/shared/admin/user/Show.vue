@@ -19,7 +19,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const { getInitials } = useInitials();
 const showAvatar = computed(() => !!props.user.photo);
-const avatarUrl  = computed(() => (props.user as any).photo_url ?? null);
+const avatarUrl = computed(() => props.user.photo_url ?? null);
 const joinedDate = computed(() => {
     if (!props.user.created_at) return '—';
     return new Date(props.user.created_at).toLocaleDateString('id-ID', {
@@ -33,14 +33,10 @@ const joinedDate = computed(() => {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-6 rounded-xl p-6">
             <div class="w-full max-w-2xl mx-auto flex flex-col gap-6">
-
                 <PageHeader title="Informasi Pengguna" description="Detail informasi akun pengguna." />
-
-                <!-- Unified profile card -->
                 <div class="overflow-hidden divide-y">
-
-                    <!-- Identity -->
-                    <div class="flex flex-col items-center gap-2 px-5 py-5 pb-10">
+                    <!-- Section: Identity -->
+                    <div class="flex flex-col items-center gap-2 px-5 py-5 pb-8">
                         <Avatar class="h-25 w-25 shrink-0 overflow-hidden rounded-full">
                             <AvatarImage v-if="showAvatar" :src="avatarUrl!" :alt="user.name" />
                             <AvatarFallback class="text-2xl font-bold text-primary bg-primary/10">
@@ -52,8 +48,6 @@ const joinedDate = computed(() => {
                             <p class="text-sm font-mono text-muted-foreground">{{ user.nomor_induk }}</p>
                         </div>
                     </div>
-
-                    <!-- Email -->
                     <div class="flex items-center gap-3 px-5 py-3">
                         <Mail class="w-4 h-4 text-muted-foreground shrink-0" />
                         <div class="flex flex-col gap-0.5 min-w-0">
@@ -61,8 +55,6 @@ const joinedDate = computed(() => {
                             <span class="text-sm truncate">{{ user.email }}</span>
                         </div>
                     </div>
-
-                    <!-- Phone -->
                     <div class="flex items-center gap-3 px-5 py-3">
                         <Phone class="w-4 h-4 text-muted-foreground shrink-0" />
                         <div class="flex flex-col gap-0.5">
@@ -70,8 +62,6 @@ const joinedDate = computed(() => {
                             <span class="text-sm">{{ user.phone || '—' }}</span>
                         </div>
                     </div>
-
-                    <!-- Joined -->
                     <div class="flex items-center gap-3 px-5 py-3">
                         <CalendarDays class="w-4 h-4 text-muted-foreground shrink-0" />
                         <div class="flex flex-col gap-0.5">
@@ -79,8 +69,6 @@ const joinedDate = computed(() => {
                             <span class="text-sm">{{ joinedDate }}</span>
                         </div>
                     </div>
-
-                    <!-- Roles -->
                     <div class="flex items-center gap-3 px-5 py-3">
                         <ShieldCheck class="w-4 h-4 text-muted-foreground shrink-0" />
                         <div class="flex flex-col gap-1.5">
@@ -95,8 +83,6 @@ const joinedDate = computed(() => {
                             </div>
                         </div>
                     </div>
-
-                    <!-- Status -->
                     <div class="flex items-center gap-3 px-5 py-3">
                         <Activity class="w-4 h-4 text-muted-foreground shrink-0" />
                         <div class="flex flex-col gap-1.5">
@@ -106,10 +92,7 @@ const joinedDate = computed(() => {
                             </Badge>
                         </div>
                     </div>
-
                 </div>
-
-                <!-- Actions -->
                 <div class="flex gap-2">
                     <Button variant="outline" size="sm" as-child>
                         <Link :href="route('admin.users.index')" class="flex items-center gap-2">
@@ -124,7 +107,6 @@ const joinedDate = computed(() => {
                         </Link>
                     </Button>
                 </div>
-
             </div>
         </div>
     </AppLayout>

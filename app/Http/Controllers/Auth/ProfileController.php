@@ -18,15 +18,14 @@ class ProfileController extends Controller
     public function edit(Request $request): Response
     {
         $user = $request->user();
-        $gender = null;
-        if (Gate::allows('mahasiswa')) {
-            $gender = $user->mahasiswaProfile()?->gender;
-        } else {
-            $gender = $user->dosenProfile()?->gender;
-        }
+        $isMahasiswa = Gate::allows('mahasiswa');
+        $profile = $isMahasiswa ? $user->mahasiswaProfile() : $user->dosenProfile();
 
         return Inertia::render('auth/Profile', [
-            'gender'        => $gender,
+            'gender' => $profile?->gender,
+            'angkatan' => $isMahasiswa ? $profile?->angkatan : null,
+            'kode_dsn' => !$isMahasiswa ? $profile?->kode_dsn : null,
+            'bidang_keahlian' => !$isMahasiswa ? $profile?->bidang_keahlian : null,
             'signature_url' => $user->signature_url,
         ]);
     }
@@ -35,12 +34,15 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         $request->validate([
-            'nama'        => ['required', 'string', 'max:255'],
-            'email'       => ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)],
+            'nama' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)],
             'nomor_induk' => ['required', 'string', Rule::unique('users', 'nomor_induk')->ignore($user->id)],
-            'phone'       => ['nullable', 'string', 'max:20'],
-            'gender'      => ['nullable', 'string', 'in:L,P'],
-            'photo'       => ['nullable', 'image', 'max:2048'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'gender' => ['nullable', 'string', 'in:L,P'],
+            'photo' => ['nullable', 'image', 'max:2048'],
+            'angkatan' => ['nullable', 'integer', 'min:2000', 'max:2099'],
+            'kode_dsn' => ['nullable', 'string', 'max:20'],
+            'bidang_keahlian' => ['nullable', 'string', 'max:255'],
         ]);
 
         $data = $request->only(['nama', 'email', 'nomor_induk', 'phone']);
@@ -64,6 +66,7 @@ class ProfileController extends Controller
                     'nim' => $data['nomor_induk'],
                     'nama_mhs' => $data['nama'],
                     'gender' => $request->gender,
+                    'angkatan' => $request->angkatan,
                 ]);
             }
         } else {
@@ -71,8 +74,10 @@ class ProfileController extends Controller
             if ($dosen) {
                 $dosen->update([
                     'nip' => $data['nomor_induk'],
-                    'nama_dosen' => $data['nama'],
+                    'nama_dsn' => $data['nama'],
                     'gender' => $request->gender,
+                    'kode_dsn' => $request->kode_dsn,
+                    'bidang_keahlian' => $request->bidang_keahlian,
                 ]);
             }
         }

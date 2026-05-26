@@ -40,10 +40,10 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->foreignId('study_program_id')->constrained('study_programs');
             $table->string('photo')->nullable();
+            $table->string('signature')->nullable();
             $table->string('phone')->nullable();
             $table->rememberToken();
             $table->timestamps();
-            $table->softDeletes();
         });
 
         Schema::connection('main')->create('user_roles', function (Blueprint $table) {

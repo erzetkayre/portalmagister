@@ -5,6 +5,7 @@ import FormInput from '@/components/FormInput.vue';
 import FormSelect from '@/components/FormSelect.vue';
 import FormCheckboxGroup from '@/components/FormCheckboxGroup.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { toast } from 'vue-sonner';
 import { BreadcrumbItem, User, Role } from '@/types';
 import { computed } from 'vue';
 import { Button } from '@/components/ui';
@@ -16,6 +17,7 @@ import { ArrowLeftToLine, CircleHelp } from 'lucide-vue-next';
 interface Props {
     user: User
     roles: Role[]
+    isSelf: boolean
 }
 const props = defineProps<Props>();
 
@@ -27,22 +29,40 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const { getInitials } = useInitials();
 const showAvatar = computed(() => !!props.user.photo);
-const avatarUrl  = computed(() => (props.user as any).photo_url ?? null);
+const avatarUrl = computed(() => props.user.photo_url ?? null);
 
 const form = useForm({
-    name:        props.user.name,
-    email:       props.user.email,
+    name: props.user.name,
+    email: props.user.email,
     nomor_induk: props.user.nomor_induk,
-    phone:       props.user.phone || '',
-    is_active:   props.user.is_active,
-    roles:       Array.isArray(props.user.roles) ? props.user.roles.map(r => r.id) : [],
+    phone: props.user.phone || '',
+    is_active: props.user.is_active,
+    roles: Array.isArray(props.user.roles) ? props.user.roles.map(r => r.id) : [],
 });
+
+const initial = {
+    name: props.user.name,
+    email: props.user.email,
+    nomor_induk: props.user.nomor_induk,
+    phone: props.user.phone || '',
+    is_active: props.user.is_active,
+    roles: Array.isArray(props.user.roles) ? props.user.roles.map(r => r.id).sort() : [],
+};
+
+const hasChanges = computed(() =>
+    form.name !== initial.name        ||
+    form.email !== initial.email       ||
+    form.nomor_induk !== initial.nomor_induk ||
+    form.phone !== initial.phone       ||
+    form.is_active !== initial.is_active   ||
+    JSON.stringify([...form.roles].sort()) !== JSON.stringify(initial.roles)
+);
 
 const selectedRoleNames = computed(() =>
     props.roles.filter(r => form.roles.includes(r.id)).map(r => r.role_name)
 );
 const isMahasiswa = computed(() => selectedRoleNames.value.includes('mahasiswa'));
-const isDosen     = computed(() => selectedRoleNames.value.some(r => ['dosen', 'koordinator', 'admin', 'kaprodi'].includes(r)));
+const isDosen = computed(() => selectedRoleNames.value.some(r => ['dosen', 'koordinator', 'admin', 'kaprodi'].includes(r)));
 
 const statusValue = computed({
     get: () => form.is_active ? '1' : '0',
@@ -51,14 +71,21 @@ const statusValue = computed({
 
 const roleOptions = computed(() => props.roles.map(r => {
     const isMhs = r.role_name === 'mahasiswa'
+    const isDisabled = isMhs ? isDosen.value : isMahasiswa.value
     return {
-        id:       r.id,
-        label:    r.role_name,
-        disabled: isMhs ? isDosen.value : isMahasiswa.value,
+        id: r.id,
+        label: r.role_name,
+        disabled: isDisabled,
+        disabledTooltip: isDisabled
+            ? (isMhs ? 'Tidak dapat dipilih bersamaan dengan admin / dosen / koordinator' : 'Tidak dapat dipilih bersamaan dengan mahasiswa')
+            : undefined,
     }
 }));
 
-const submit = () => form.put(route('admin.users.update', props.user.id), { preserveScroll: true });
+const submit = () => form.put(route('admin.users.update', props.user.id), {
+    preserveScroll: true,
+    onError: () => toast.error('Gagal memperbarui user.', { description: 'Periksa kembali data yang diisi.' }),
+});
 </script>
 
 <template>
@@ -66,10 +93,8 @@ const submit = () => form.put(route('admin.users.update', props.user.id), { pres
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-6 rounded-xl p-6">
             <div class="w-full max-w-2xl mx-auto flex flex-col gap-6">
-
                 <PageHeader title="Edit Pengguna" description="Perbarui informasi dan hak akses pengguna." />
-
-                <!-- Identity context (readonly) -->
+                <!-- Section: Identity -->
                 <div class="flex flex-col items-center gap-2 px-5 py-5">
                     <Avatar class="h-25 w-25 shrink-0 overflow-hidden rounded-full">
                         <AvatarImage v-if="showAvatar" :src="avatarUrl!" :alt="user.name" />
@@ -82,7 +107,7 @@ const submit = () => form.put(route('admin.users.update', props.user.id), { pres
                         <p class="text-sm font-mono text-muted-foreground">{{ user.nomor_induk }}</p>
                     </div>
                 </div>
-
+                <!-- Form -->
                 <form @submit.prevent="submit" novalidate class="flex flex-col gap-6">
                     <FormInput label="Nama Lengkap" v-model="form.name" :error="form.errors.name" />
                     <div class="grid grid-cols-2 gap-4">
@@ -93,6 +118,7 @@ const submit = () => form.put(route('admin.users.update', props.user.id), { pres
                         <FormInput label="No. Telepon" v-model="form.phone" :error="form.errors.phone" placeholder="(xxx) xxx-xxxx"/>
                         <FormSelect label="Status" v-model="statusValue"
                             :options="[{ label: 'Aktif', value: '1' }, { label: 'Tidak Aktif', value: '0' }]"
+                            :disabled="isSelf"
                             :error="form.errors.is_active" />
                     </div>
                     <FormCheckboxGroup label="Hak Akses" v-model="form.roles"
@@ -110,21 +136,19 @@ const submit = () => form.put(route('admin.users.update', props.user.id), { pres
                             </TooltipProvider>
                         </template>
                     </FormCheckboxGroup>
-
                     <hr />
                     <div class="flex gap-2">
                         <Button variant="outline" size="sm" as-child>
-                            <Link :href="route('admin.users.index', user.id)" class="flex items-center gap-2">
+                            <Link :href="route('admin.users.index')" class="flex items-center gap-2">
                                 <ArrowLeftToLine class="w-4 h-4" />
                                 Kembali
                             </Link>
                         </Button>
-                        <Button type="submit" size="sm" :disabled="form.processing" class="flex items-center">
+                        <Button type="submit" size="sm" :disabled="form.processing || !hasChanges" class="flex items-center">
                             Submit
                         </Button>
                     </div>
                 </form>
-
             </div>
         </div>
     </AppLayout>
