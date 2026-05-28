@@ -5,7 +5,7 @@ import {
     PaginationPrevious, PaginationEllipsis,
 } from '@/components/ui';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronUp, ChevronDown } from 'lucide-vue-next';
+import { ChevronUp, ChevronDown, Inbox } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 interface Column {
@@ -14,6 +14,7 @@ interface Column {
     sortable?: boolean;
     class?: string;
     cellClass?: string;
+    align?: 'left' | 'center' | 'right';
 }
 
 interface PaginationData {
@@ -67,18 +68,37 @@ const handlePageChange = (page: number) => {
 const handlePerPageChange = (value: unknown) => {
     const perPage = Number(value);
     if (Number.isNaN(perPage)) return;
-
     emit('perPageChange', perPage);
 };
 
 const rowInfo = computed(() => {
-  const p = props.pagination
-  if (!p || p.total === 0) {
-    return '0 of 0 row(s)'
-  }
-  return `${p.from}–${p.to} of ${p.total} row(s)`
-})
+    const p = props.pagination;
+    if (!p || p.total === 0) return 'Tidak ada data';
+    return `${p.from}–${p.to} dari ${p.total} data`;
+});
 
+// Sliding window pagination — always shows 5 pages centered on current page
+const visiblePages = computed(() => {
+    const total = props.pagination.lastPage;
+    const current = props.pagination.currentPage;
+    if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+    let start = Math.max(1, current - 2);
+    const end = Math.min(total, start + 4);
+    start = Math.max(1, end - 4);
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+});
+
+const showStartEllipsis = computed(() => visiblePages.value[0] > 2);
+const showEndEllipsis = computed(() => {
+    const last = visiblePages.value[visiblePages.value.length - 1];
+    return last < props.pagination.lastPage - 1;
+});
+
+const headerAlignClass = (col: Column) => {
+    if (col.align === 'center') return 'justify-center';
+    if (col.align === 'right') return 'justify-end';
+    return 'justify-start';
+};
 </script>
 
 <template>
@@ -91,22 +111,14 @@ const rowInfo = computed(() => {
                         <TableHead
                             v-for="column in columns"
                             :key="column.key"
-                            :class="[
-                                column.class,
-                                column.sortable && 'cursor-pointer select-none hover:bg-muted/50'
-                            ]"
+                            :class="[column.class, column.sortable && 'cursor-pointer select-none hover:bg-muted/50']"
                             @click="handleSort(column)">
-                            <div :class="[
-                                'flex items-center gap-2',
-                                column.key === 'number' && 'justify-center',
-                                column.key === 'actions' && 'justify-center',
-                                column.key === 'roles' && 'justify-center'
-                                ]">
+                            <div :class="['flex items-center gap-2', headerAlignClass(column)]">
                                 <span>{{ column.label }}</span>
                                 <component
                                     :is="getSortIcon(column)"
                                     v-if="getSortIcon(column)"
-                                    class="h-4 w-4 flex-shrink-0"/>
+                                    class="h-4 w-4 flex-shrink-0" />
                             </div>
                         </TableHead>
                     </TableRow>
@@ -130,10 +142,11 @@ const rowInfo = computed(() => {
                     </TableRow>
                     <!-- Empty State -->
                     <TableRow v-if="!data.length">
-                        <TableCell
-                            :colspan="columns.length"
-                            class="text-center py-8 text-muted-foreground">
-                            No data available.
+                        <TableCell :colspan="columns.length" class="py-16 text-center">
+                            <div class="flex flex-col items-center gap-2 text-muted-foreground">
+                                <Inbox class="h-10 w-10 opacity-25" />
+                                <p class="text-sm">Belum ada data.</p>
+                            </div>
                         </TableCell>
                     </TableRow>
                 </TableBody>
@@ -143,14 +156,10 @@ const rowInfo = computed(() => {
         <!-- Pagination & Controls -->
         <div class="flex flex-wrap items-center justify-between pt-4 border-t min-h-[40px]">
             <div class="flex-wrap text-center">
-                <span class="text-sm text-muted-foreground">
-                    {{ rowInfo }}
-                </span>
+                <span class="text-sm text-muted-foreground">{{ rowInfo }}</span>
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
-                <span class="text-xs text-muted-foreground whitespace-nowrap">
-                    Rows per page
-                </span>
+                <span class="text-xs text-muted-foreground whitespace-nowrap">Baris per halaman</span>
                 <Select
                     :model-value="String(pagination.perPage)"
                     @update:model-value="handlePerPageChange">
@@ -169,7 +178,8 @@ const rowInfo = computed(() => {
                 </Select>
             </div>
 
-            <div class="hidden md:flex justify-end">
+            <!-- Desktop pagination -->
+            <div v-if="pagination.lastPage > 1" class="hidden md:flex justify-end">
                 <Pagination
                     :items-per-page="pagination.perPage"
                     :total="pagination.total"
@@ -177,27 +187,37 @@ const rowInfo = computed(() => {
                     <PaginationContent>
                         <PaginationPrevious
                             @click="handlePageChange(pagination.currentPage - 1)"
-                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === 1 }"/>
+                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === 1 }" />
 
-                        <template v-if="pagination.lastPage > 1">
-                            <PaginationItem
-                                v-for="pageNum in Math.min(pagination.lastPage, 5)"
-                                :key="pageNum"
-                                :value="pageNum"
-                                :is-active="pageNum === pagination.currentPage"
-                                @click="handlePageChange(pageNum)">
-                                {{ pageNum }}
-                            </PaginationItem>
-                            <PaginationEllipsis v-if="pagination.lastPage > 5" />
-                        </template>
+                        <PaginationItem v-if="visiblePages[0] > 1" :value="1" @click="handlePageChange(1)">1</PaginationItem>
+                        <PaginationEllipsis v-if="showStartEllipsis" />
+
+                        <PaginationItem
+                            v-for="pageNum in visiblePages"
+                            :key="pageNum"
+                            :value="pageNum"
+                            :is-active="pageNum === pagination.currentPage"
+                            @click="handlePageChange(pageNum)">
+                            {{ pageNum }}
+                        </PaginationItem>
+
+                        <PaginationEllipsis v-if="showEndEllipsis" />
+                        <PaginationItem
+                            v-if="visiblePages[visiblePages.length - 1] < pagination.lastPage"
+                            :value="pagination.lastPage"
+                            @click="handlePageChange(pagination.lastPage)">
+                            {{ pagination.lastPage }}
+                        </PaginationItem>
 
                         <PaginationNext
                             @click="handlePageChange(pagination.currentPage + 1)"
-                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === pagination.lastPage }"/>
+                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === pagination.lastPage }" />
                     </PaginationContent>
                 </Pagination>
             </div>
-            <div class="flex justify-center w-full mt-4 md:hidden">
+
+            <!-- Mobile pagination -->
+            <div v-if="pagination.lastPage > 1" class="flex justify-center w-full mt-4 md:hidden">
                 <Pagination
                     :items-per-page="pagination.perPage"
                     :total="pagination.total"
@@ -205,23 +225,31 @@ const rowInfo = computed(() => {
                     <PaginationContent>
                         <PaginationPrevious
                             @click="handlePageChange(pagination.currentPage - 1)"
-                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === 1 }"/>
+                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === 1 }" />
 
-                        <template v-if="pagination.lastPage > 1">
-                            <PaginationItem
-                                v-for="pageNum in Math.min(pagination.lastPage, 5)"
-                                :key="pageNum"
-                                :value="pageNum"
-                                :is-active="pageNum === pagination.currentPage"
-                                @click="handlePageChange(pageNum)">
-                                {{ pageNum }}
-                            </PaginationItem>
-                            <PaginationEllipsis v-if="pagination.lastPage > 5" />
-                        </template>
+                        <PaginationItem v-if="visiblePages[0] > 1" :value="1" @click="handlePageChange(1)">1</PaginationItem>
+                        <PaginationEllipsis v-if="showStartEllipsis" />
+
+                        <PaginationItem
+                            v-for="pageNum in visiblePages"
+                            :key="pageNum"
+                            :value="pageNum"
+                            :is-active="pageNum === pagination.currentPage"
+                            @click="handlePageChange(pageNum)">
+                            {{ pageNum }}
+                        </PaginationItem>
+
+                        <PaginationEllipsis v-if="showEndEllipsis" />
+                        <PaginationItem
+                            v-if="visiblePages[visiblePages.length - 1] < pagination.lastPage"
+                            :value="pagination.lastPage"
+                            @click="handlePageChange(pagination.lastPage)">
+                            {{ pagination.lastPage }}
+                        </PaginationItem>
 
                         <PaginationNext
                             @click="handlePageChange(pagination.currentPage + 1)"
-                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === pagination.lastPage }"/>
+                            :class="{ 'pointer-events-none opacity-50': pagination.currentPage === pagination.lastPage }" />
                     </PaginationContent>
                 </Pagination>
             </div>

@@ -194,7 +194,7 @@ const confirmDelete = (id: number) => {
                     <span class="font-semibold tabular-nums">{{ item.sks ?? '—' }}</span>
                 </template>
                 <template #status_mk="{ item }">
-                    <Badge :variant="item.status_mk === 'aktif' ? 'primary-outline' : 'destructive-outline'" class="capitalize">
+                    <Badge :variant="item.status_mk === 'aktif' ? 'default' : 'destructive'" class="capitalize">
                         {{ item.status_mk }}
                     </Badge>
                 </template>
