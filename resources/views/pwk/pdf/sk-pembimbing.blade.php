@@ -62,14 +62,14 @@
             <td style="width: 65%;">
                 <p>Mengetahui/Menyetujui</p>
                 <p>Pembimbing Utama</p>
-                <br><br><br>
+                <br><br><br><br>
                 <p><strong>{{ $pem1->nama_dsn ?? '-' }}</strong></p>
                 <p>NIP.{{ $pem1->nip ?? '-' }}</p>
             </td>
             <td style="width: 45%;">
                 <p>Surakarta, {{ $tesis->created_at->locale('id')->translatedFormat('d F Y') }}</p>
                 <p>Mahasiswa</p>
-                <br><br><br>
+                <br><br><br><br>
                 <p><strong>{{ $mhs->nama_mhs }}</strong></p>
                 <p>NIM.{{ $mhs->nim }}</p>
             </td>
@@ -80,7 +80,7 @@
             <td style="width: 60%; vertical-align: top; inline-height: 1.5;">
                 <p>Mengetahui/Menyetujui</p>
                 <p>Pembimbing Pendamping</p>
-                <br><br><br>
+                <br><br><br><br>
                 <p><strong>{{ $pem2->nama_dsn ?? '-' }}</strong></p>
                 <p>NIP. {{ $pem2->nip ?? '-' }}</p>
             </td>

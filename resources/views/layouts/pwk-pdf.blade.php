@@ -1,6 +1,6 @@
 @php
     $kopType = \Illuminate\Support\Facades\View::yieldContent('kop-type', 'new');
-    $kopMargin = $kopType === 'old' ? '44mm' : '32mm';
+    $kopMargin = $kopType === 'old' ? '44mm' : '30mm';
 @endphp
 <!DOCTYPE html>
 <html lang="id">
