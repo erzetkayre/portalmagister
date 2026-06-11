@@ -34,7 +34,7 @@ class Jabatan extends Model
             'nama_jabatan' => $this->nama_jabatan,
             'dosen_id'     => $this->dosen_id,
             'nama_dsn'     => $this->dosen?->nama_dsn,
-            'created_at'   => $this->created_at->format('j F Y'),
+            'created_at'   => $this->created_at->translatedFormat('j F Y'),
         ];
     }
 }

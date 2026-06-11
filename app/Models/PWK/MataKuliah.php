@@ -31,7 +31,7 @@ class MataKuliah extends Model
             'kode_mk'   => $this->kode_mk,
             'sks'       => $this->sks,
             'status_mk' => $this->status_mk,
-            'created_at' => $this->created_at->format('j F Y'),
+            'created_at' => $this->created_at->translatedFormat('j F Y'),
         ];
     }
 }

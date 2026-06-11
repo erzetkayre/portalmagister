@@ -55,7 +55,7 @@ class Mahasiswa extends Model
             'angkatan'     => $this->angkatan,
             'status_mhs'   => $this->status_mhs,
             'pem_akademik' => $this->pem_akademik,
-            'created_at'   => $this->created_at->format('j F Y'),
+            'created_at'   => $this->created_at->translatedFormat('j F Y'),
         ];
     }
 }

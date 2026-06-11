@@ -43,7 +43,7 @@ class Dosen extends Model
             'bidang_keahlian' => $this->bidang_keahlian,
             'gender'          => $this->gender,
             'status_dsn'      => $this->status_dsn,
-            'created_at'      => $this->created_at->format('j F Y'),
+            'created_at'      => $this->created_at->translatedFormat('j F Y'),
         ];
     }
 }

@@ -27,7 +27,7 @@ class Ruang extends Model
         return [
             'id'         => $this->id,
             'nama_ruang' => $this->nama_ruang,
-            'created_at' => $this->created_at->format('j F Y'),
+            'created_at' => $this->created_at->translatedFormat('j F Y'),
         ];
     }
 }
